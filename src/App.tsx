@@ -1,18 +1,18 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPasword';
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <div>
-        <main>
-          <Routes>
-            <Route path="/" element={<Login />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+    <div>
+      <main>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+        </Routes>
+      </main>
+    </div>
   )
 }
 
