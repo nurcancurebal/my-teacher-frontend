@@ -45,8 +45,8 @@ const Login: React.FC = () => {
       const response = await config.post("auth/login", { email, password });
       console.log(response.data);
       setMessage("Giriş başarılı. Yönlendiriliyorsunuz...");
-      localStorage.setItem("token", response.data.data.access_token);
-      console.log(response.data.data.access_token);
+      localStorage.setItem("token", response.data.accessToken);
+      console.log(response.data.accessToken);
       setTimeout(() => {
         navigate("/dashboard");
       }, 5000);
@@ -130,7 +130,7 @@ const Login: React.FC = () => {
 
           <p className="mt-10 text-center text-sm/6 text-gray-500">
             Üye değil misiniz?{' '}
-            <button className="font-semibold text-indigo-600 hover:text-indigo-500">
+            <button onClick={() => navigate("/register")} className="font-semibold text-indigo-600 hover:text-indigo-500">
               Şimdi kaydolun
             </button>
           </p>

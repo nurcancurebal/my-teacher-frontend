@@ -173,8 +173,14 @@ const ResetPassword: React.FC = () => {
 
                     <p className="mt-10 text-center text-sm/6 text-gray-500">
                         Üye değil misiniz?{' '}
-                        <button className="font-semibold text-indigo-600 hover:text-indigo-500">
+                        <button onClick={() => navigate("/register")} className="font-semibold text-indigo-600 hover:text-indigo-500">
                             Şimdi kaydolun
+                        </button>
+                    </p>
+                    <p className="mt-4 text-center text-sm/6 text-gray-500">
+                        Zaten bir hesabınız var mı?{' '}
+                        <button onClick={() => navigate("/")} className="font-semibold text-indigo-600 hover:text-indigo-500">
+                            Giriş yapın
                         </button>
                     </p>
                 </div>
