@@ -9,22 +9,50 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [message, setMessage] = useState<string>('');
   const navigate = useNavigate();
+
+  const validateEmail = (email: string) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  };
+
+  const validatePassword = (password: string) => {
+    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    return passwordPattern.test(password);
+  };
 
   const handleLogin = async (event: React.FormEvent) => {
 
     event.preventDefault(); // Varsayılan form gönderim davranışını engeller
     setLoading(true);
     setError("");
+    setMessage("");
+
+    if (!validateEmail(email)) {
+      setError("Lütfen geçerli bir e-posta adresi yazınız.");
+      setLoading(false);
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      setError("Şifreniz en az bir harf ve bir rakam içeren ve en az 8 karakter uzunluğunda olmalıdır.");
+      setLoading(false);
+      return;
+    }
 
     try {
       const response = await config.post("auth/login", { email, password });
       console.log(response.data);
-      // Başarılı girişten sonra yönlendirme
-      navigate("/dashboard");
+      setMessage("Giriş başarılı. Yönlendiriliyorsunuz...");
+      localStorage.setItem("token", response.data.data.access_token);
+      console.log(response.data.data.access_token);
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 5000);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        setError(error.response.data.message || "Giriş başarısız. Lütfen email ve şifrenizi kontrol edin.");
+        setError("Giriş başarısız. Lütfen email ve şifrenizi kontrol edin.");
       } else {
         setError("Bir hata oluştu. Lütfen tekrar deneyin.");
       }
@@ -80,7 +108,6 @@ const Login: React.FC = () => {
                   name="password"
                   type="password"
                   required
-                  autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6 p-3"
@@ -97,6 +124,7 @@ const Login: React.FC = () => {
                 {loading ? "Giriş yapılıyor..." : "Giriş yap"}
               </button>
             </div>
+            {message && <p className="mt-2 text-center text-sm/6 text-green-600">{message}</p>}
             {error && <p className="mt-2 text-center text-sm/6 text-red-600">{error}</p>}
           </form>
 

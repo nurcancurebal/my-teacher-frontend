@@ -7,23 +7,39 @@ const ForgotPassword: React.FC = () => {
 
     const [email, setEmail] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
+    const [message, setMessage] = useState<string>('');
     const [error, setError] = useState<string>('');
     const navigate = useNavigate();
+
+    const validateEmail = (email: string) => {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailPattern.test(email);
+    };
 
     const handleForgotPassword = async (event: React.FormEvent) => {
 
         event.preventDefault(); // Varsayılan form gönderim davranışını engeller
         setLoading(true);
+        setMessage('');
         setError("");
+
+        if (!validateEmail(email)) {
+            setError("Lütfen geçerli bir e-posta adresi yazınız.");
+            setLoading(false);
+            return;
+        }
 
         try {
             const response = await config.post("auth/forgot-password", { email });
             console.log(response.data);
             // Başarılı girişten sonra yönlendirme
-            navigate("/login");
+            setMessage("OTP kodu email adresinize gönderildi. Lütfen kodu kullanarak şifrenizi değiştirin.");
+            setTimeout(() => {
+                navigate("/reset-password", { state: { email } });
+            }, 5000); // 5 saniye sonra yönlendirme
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
-                setError(error.response.data.message || "Giriş başarısız. Lütfen email ve şifrenizi kontrol edin.");
+                setError("Email gönderilemedi. Lütfen email adresinizi kontrol edin.");
             } else {
                 setError("Bir hata oluştu. Lütfen tekrar deneyin.");
             }
@@ -38,7 +54,7 @@ const ForgotPassword: React.FC = () => {
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-                        Şifrenizi sıfırlayın
+                        Şifremi Unuttum
                     </h2>
                 </div>
 
@@ -68,9 +84,10 @@ const ForgotPassword: React.FC = () => {
                                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                 disabled={loading}
                             >
-                                {loading ? "Giriş yapılıyor..." : "Giriş yap"}
+                                {loading ? "Kod gönderiliyor..." : "Şifre Sıfırlama Kodu Gönder"}
                             </button>
                         </div>
+                        {message && <p className="mt-2 text-center text-sm/6 text-green-600">{message}</p>}
                         {error && <p className="mt-2 text-center text-sm/6 text-red-600">{error}</p>}
                     </form>
 
