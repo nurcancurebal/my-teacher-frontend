@@ -63,7 +63,12 @@ const ResetPassword: React.FC = () => {
 
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
-                setError("Şifre değiştirilemedi. Lütfen tekrar deneyin.");
+                const errorMessage = error.response.data.message;
+                if (errorMessage === "Otp code is invalid.") {
+                    setError("OTP kodu geçersiz. Lütfen kontrol edin.");
+                } else {
+                    setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+                }
             } else {
                 setError("Bir hata oluştu. Lütfen tekrar deneyin.");
             }

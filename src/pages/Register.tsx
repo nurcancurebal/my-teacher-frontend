@@ -76,7 +76,12 @@ const Register: React.FC = () => {
             }, 5000);
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
-                setError("Giriş başarısız. Lütfen email ve şifrenizi kontrol edin.");
+                const errorMessage = error.response.data.message;
+                if (errorMessage === "Email is already used") {
+                    setError("Bu e-posta adresi zaten kullanılıyor.");
+                } else {
+                    setError("Kayıt başarısız. Lütfen bilgilerinizi kontrol edin.");
+                }
             } else {
                 setError("Bir hata oluştu. Lütfen tekrar deneyin.");
             }

@@ -30,16 +30,19 @@ const ForgotPassword: React.FC = () => {
         }
 
         try {
-            const response = await config.post("auth/forgot-password", { email });
-            console.log(response.data);
-            // Başarılı girişten sonra yönlendirme
+            await config.post("auth/forgot-password", { email });
             setMessage("OTP kodu email adresinize gönderildi. Lütfen kodu kullanarak şifrenizi değiştirin.");
             setTimeout(() => {
-                navigate("/reset-password", { state: { email } });
-            }, 5000); // 5 saniye sonra yönlendirme
+                navigate("/reset-password", { state: { email } }); // Başarılı girişten 5 saniye sonra yönlendirme
+            }, 5000);
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
-                setError("Email gönderilemedi. Lütfen email adresinizi kontrol edin.");
+                const errorMessage = error.response.data.message;
+                if (errorMessage === "Email is incorrect") {
+                    setError("E-posta adresi hatalı.");
+                } else if (errorMessage === "Failed to send OTP") {
+                    setError("OTP kodu gönderilemedi. Lütfen tekrar deneyin.");
+                }
             } else {
                 setError("Bir hata oluştu. Lütfen tekrar deneyin.");
             }

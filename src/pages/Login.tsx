@@ -43,16 +43,21 @@ const Login: React.FC = () => {
 
     try {
       const response = await config.post("auth/login", { email, password });
-      console.log(response.data);
+
       setMessage("Giriş başarılı. Yönlendiriliyorsunuz...");
       localStorage.setItem("token", response.data.accessToken);
-      console.log(response.data.accessToken);
+
       setTimeout(() => {
         navigate("/dashboard");
       }, 5000);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        setError("Giriş başarısız. Lütfen email ve şifrenizi kontrol edin.");
+        const errorMessage = error.response.data.message;
+        if (errorMessage === "Email is incorrect") {
+          setError("E-posta adresi hatalı.");
+        } else if (errorMessage === "Password is incorrect") {
+          setError("Şifre hatalı.");
+        }
       } else {
         setError("Bir hata oluştu. Lütfen tekrar deneyin.");
       }
