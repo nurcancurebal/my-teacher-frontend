@@ -1,17 +1,19 @@
 import React from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPasword';
 import ResetPassword from './pages/ResetPassword';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Headers from './components/Headers';
 
 const App: React.FC = () => {
 
   const token = localStorage.getItem("token");
-  const navPathName = window.location.pathname;
+  const location = useLocation();
+  const navPathName = location.pathname;
 
-  const WHITE_NONTOKEN_PATH_NAMES = ["/", "/register"];
+  const WHITE_NONTOKEN_PATH_NAMES = ["/", "/register", "/forgot-password", "/reset-password"];
 
   if (!WHITE_NONTOKEN_PATH_NAMES.includes(navPathName) && !token) {
     return <Navigate to="/" />;
@@ -22,6 +24,7 @@ const App: React.FC = () => {
   }
   return (
     <div>
+      {WHITE_NONTOKEN_PATH_NAMES.includes(navPathName) && <Headers />}
       <main>
         <Routes>
           <Route path="/" element={<Login />} />
