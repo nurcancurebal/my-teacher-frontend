@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import config from "../services/config";
+import instance from "../services/axiosInstance";
 
 const ForgotPassword: React.FC = () => {
 
@@ -30,7 +30,7 @@ const ForgotPassword: React.FC = () => {
         }
 
         try {
-            await config.post("auth/forgot-password", { email });
+            await instance.post("auth/forgot-password", { email });
             setMessage("OTP kodu email adresinize gönderildi. Lütfen kodu kullanarak şifrenizi değiştirin.");
             setTimeout(() => {
                 navigate("/reset-password", { state: { email } }); // Başarılı girişten 5 saniye sonra yönlendirme

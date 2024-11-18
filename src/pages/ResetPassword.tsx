@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import config from "../services/config";
+import instance from "../services/axiosInstance";
 
 interface LocationState {
     email: string;
@@ -54,7 +54,7 @@ const ResetPassword: React.FC = () => {
 
         try {
 
-            const response = await config.post("auth/reset-password", { email, password, otp });
+            const response = await instance.post("auth/reset-password", { email, password, otp });
             console.log(response.data);
             setMessage("Şifreniz başarıyla değiştirildi. Giriş yapabilirsiniz.");
             setTimeout(() => {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import config from "../services/config";
+import instance from "../services/axiosInstance";
 
 const Register: React.FC = () => {
 
@@ -66,7 +66,7 @@ const Register: React.FC = () => {
             return;
         }
         try {
-            const response = await config.post("auth/register", { firstname, lastname, username, email, password });
+            const response = await instance.post("auth/register", { firstname, lastname, username, email, password });
             console.log(response.data);
             setMessage("Kayıt başarılı. Yönlendiriliyorsunuz...");
             localStorage.setItem("token", response.data.accessToken);

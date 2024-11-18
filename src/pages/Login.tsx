@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import config from "../services/config";
+import instance from "../services/axiosInstance";
 
 const Login: React.FC = () => {
 
@@ -42,7 +42,7 @@ const Login: React.FC = () => {
     }
 
     try {
-      const response = await config.post("auth/login", { email, password });
+      const response = await instance.post("auth/login", { email, password });
 
       setMessage("Giriş başarılı. Yönlendiriliyorsunuz...");
       localStorage.setItem("token", response.data.accessToken);
@@ -57,6 +57,8 @@ const Login: React.FC = () => {
           setError("E-posta adresi hatalı.");
         } else if (errorMessage === "Password is incorrect") {
           setError("Şifre hatalı.");
+        } else {
+          setError(errorMessage || "Giriş başarısız. Lütfen email ve şifrenizi kontrol edin.");
         }
       } else {
         setError("Bir hata oluştu. Lütfen tekrar deneyin.");
@@ -80,7 +82,7 @@ const Login: React.FC = () => {
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
-                Email address
+                Email adresi
               </label>
               <div className="mt-2">
                 <input
