@@ -56,7 +56,7 @@ const ResetPassword: React.FC = () => {
 
             const response = await instance.post("auth/reset-password", { email, password, otp });
             console.log(response.data);
-            setMessage("Şifreniz başarıyla değiştirildi. Giriş yapabilirsiniz.");
+            setMessage("Şifreniz başarıyla değiştirildi. Giriş yapmak için yönlendiriliyorsunuz...");
             setTimeout(() => {
                 navigate("/");
             }, 5000);

@@ -31,7 +31,7 @@ const ForgotPassword: React.FC = () => {
 
         try {
             await instance.post("auth/forgot-password", { email });
-            setMessage("OTP kodu email adresinize gönderildi. Lütfen kodu kullanarak şifrenizi değiştirin.");
+            setMessage("OTP kodu email adresinize gönderildi. Şifrenizi sıfırlamak için yönlendiriliyorsunuz...");
             setTimeout(() => {
                 navigate("/reset-password", { state: { email } }); // Başarılı girişten 5 saniye sonra yönlendirme
             }, 5000);
