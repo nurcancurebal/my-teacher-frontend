@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Disclosure,
   DisclosureButton,
@@ -9,22 +10,67 @@ import {
   MenuItems,
 } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import instance from "../services/axiosInstance";
+
+interface User {
+  id: number;
+  firstname: string;
+  lastname: string;
+  username: string;
+  email: string;
+  created_at: string;
+  last_updated: string;
+}
 
 const Navbar: React.FC = () => {
-  const user = {
-    name: "Tom Cook",
-    email: "tom@example.com",
-  };
+  const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await instance.get<{ data: User }>("user");
+        setUser(user.data.data);
+      } catch (error) {
+        console.error("Kullanıcı bilgileri alınamadı:", error);
+        navigate("/");
+      }
+    };
+
+    fetchUser();
+  }, [navigate]);
+
   const navigation = [
-    { name: "Kontrol Paneli", href: "#", current: true },
-    { name: "Sınıf Ekle", href: "#", current: false },
-    { name: "Öğrenci Ekle", href: "#", current: false },
-    { name: "Not Ekle", href: "#", current: false },
-    { name: "Kişisel Not Ekle", href: "#", current: false },
+    {
+      name: "Kontrol Paneli",
+      href: "/dashboard",
+      current: location.pathname === "/dashboard",
+    },
+    {
+      name: "Sınıf Ekle",
+      href: "/class-create",
+      current: location.pathname === "/class-create",
+    },
+    {
+      name: "Öğrenci Ekle",
+      href: "/student-create",
+      current: location.pathname === "/student-create",
+    },
+    {
+      name: "Not Ekle",
+      href: "/grade-create",
+      current: location.pathname === "/grade-create",
+    },
+    {
+      name: "Kişisel Not Ekle",
+      href: "/teacher-note",
+      current: location.pathname === "/teacher-note",
+    },
   ];
   const userNavigation = [
     { name: "Profilini Düzenle", href: "#" },
-    { name: "Çıkış", href: "#" },
+    { name: "Çıkış", href: "/" },
   ];
 
   function classNames(...classes: string[]) {
@@ -62,7 +108,7 @@ const Navbar: React.FC = () => {
 
               <div className="hidden md:block">
                 <div className="ml-4 flex items-center md:ml-6">
-                  <span className="text-white">{user.name}</span>
+                  {user && <span className="text-white">{user.username}</span>}
 
                   {/* Profile dropdown */}
                   <Menu as="div" className="relative ml-3">
@@ -161,10 +207,10 @@ const Navbar: React.FC = () => {
                 </div>
                 <div className="ml-3">
                   <div className="text-base/5 font-medium text-white">
-                    {user.name}
+                    {user?.username}
                   </div>
                   <div className="text-sm font-medium text-gray-400">
-                    {user.email}
+                    {user?.email}
                   </div>
                 </div>
               </div>
@@ -187,7 +233,7 @@ const Navbar: React.FC = () => {
         <header className="bg-white shadow">
           <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
             <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-              Kontrol Paneli
+              {navigation.find((item) => item.current)?.name}
             </h1>
           </div>
         </header>

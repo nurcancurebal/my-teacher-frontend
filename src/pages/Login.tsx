@@ -4,12 +4,11 @@ import { useNavigate } from "react-router-dom";
 import instance from "../services/axiosInstance";
 
 const Login: React.FC = () => {
-
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
-  const [message, setMessage] = useState<string>('');
+  const [error, setError] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
   const navigate = useNavigate();
 
   const validateEmail = (email: string) => {
@@ -23,7 +22,6 @@ const Login: React.FC = () => {
   };
 
   const handleLogin = async (event: React.FormEvent) => {
-
     event.preventDefault(); // Varsayılan form gönderim davranışını engeller
     setLoading(true);
     setError("");
@@ -36,7 +34,9 @@ const Login: React.FC = () => {
     }
 
     if (!validatePassword(password)) {
-      setError("Şifreniz en az bir harf ve bir rakam içeren ve en az 8 karakter uzunluğunda olmalıdır.");
+      setError(
+        "Şifreniz en az bir harf ve bir rakam içeren ve en az 8 karakter uzunluğunda olmalıdır."
+      );
       setLoading(false);
       return;
     }
@@ -46,7 +46,6 @@ const Login: React.FC = () => {
 
       setMessage("Giriş başarılı. Yönlendiriliyorsunuz...");
       localStorage.setItem("token", response.data.accessToken);
-
       setTimeout(() => {
         navigate("/dashboard");
       }, 5000);
@@ -58,16 +57,18 @@ const Login: React.FC = () => {
         } else if (errorMessage === "Password is incorrect") {
           setError("Şifre hatalı.");
         } else {
-          setError(errorMessage || "Giriş başarısız. Lütfen email ve şifrenizi kontrol edin.");
+          setError(
+            errorMessage ||
+              "Giriş başarısız. Lütfen email ve şifrenizi kontrol edin."
+          );
         }
       } else {
         setError("Bir hata oluştu. Lütfen tekrar deneyin.");
       }
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <>
@@ -81,7 +82,10 @@ const Login: React.FC = () => {
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
+              <label
+                htmlFor="email"
+                className="block text-sm/6 font-medium text-gray-900"
+              >
                 Email adresi
               </label>
               <div className="mt-2">
@@ -100,11 +104,18 @@ const Login: React.FC = () => {
 
             <div>
               <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
+                <label
+                  htmlFor="password"
+                  className="block text-sm/6 font-medium text-gray-900"
+                >
                   Şifre
                 </label>
                 <div className="text-sm">
-                  <button onClick={() => navigate("/forgot-password")} type="button" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                  <button
+                    onClick={() => navigate("/forgot-password")}
+                    type="button"
+                    className="font-semibold text-indigo-600 hover:text-indigo-500"
+                  >
                     Şifrenizi mi unuttunuz?
                   </button>
                 </div>
@@ -131,20 +142,29 @@ const Login: React.FC = () => {
                 {loading ? "Giriş yapılıyor..." : "Giriş yap"}
               </button>
             </div>
-            {message && <p className="mt-2 text-center text-sm/6 text-green-600">{message}</p>}
-            {error && <p className="mt-2 text-center text-sm/6 text-red-600">{error}</p>}
+            {message && (
+              <p className="mt-2 text-center text-sm/6 text-green-600">
+                {message}
+              </p>
+            )}
+            {error && (
+              <p className="mt-2 text-center text-sm/6 text-red-600">{error}</p>
+            )}
           </form>
 
           <p className="mt-10 text-center text-sm/6 text-gray-500">
-            Üye değil misiniz?{' '}
-            <button onClick={() => navigate("/register")} className="font-semibold text-indigo-600 hover:text-indigo-500">
+            Üye değil misiniz?{" "}
+            <button
+              onClick={() => navigate("/register")}
+              className="font-semibold text-indigo-600 hover:text-indigo-500"
+            >
               Şimdi kaydolun
             </button>
           </p>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
 export default Login;

@@ -24,16 +24,18 @@ const App: React.FC = () => {
     "/reset-password",
   ];
 
-  if (!WHITE_NONTOKEN_PATH_NAMES.includes(navPathName) && !token) {
+  const isTokenValid = token && token !== "undefined" && token !== "";
+
+  if (!WHITE_NONTOKEN_PATH_NAMES.includes(navPathName) && !isTokenValid) {
     return <Navigate to="/" />;
   }
 
-  if (WHITE_NONTOKEN_PATH_NAMES.includes(navPathName) && token) {
+  if (WHITE_NONTOKEN_PATH_NAMES.includes(navPathName) && isTokenValid) {
     localStorage.removeItem("token");
   }
   return (
     <div>
-      {token ? <Navbar /> : <Headers />}
+      {isTokenValid ? <Navbar /> : <Headers />}
       <main>
         <Routes>
           <Route path="/" element={<Login />} />
