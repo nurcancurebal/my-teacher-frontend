@@ -48,24 +48,9 @@ const Navbar: React.FC = () => {
       current: location.pathname === "/dashboard",
     },
     {
-      name: "Sınıf Ekle",
-      href: "/class-create",
-      current: location.pathname === "/class-create",
-    },
-    {
-      name: "Öğrenci Ekle",
-      href: "/student-create",
-      current: location.pathname === "/student-create",
-    },
-    {
-      name: "Not Ekle",
-      href: "/grade-create",
-      current: location.pathname === "/grade-create",
-    },
-    {
-      name: "Kişisel Not Ekle",
-      href: "/teacher-note",
-      current: location.pathname === "/teacher-note",
+      name: "Sınıflarınız",
+      href: "/classes",
+      current: location.pathname === "/classes",
     },
   ];
   const userNavigation = [
@@ -81,8 +66,8 @@ const Navbar: React.FC = () => {
     <>
       <div className="min-h-full">
         <Disclosure as="nav" className="bg-gray-800">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex h-16 items-center justify-between">
+          <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+            <div className="flex h-24 items-center justify-between">
               <div className="flex items-center">
                 <div className="shrink-0" />
                 <div className="hidden md:block">
@@ -96,7 +81,7 @@ const Navbar: React.FC = () => {
                           item.current
                             ? "bg-gray-900 text-white"
                             : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                          "rounded-md px-3 py-2 text-sm font-medium"
+                          "rounded-md px-6 py-4 text-md font-medium"
                         )}
                       >
                         {item.name}
@@ -108,7 +93,9 @@ const Navbar: React.FC = () => {
 
               <div className="hidden md:block">
                 <div className="ml-4 flex items-center md:ml-6">
-                  {user && <span className="text-white">{user.username}</span>}
+                  {user && (
+                    <span className="text-white text-lg">{user.username}</span>
+                  )}
 
                   {/* Profile dropdown */}
                   <Menu as="div" className="relative ml-3">
@@ -122,7 +109,7 @@ const Navbar: React.FC = () => {
                           viewBox="0 0 24 24"
                           strokeWidth={1.5}
                           stroke="white"
-                          className="size-6"
+                          className="size-7"
                         >
                           <path
                             strokeLinecap="round"
@@ -140,7 +127,7 @@ const Navbar: React.FC = () => {
                         <MenuItem key={item.name}>
                           <a
                             href={item.href}
-                            className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none"
+                            className="block px-4 py-2 text-lg text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none"
                           >
                             {item.name}
                           </a>

@@ -6,10 +6,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Headers from "./components/Headers";
-import TeacherNote from "./pages/TeacherNote";
-import GradeCreate from "./pages/GradeCreate";
-import ClassCreate from "./pages/ClassCreate";
-import StudentCreate from "./pages/StudentCreate";
+import Classes from "./pages/Classes";
 import Navbar from "./components/Navbar";
 
 const App: React.FC = () => {
@@ -43,11 +40,7 @@ const App: React.FC = () => {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/class-create" element={<ClassCreate />} />
-          <Route path="/student-create" element={<StudentCreate />} />
-          <Route path="/grade-create" element={<GradeCreate />} />
-          <Route path="/teacher-note" element={<TeacherNote />} />
+          <Route path="/classes" element={<Classes />} />
         </Routes>
       </main>
     </div>
