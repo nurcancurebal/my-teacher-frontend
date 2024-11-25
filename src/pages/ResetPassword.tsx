@@ -19,37 +19,14 @@ const ResetPassword: React.FC = () => {
   const [message, setMessage] = useState<string>("");
   const navigate = useNavigate();
 
-  const validatePassword = (password: string) => {
-    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    return passwordPattern.test(password);
-  };
-
-  const validateOtp = (otp: string) => {
-    return otp.length === 6;
-  };
-
   const handleResetPassword = async (event: React.FormEvent) => {
     event.preventDefault(); // Varsayılan form gönderim davranışını engeller
     setLoading(true);
     setError("");
     setMessage("");
 
-    if (!validatePassword(password)) {
-      setError(
-        "Şifreniz en az bir harf ve bir rakam içeren ve en az 8 karakter uzunluğunda olmalıdır."
-      );
-      setLoading(false);
-      return;
-    }
-
     if (password !== newPasswordRepeat) {
       setError("Şifreler eşleşmiyor. Lütfen kontrol edin.");
-      setLoading(false);
-      return;
-    }
-
-    if (!validateOtp(otp)) {
-      setError("OTP kodu 6 haneli olmalıdır.");
       setLoading(false);
       return;
     }
@@ -65,14 +42,26 @@ const ResetPassword: React.FC = () => {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const errorMessage = error.response.data.message;
-        if (errorMessage === "Otp code is invalid.") {
-          setError("OTP kodu geçersiz. Lütfen kontrol edin.");
-        } else {
-          setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+
+        switch (errorMessage) {
+          case "Otp code is invalid.":
+            setError("OTP kodu geçersiz. Lütfen kontrol edin.");
+            break;
+          case '"password" length must be at least 8 characters long':
+            setError("Şifre en az 8 karakter uzunluğunda olmalıdır.");
+            break;
+          case "The password must contain at least one letter and one number.":
+            setError("Şifre en az bir harf ve bir rakam içermelidir.");
+            break;
+          case '"otp" length must be 6 characters long':
+            setError("OTP kodu 6 karakter uzunluğunda olmalıdır.");
+            break;
+          default:
+            setError("Bir hata oluştu. Lütfen tekrar deneyin.");
         }
-      } else {
-        setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+        return;
       }
+      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
     } finally {
       setLoading(false);
     }

@@ -11,35 +11,11 @@ const Login: React.FC = () => {
   const [message, setMessage] = useState<string>("");
   const navigate = useNavigate();
 
-  const validateEmail = (email: string) => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(email);
-  };
-
-  const validatePassword = (password: string) => {
-    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    return passwordPattern.test(password);
-  };
-
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault(); // Varsayılan form gönderim davranışını engeller
     setLoading(true);
     setError("");
     setMessage("");
-
-    if (!validateEmail(email)) {
-      setError("Lütfen geçerli bir e-posta adresi yazınız.");
-      setLoading(false);
-      return;
-    }
-
-    if (!validatePassword(password)) {
-      setError(
-        "Şifreniz en az bir harf ve bir rakam içeren ve en az 8 karakter uzunluğunda olmalıdır."
-      );
-      setLoading(false);
-      return;
-    }
 
     try {
       const response = await instance.post("auth/login", { email, password });
@@ -52,19 +28,31 @@ const Login: React.FC = () => {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const errorMessage = error.response.data.message;
-        if (errorMessage === "Email is incorrect") {
-          setError("E-posta adresi hatalı.");
-        } else if (errorMessage === "Password is incorrect") {
-          setError("Şifre hatalı.");
-        } else {
-          setError(
-            errorMessage ||
+
+        switch (errorMessage) {
+          case "Email is incorrect":
+            setError("E-posta adresi hatalı.");
+            break;
+          case "Password is incorrect":
+            setError("Şifre hatalı.");
+            break;
+          case '"email" must be a valid email':
+            setError("Geçerli bir e-posta adresi giriniz.");
+            break;
+          case '"password" length must be at least 8 characters long':
+            setError("Şifre en az 8 karakter uzunluğunda olmalıdır.");
+            break;
+          case "The password must contain at least one letter and one number.":
+            setError("Şifre en az bir harf ve bir rakam içermelidir.");
+            break;
+          default:
+            setError(
               "Giriş başarısız. Lütfen email ve şifrenizi kontrol edin."
-          );
+            );
         }
-      } else {
-        setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+        return;
       }
+      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
     } finally {
       setLoading(false);
     }

@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
+import AddClass from "../components/AddClass";
 
 const Dashboard: React.FC = () => {
+  const [isAddClassOpen, setIsAddClassOpen] = useState(false);
+
   const stats = [
     { id: 1, name: "Toplam Sınıflarınız", value: "44" },
     { id: 2, name: "Toplam Öğrencileriniz", value: "119" },
@@ -26,8 +29,11 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      <div className="p-14 grid gap-6 lg:grid-cols-4 bg-white my-10">
-        <button className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center">
+      <div className="p-16 grid gap-6 lg:grid-cols-4 bg-white my-10">
+        <button
+          className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center"
+          onClick={() => setIsAddClassOpen(true)}
+        >
           Sınıf Ekle <span className="text-xl">+</span>
         </button>
         <button className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center">
@@ -40,6 +46,8 @@ const Dashboard: React.FC = () => {
           Kişisel Not Ekle <span className="text-xl">+</span>
         </button>
       </div>
+
+      <AddClass open={isAddClassOpen} setOpen={setIsAddClassOpen} />
     </div>
   );
 };
