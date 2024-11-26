@@ -1,14 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AddClass from "../components/AddClass";
+import AddStudent from "../components/AddStudent";
+import instance from "../services/axiosInstance";
 
 const Dashboard: React.FC = () => {
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
+  const [isAddStudentOpen, setIsAddStudentOpen] = useState(false);
+  const [totalClasses, setTotalClasses] = useState<number | null>(0);
 
   const stats = [
-    { id: 1, name: "Toplam Sınıflarınız", value: "44" },
+    {
+      id: 1,
+      name: "Toplam Sınıflarınız",
+      value: totalClasses !== null ? totalClasses : 0,
+    },
     { id: 2, name: "Toplam Öğrencileriniz", value: "119" },
     { id: 3, name: "En Son Eklenen Not Tarihi", value: "13.05.2024" },
   ];
+
+  const yourTotalClasses = async () => {
+    try {
+      const classes = await instance.get("/class/count");
+      setTotalClasses(classes.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    yourTotalClasses();
+  }, []);
+
   return (
     <div>
       <div className="bg-white py-14 sm:py-16 lg:py-24">
@@ -36,7 +58,10 @@ const Dashboard: React.FC = () => {
         >
           Sınıf Ekle <span className="text-xl">+</span>
         </button>
-        <button className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center">
+        <button
+          className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center"
+          onClick={() => setIsAddStudentOpen(true)}
+        >
           Öğrenci Ekle <span className="text-xl">+</span>
         </button>
         <button className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center">
@@ -48,6 +73,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       <AddClass open={isAddClassOpen} setOpen={setIsAddClassOpen} />
+      <AddStudent open={isAddStudentOpen} setOpen={setIsAddStudentOpen} />
     </div>
   );
 };
