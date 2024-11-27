@@ -36,24 +36,20 @@ const AddClass: React.FC<AddClassProps> = ({ open, setOpen }) => {
       if (axios.isAxiosError(error) && error.response) {
         const errorMessage = error.response.data.message;
 
-        if (errorMessage === "Class name is already used") {
-          setError("Sınıf adı zaten kullanılmış.");
-          return;
+        switch (errorMessage) {
+          case "Class name is already used":
+            setError("Sınıf adı zaten kullanılmış.");
+            break;
+          case '"class_name" length must be at least 2 characters long':
+            setError("Sınıf adı en az 2 karakter olmalıdır.");
+            break;
+          case '"class_name" length must be less than or equal to 3 characters long':
+            setError("Sınıf adı en fazla 3 karakter olmalıdır.");
+            break;
+          default:
+            setError("Bir hata oluştu. Lütfen tekrar deneyin.");
         }
-        if (
-          errorMessage ===
-          '"class_name" length must be at least 2 characters long'
-        ) {
-          setError("Sınıf adı en az 2 karakter olmalıdır.");
-          return;
-        }
-        if (
-          errorMessage ===
-          '"class_name" length must be less than or equal to 3 characters long'
-        ) {
-          setError("Sınıf adı en fazla 3 karakter olmalıdır.");
-          return;
-        }
+        return;
       }
       setError("Bir hata oluştu. Lütfen tekrar deneyin.");
     }

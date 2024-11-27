@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import instance from "../services/axiosInstance";
 
 import {
@@ -13,16 +14,22 @@ interface AddStudentProps {
   setOpen: (open: boolean) => void;
 }
 
+interface ClassItem {
+  id: number;
+  teacher_id: number;
+  class_name: string;
+}
+
 const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
-  const [classes, setClasses] = useState<{ class_name: string }[]>([]);
+  const [classes, setClasses] = useState<ClassItem[]>([]);
   const [studentName, setStudentName] = useState<string>("");
   const [studentLastname, setStudentLastName] = useState<string>("");
   const [studentNumber, setStudentNumber] = useState<number>();
-  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [showStudentSelection, setShowStudentSelection] =
     useState<boolean>(true);
+  const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
 
   useEffect(() => {
     if (open) {
@@ -42,9 +49,84 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
   };
 
   const handleAddStudent = async () => {
-    setShowStudentSelection((prevState) => !prevState);
+    console.log(
+      "showStudentSelection",
+      showStudentSelection,
+      "selectedClassId",
+      selectedClassId
+    );
+    setError("");
+    setMessage("");
+    setStudentName("");
+    setStudentLastName("");
+    setStudentNumber(0);
+
+    if (showStudentSelection && selectedClassId !== null) {
+      setShowStudentSelection(false);
+      return;
+    }
+
+    if (showStudentSelection && selectedClassId === null) {
+      setError("Sınıf seçimi yapılmadı.");
+      return;
+    }
+
     try {
-    } catch (error) {}
+      await instance.post("student", {
+        class_id: selectedClassId,
+        student_name: studentName,
+        student_lastname: studentLastname,
+        student_number: studentNumber,
+      });
+      setMessage("Öğrenci başarıyla eklendi.");
+      setTimeout(() => {
+        setStudentName("");
+        setStudentLastName("");
+        setStudentNumber(0);
+        setShowStudentSelection(true);
+      }, 3000);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorMessage = error.response.data.message;
+        console.log(errorMessage);
+        switch (errorMessage) {
+          case "Student number is required":
+            setError("Öğrenci numarası zorunludur.");
+            break;
+          case '"student_name" is not allowed to be empty':
+            setError("Öğrenci adı boş bırakılamaz.");
+            break;
+          case '"student_name" length must be at least 3 characters long':
+            setError("Öğrenci adı en az 3 karakter olmalıdır.");
+            break;
+          case '"student_name" length must be less than or equal to 30 characters long':
+            setError("Öğrenci adı en fazla 30 karakter olmalıdır.");
+            break;
+          case '"student_lastname" is not allowed to be empty':
+            setError("Öğrenci soyadı boş bırakılamaz.");
+            break;
+          case '"student_lastname" length must be at least 3 characters long':
+            setError("Öğrenci soyadı en az 3 karakter olmalıdır.");
+            break;
+          case '"student_lastname" length must be less than or equal to 30 characters long':
+            setError("Öğrenci soyadı en fazla 30 karakter olmalıdır.");
+            break;
+          case '"student_number" must be a number':
+            setError("Öğrenci numarası sayı olmalıdır.");
+            break;
+          case "'student_number' must be between 2 and 15 characters long":
+            setError("Öğrenci numarası 2 ile 15 karakter arasında olmalıdır.");
+            break;
+          case "Student number is already used":
+            setError("Öğrenci numarası zaten kullanılmış.");
+            break;
+          default:
+            setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+        }
+        return;
+      }
+      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+    }
   };
 
   return (
@@ -85,6 +167,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
                     key={index}
                     type="button"
                     className="m-5 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 sm:mt-0 sm:w-24"
+                    onClick={() => setSelectedClassId(classItem.id)}
                   >
                     {classItem.class_name}
                   </button>
@@ -107,7 +190,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
                     required
                     value={studentName}
                     onChange={(e) => setStudentName(e.target.value)}
-                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-lg p-3"
+                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-lg p-3"
                   />
                 </div>
 
@@ -126,7 +209,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
                     required
                     value={studentLastname}
                     onChange={(e) => setStudentLastName(e.target.value)}
-                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-lg p-3"
+                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-lg p-3"
                   />
                 </div>
 
@@ -145,20 +228,19 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
                     required
                     value={studentNumber}
                     onChange={(e) => setStudentNumber(Number(e.target.value))}
-                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-lg p-3"
+                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-lg p-3"
                   />
                 </div>
-                {message && (
-                  <p className="mt-2 text-center text-sm/6 text-green-600">
-                    {message}
-                  </p>
-                )}
-                {error && (
-                  <p className="mt-2 text-center text-sm/6 text-red-600">
-                    {error}
-                  </p>
-                )}
               </div>
+            )}
+
+            {message && (
+              <p className="mt-2 text-center text-sm/6 text-green-600">
+                {message}
+              </p>
+            )}
+            {error && (
+              <p className="mt-2 text-center text-sm/6 text-red-600">{error}</p>
             )}
 
             <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
@@ -167,7 +249,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
                 className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24"
                 onClick={handleAddStudent}
               >
-                Ekle
+                {showStudentSelection ? "Devam Et" : "Ekle"}
               </button>
               <button
                 type="button"
