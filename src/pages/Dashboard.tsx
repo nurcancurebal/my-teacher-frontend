@@ -7,6 +7,7 @@ const Dashboard: React.FC = () => {
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
   const [isAddStudentOpen, setIsAddStudentOpen] = useState(false);
   const [totalClasses, setTotalClasses] = useState<number | null>(0);
+  const [totalStudents, setTotalStudents] = useState<number | null>(0);
 
   const stats = [
     {
@@ -14,11 +15,15 @@ const Dashboard: React.FC = () => {
       name: "Toplam Sınıflarınız",
       value: totalClasses !== null ? totalClasses : 0,
     },
-    { id: 2, name: "Toplam Öğrencileriniz", value: "119" },
+    {
+      id: 2,
+      name: "Toplam Öğrencileriniz",
+      value: totalStudents !== null ? totalStudents : 0,
+    },
     { id: 3, name: "En Son Eklenen Not Tarihi", value: "13.05.2024" },
   ];
 
-  const yourTotalClasses = async () => {
+  const totalClassesFunc = async () => {
     try {
       const classes = await instance.get("/class/count");
       setTotalClasses(classes.data.data);
@@ -27,8 +32,22 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const totalStudentsFunc = async () => {
+    try {
+      const count = await instance.get("/student/count");
+      setTotalStudents(count.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    yourTotalClasses();
+    const fetchData = async () => {
+      await totalClassesFunc();
+      await totalStudentsFunc();
+    };
+
+    fetchData();
   }, []);
 
   return (

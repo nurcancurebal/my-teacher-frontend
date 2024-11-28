@@ -35,6 +35,11 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
     if (open) {
       getClasses();
       setShowStudentSelection(true);
+      setStudentName("");
+      setStudentLastName("");
+      setStudentNumber(0);
+      setMessage("");
+      setError("");
     }
   }, [open]); // `open` prop'u değiştiğinde `useEffect` çalışır
 
@@ -49,17 +54,15 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
   };
 
   const handleAddStudent = async () => {
+    setError("");
+    setMessage("");
+
     console.log(
       "showStudentSelection",
       showStudentSelection,
       "selectedClassId",
       selectedClassId
     );
-    setError("");
-    setMessage("");
-    setStudentName("");
-    setStudentLastName("");
-    setStudentNumber(0);
 
     if (showStudentSelection && selectedClassId !== null) {
       setShowStudentSelection(false);
@@ -83,12 +86,12 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
         setStudentName("");
         setStudentLastName("");
         setStudentNumber(0);
-        setShowStudentSelection(true);
+        setMessage("");
+        setError("");
       }, 3000);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const errorMessage = error.response.data.message;
-        console.log(errorMessage);
         switch (errorMessage) {
           case "Student number is required":
             setError("Öğrenci numarası zorunludur.");
@@ -120,12 +123,25 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
           case "Student number is already used":
             setError("Öğrenci numarası zaten kullanılmış.");
             break;
+          case '"student_number" is required':
+            setError("Öğrenci numarası zorunludur.");
+            break;
           default:
+            console.log(errorMessage);
             setError("Bir hata oluştu. Lütfen tekrar deneyin.");
         }
         return;
       }
+      console.log("aaaa", error);
       setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+    }
+  };
+
+  const handleKeyAddStudent = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Enter") {
+      handleAddStudent();
     }
   };
 
@@ -190,6 +206,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
                     required
                     value={studentName}
                     onChange={(e) => setStudentName(e.target.value)}
+                    onKeyDown={handleKeyAddStudent}
                     className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-lg p-3"
                   />
                 </div>
@@ -209,6 +226,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
                     required
                     value={studentLastname}
                     onChange={(e) => setStudentLastName(e.target.value)}
+                    onKeyDown={handleKeyAddStudent}
                     className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-lg p-3"
                   />
                 </div>
@@ -228,6 +246,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
                     required
                     value={studentNumber}
                     onChange={(e) => setStudentNumber(Number(e.target.value))}
+                    onKeyDown={handleKeyAddStudent}
                     className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-lg p-3"
                   />
                 </div>
