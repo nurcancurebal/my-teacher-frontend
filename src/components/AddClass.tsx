@@ -22,10 +22,8 @@ const AddClass: React.FC<AddClassProps> = ({ open, setOpen }) => {
     setError("");
     setMessage("");
 
-    let trimmedClassName = class_name.trim().toUpperCase();
-
     try {
-      await instance.post("class", { class_name: trimmedClassName });
+      await instance.post("class", { class_name });
 
       setMessage("Sınıfınız başarıyla eklendi.");
       setTimeout(() => {

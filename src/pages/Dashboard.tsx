@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import AddClass from "../components/AddClass";
 import AddStudent from "../components/AddStudent";
+import SelectClass from "../components/SelectClass";
 import instance from "../services/axiosInstance";
 
 const Dashboard: React.FC = () => {
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
   const [isAddStudentOpen, setIsAddStudentOpen] = useState(false);
+  const [isSelectClassOpen, setIsSelectClassOpen] = useState(false);
   const [totalClasses, setTotalClasses] = useState<number | null>(0);
   const [totalStudents, setTotalStudents] = useState<number | null>(0);
 
@@ -83,7 +85,10 @@ const Dashboard: React.FC = () => {
         >
           Öğrenci Ekle <span className="text-xl">+</span>
         </button>
-        <button className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center">
+        <button
+          className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center"
+          onClick={() => setIsSelectClassOpen(true)}
+        >
           Not Ekle <span className="text-xl">+</span>
         </button>
         <button className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center">
@@ -93,6 +98,7 @@ const Dashboard: React.FC = () => {
 
       <AddClass open={isAddClassOpen} setOpen={setIsAddClassOpen} />
       <AddStudent open={isAddStudentOpen} setOpen={setIsAddStudentOpen} />
+      <SelectClass open={isSelectClassOpen} setOpen={setIsSelectClassOpen} />
     </div>
   );
 };

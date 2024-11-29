@@ -40,29 +40,22 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
       setStudentNumber(0);
       setMessage("");
       setError("");
+      setSelectedClassId(null);
     }
   }, [open]); // `open` prop'u değiştiğinde `useEffect` çalışır
 
   const getClasses = async () => {
     try {
       const classes = await instance.get("class");
-      console.log(classes.data.data);
       setClasses(classes.data.data);
     } catch (error) {
-      console.log(error);
+      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
     }
   };
 
   const handleAddStudent = async () => {
     setError("");
     setMessage("");
-
-    console.log(
-      "showStudentSelection",
-      showStudentSelection,
-      "selectedClassId",
-      selectedClassId
-    );
 
     if (showStudentSelection && selectedClassId !== null) {
       setShowStudentSelection(false);
@@ -127,14 +120,19 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
             setError("Öğrenci numarası zorunludur.");
             break;
           default:
-            console.log(errorMessage);
             setError("Bir hata oluştu. Lütfen tekrar deneyin.");
         }
         return;
       }
-      console.log("aaaa", error);
       setError("Bir hata oluştu. Lütfen tekrar deneyin.");
     }
+  };
+
+  const cancelReturn = () => {
+    if (showStudentSelection) {
+      setOpen(false);
+    }
+    setShowStudentSelection(true);
   };
 
   const handleKeyAddStudent = (
@@ -273,10 +271,10 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
               <button
                 type="button"
                 data-autofocus
-                onClick={() => setOpen(false)}
+                onClick={cancelReturn}
                 className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 sm:mt-0 sm:w-24"
               >
-                İptal Et
+                {showStudentSelection ? "İptal Et" : "Geri Dön"}
               </button>
             </div>
           </DialogPanel>

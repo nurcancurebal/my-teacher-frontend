@@ -9,6 +9,7 @@ import Headers from "./components/Headers";
 import Classes from "./pages/Classes";
 import Navbar from "./components/Navbar";
 import UpdateProfile from "./pages/UpdateProfile";
+import AddGrade from "./pages/AddGrade";
 
 const App: React.FC = () => {
   const token = localStorage.getItem("token");
@@ -43,6 +44,7 @@ const App: React.FC = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/classes" element={<Classes />} />
           <Route path="/update-profile" element={<UpdateProfile />} />
+          <Route path="/add-grade" element={<AddGrade />} />
         </Routes>
       </main>
     </div>

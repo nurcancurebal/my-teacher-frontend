@@ -58,7 +58,11 @@ const Navbar: React.FC = () => {
     { name: "Çıkış", href: "/" },
   ];
 
-  const combinedNavigation = [...navigation, ...userNavigation];
+  const combinedNavigation = [
+    ...navigation,
+    ...userNavigation,
+    { name: "Not Ekle", href: "/add-grade" },
+  ];
 
   const currentNavItem = combinedNavigation.find(
     (item) => item.href === location.pathname
