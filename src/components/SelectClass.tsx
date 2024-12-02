@@ -66,8 +66,7 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
     }
 
     try {
-      await instance.post("grade", {
-        class_id: selectedClassId,
+      await instance.post(`grade/${selectedClassId}/`, {
         grade_type: gradeName,
       });
       setMessage("Not eklemek için yönlendiriliyorsunuz.");
@@ -78,7 +77,7 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const errorMessage = error.response.data.message;
-        console.log(errorMessage);
+
         switch (errorMessage) {
           case '"grade_type" is not allowed to be empty':
             setError("Not adı boş bırakılamaz.");
@@ -89,22 +88,29 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
           case '"grade_type" length must be less than or equal to 30 characters long':
             setError("Not adı en fazla 30 karakter olmalıdır.");
             break;
-          case "Grade of this type already exists for this student":
+          case "This grade has been entered in this class before":
             setError("Bu türde not sınıf için zaten var.");
+            break;
+          case "There are no students in the classroom":
+            setError("Bu sınıfta öğrenci yok.");
             break;
           default:
             setError("Bir hata oluştu. Lütfen tekrar deneyin.");
         }
         return;
       }
+      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
     }
   };
 
   const cancelReturn = () => {
+    setShowStudentSelection(true);
+    setError("");
+    setGradeName("");
     if (showStudentSelection) {
       setOpen(false);
+      return;
     }
-    setShowStudentSelection(true);
   };
 
   const handleKeySelectClassName = (

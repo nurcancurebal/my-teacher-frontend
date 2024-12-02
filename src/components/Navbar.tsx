@@ -60,7 +60,7 @@ const Navbar: React.FC = () => {
 
   const combinedNavigation = [
     ...navigation,
-    ...userNavigation,
+    { name: "Profili Düzenle", href: "/update-profile" },
     { name: "Not Ekle", href: "/add-grade" },
   ];
 

@@ -59,7 +59,6 @@ const UpdateProfile: React.FC = () => {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const errorMessage = error.response.data.message;
-        console.log(errorMessage);
 
         switch (errorMessage) {
           case "User not found":
