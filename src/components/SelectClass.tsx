@@ -66,12 +66,19 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
     }
 
     try {
+      const formattedGradeName = gradeName
+        .trim()
+        .toLowerCase()
+        .replace(/^[a-z]/, (c: string) => c.toUpperCase());
+
       await instance.post(`grade/${selectedClassId}/`, {
-        grade_type: gradeName,
+        grade_type: formattedGradeName,
       });
       setMessage("Not eklemek için yönlendiriliyorsunuz.");
       setTimeout(() => {
-        navigate("/add-grade", { state: { selectedClassId, gradeName } });
+        navigate("/add-grade", {
+          state: { selectedClassId, formattedGradeName },
+        });
         setGradeName("");
       }, 3000);
     } catch (error) {
