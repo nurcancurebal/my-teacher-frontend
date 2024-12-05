@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import axios from "axios";
+import { useLocation, useNavigate } from "react-router-dom";
 import instance from "../services/axiosInstance";
 
 interface Student {
@@ -24,6 +25,8 @@ const AddGrade: React.FC = () => {
     location.state || {};
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -36,7 +39,6 @@ const AddGrade: React.FC = () => {
             grade_value: null,
           }))
         );
-        console.log(response.data.data);
       } catch (error) {
         setError(
           "Öğrenciler getirilirken bir hata oluştu. Lütfen tekrar deneyin."
@@ -62,16 +64,61 @@ const AddGrade: React.FC = () => {
   };
 
   const addGrade = async () => {
+    setLoading(true);
+    setError("");
+    setMessage("");
+
     try {
-      await instance.post(`grade/${selectedClassId}/bulk`, {
-        grades: grades.map((grade) => ({
-          ...grade,
+      for (const grade of grades) {
+        await instance.post(`grade/${selectedClassId}/${grade.student_id}`, {
           grade_type: gradName,
-        })),
-      });
-      setMessage("Notlar başarıyla kaydedildi.");
+          grade_value: grade.grade_value,
+        });
+      }
+      setMessage(
+        "Notlar başarıyla kaydedildi. Ana sayfaya yönlendiriliyorsunuz."
+      );
+      setTimeout(() => navigate("/dashboard"), 5000);
     } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorMessage = error.response.data.message;
+
+        switch (errorMessage) {
+          case "Invalid class_id":
+            setError("Geçersiz sınıf.");
+            break;
+          case "Invalid student_id":
+            setError("Geçersiz öğrenci.");
+            break;
+          case "This student is not in this class":
+            setError("Bu öğrenci bu sınıfta değil.");
+            break;
+          case "Student not found in the specified class":
+            setError("Öğrenci belirtilen sınıfta bulunamadı.");
+            break;
+          case "Not authorized to grade this student":
+            setError("Bu öğrenci sizin sınıfınızda değil.");
+            break;
+          case "Grade of this type already exists for this student":
+            setError("Bu türde bir not zaten bu öğrenci için girilmiş.");
+            break;
+          default:
+            console.error(errorMessage);
+            setError(
+              "Notlar kaydedilirken bir hata oluştu. Lütfen tekrar deneyin."
+            );
+        }
+        return;
+      }
       setError("Notlar kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const keyDownAddGrade = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      addGrade();
     }
   };
 
@@ -113,12 +160,13 @@ const AddGrade: React.FC = () => {
                       type="text"
                       value={
                         grades.find((grade) => grade.student_id === student.id)
-                          ?.grade_value || ""
+                          ?.grade_value ?? ""
                       }
                       onChange={(e) =>
                         handleGradeChange(student.id, e.target.value)
                       }
                       className="block w-full rounded-md border-0 py-1.5 pl-7 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 md:text-lg mt-3"
+                      onKeyDown={keyDownAddGrade}
                     />
                   </td>
                 </tr>
@@ -142,7 +190,7 @@ const AddGrade: React.FC = () => {
               className="my-5 col-start-4 inline-flex w-44 justify-center rounded-md bg-green-600 px-3 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500"
               onClick={addGrade}
             >
-              Kayıt Et
+              {loading === false ? "Kayıt Et" : "Kaydediliyor..."}
             </button>
           </div>
         </div>

@@ -12,6 +12,7 @@ import instance from "../services/axiosInstance";
 interface SelectClassProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+  mode: "add" | "update";
 }
 
 interface ClassItem {
@@ -20,7 +21,7 @@ interface ClassItem {
   class_name: string;
 }
 
-const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
+const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen, mode }) => {
   const [classes, setClasses] = useState<ClassItem[]>([]);
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<string>("");
@@ -52,61 +53,85 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
   };
 
   const handleSelectClass = async () => {
+    console.log("mode", mode);
     setError("");
     setMessage("");
 
     if (showStudentSelection && selectedClassId !== null) {
       setShowStudentSelection(false);
+      console.log(
+        "showStudentSelection",
+        showStudentSelection,
+        "selectedClassId",
+        selectedClassId
+      );
+      console.log("3");
       return;
     }
+    console.log("1");
 
     if (showStudentSelection && selectedClassId === null) {
       setError("Sınıf seçimi yapılmadı.");
+      console.log("4");
       return;
     }
 
-    try {
-      const formattedGradeName = gradeName
-        .trim()
-        .toLowerCase()
-        .replace(/^[a-z]/, (c: string) => c.toUpperCase());
+    console.log("2");
 
-      await instance.post(`grade/${selectedClassId}/`, {
-        grade_type: formattedGradeName,
-      });
-      setMessage("Not eklemek için yönlendiriliyorsunuz.");
-      setTimeout(() => {
-        navigate("/add-grade", {
-          state: { selectedClassId, formattedGradeName },
+    if (mode === "add") {
+      console.log("add");
+      try {
+        const formattedGradeName = gradeName
+          .trim()
+          .toLowerCase()
+          .replace(/^[a-z]/, (c: string) => c.toUpperCase());
+
+        await instance.post(`grade/${selectedClassId}/`, {
+          grade_type: formattedGradeName,
         });
-        setGradeName("");
-      }, 3000);
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        const errorMessage = error.response.data.message;
+        setMessage("Not eklemek için yönlendiriliyorsunuz.");
+        setTimeout(() => {
+          navigate("/add-grade", {
+            state: { selectedClassId, formattedGradeName },
+          });
+          setGradeName("");
+        }, 3000);
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          const errorMessage = error.response.data.message;
 
-        switch (errorMessage) {
-          case '"grade_type" is not allowed to be empty':
-            setError("Not adı boş bırakılamaz.");
-            break;
-          case '"grade_type" length must be at least 3 characters long':
-            setError("Not adı en az 3 karakter olmalıdır.");
-            break;
-          case '"grade_type" length must be less than or equal to 30 characters long':
-            setError("Not adı en fazla 30 karakter olmalıdır.");
-            break;
-          case "This grade has been entered in this class before":
-            setError("Bu türde not sınıf için zaten var.");
-            break;
-          case "There are no students in the classroom":
-            setError("Bu sınıfta öğrenci yok.");
-            break;
-          default:
-            setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+          switch (errorMessage) {
+            case '"grade_type" is not allowed to be empty':
+              setError("Not adı boş bırakılamaz.");
+              break;
+            case '"grade_type" length must be at least 3 characters long':
+              setError("Not adı en az 3 karakter olmalıdır.");
+              break;
+            case '"grade_type" length must be less than or equal to 30 characters long':
+              setError("Not adı en fazla 30 karakter olmalıdır.");
+              break;
+            case "This grade has been entered in this class before":
+              setError("Bu türde not sınıf için zaten var.");
+              break;
+            case "There are no students in the classroom":
+              setError("Bu sınıfta öğrenci yok.");
+              break;
+            default:
+              setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+          }
+          return;
         }
-        return;
+        setError("Bir hata oluştu. Lütfen tekrar deneyin.");
       }
-      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+    } else {
+      try {
+        console.log("update");
+        const notesInClass = await instance.get(`grade/${selectedClassId}/`);
+
+        console.log(notesInClass.data.data);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -153,8 +178,10 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
                     className="text-2xl font-semibold text-gray-900"
                   >
                     {showStudentSelection
-                      ? "Hangi sınıfa eklemek istersiniz?"
-                      : "Hangi notu eklemek istediğinizi yazınız."}
+                      ? "Bir sınıf seçiniz?"
+                      : mode === "add"
+                      ? "Hangi notu eklemek istediğinizi yazınız."
+                      : "Hangi notu düzenlemek istediğinizi seçiniz."}
                   </DialogTitle>
                 </div>
               </div>
@@ -173,7 +200,7 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
                   </button>
                 ))}
               </div>
-            ) : (
+            ) : mode === "add" ? (
               <div className="mx-10">
                 <label
                   htmlFor="studentName"
@@ -193,6 +220,8 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
                   className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-lg p-3"
                 />
               </div>
+            ) : (
+              <div>notlar</div>
             )}
 
             {message && (

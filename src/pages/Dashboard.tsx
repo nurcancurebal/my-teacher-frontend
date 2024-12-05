@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
+import instance from "../services/axiosInstance";
 import AddClass from "../components/AddClass";
 import AddStudent from "../components/AddStudent";
 import SelectClass from "../components/SelectClass";
-import instance from "../services/axiosInstance";
 
 const Dashboard: React.FC = () => {
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
   const [isAddStudentOpen, setIsAddStudentOpen] = useState(false);
   const [isSelectClassOpen, setIsSelectClassOpen] = useState(false);
+  const [selectClassMode, setSelectClassMode] = useState<"add" | "update">(
+    "add"
+  );
   const [totalClasses, setTotalClasses] = useState<number | null>(0);
   const [totalStudents, setTotalStudents] = useState<number | null>(0);
 
@@ -72,7 +75,7 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      <div className="p-16 grid gap-6 lg:grid-cols-4 bg-white my-10">
+      <div className="p-16 grid gap-6 lg:grid-cols-5 bg-white my-10">
         <button
           className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center"
           onClick={() => setIsAddClassOpen(true)}
@@ -87,18 +90,34 @@ const Dashboard: React.FC = () => {
         </button>
         <button
           className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center"
-          onClick={() => setIsSelectClassOpen(true)}
+          onClick={() => {
+            setSelectClassMode("add");
+            setIsSelectClassOpen(true);
+          }}
         >
           Not Ekle <span className="text-xl">+</span>
         </button>
         <button className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center">
           Kişisel Not Ekle <span className="text-xl">+</span>
         </button>
+        <button
+          onClick={() => {
+            setSelectClassMode("update");
+            setIsSelectClassOpen(true);
+          }}
+          className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center"
+        >
+          Not Güncelle <span className="text-xl">+</span>
+        </button>
       </div>
 
       <AddClass open={isAddClassOpen} setOpen={setIsAddClassOpen} />
       <AddStudent open={isAddStudentOpen} setOpen={setIsAddStudentOpen} />
-      <SelectClass open={isSelectClassOpen} setOpen={setIsSelectClassOpen} />
+      <SelectClass
+        open={isSelectClassOpen}
+        setOpen={setIsSelectClassOpen}
+        mode={selectClassMode}
+      />
     </div>
   );
 };
