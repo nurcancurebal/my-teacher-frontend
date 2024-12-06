@@ -21,7 +21,7 @@ const AddGrade: React.FC = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [grades, setGrades] = useState<Grade[]>([]);
   const location = useLocation();
-  const { selectedClassId, formattedGradeName: gradName } =
+  const { selectedClassId, formattedGradeName: gradeName } =
     location.state || {};
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -71,7 +71,7 @@ const AddGrade: React.FC = () => {
     try {
       for (const grade of grades) {
         await instance.post(`grade/${selectedClassId}/${grade.student_id}`, {
-          grade_type: gradName,
+          grade_type: gradeName,
           grade_value: grade.grade_value,
         });
       }
@@ -139,7 +139,7 @@ const AddGrade: React.FC = () => {
                   Öğrenci Numarası
                 </th>
                 <th className="border border-slate-300 text-xl p-5">
-                  {gradName}
+                  {gradeName}
                 </th>
               </tr>
             </thead>

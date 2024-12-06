@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
 import {
   Dialog,
   DialogBackdrop,
@@ -9,7 +10,7 @@ import {
 } from "@headlessui/react";
 import instance from "../services/axiosInstance";
 
-interface SelectClassProps {
+interface SelectGradeProps {
   open: boolean;
   setOpen: (open: boolean) => void;
 }
@@ -20,7 +21,11 @@ interface ClassItem {
   class_name: string;
 }
 
-const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
+interface GradeType {
+  grade_type: string;
+}
+
+const SelectGrade: React.FC<SelectGradeProps> = ({ open, setOpen }) => {
   const [classes, setClasses] = useState<ClassItem[]>([]);
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<string>("");
@@ -28,6 +33,7 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
     useState<boolean>(true);
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
   const [gradeName, setGradeName] = useState<string>("");
+  const [gradeType, setGradeType] = useState<string[]>([]);
 
   const navigate = useNavigate();
 
@@ -51,12 +57,47 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
     }
   };
 
-  const handleSelectClass = async () => {
+  const handleSelectGrade = async () => {
     setError("");
     setMessage("");
 
     if (showStudentSelection && selectedClassId !== null) {
       setShowStudentSelection(false);
+
+      try {
+        const notesInClass = await instance.get(`grade/${selectedClassId}/`);
+
+        const uniqueGradeTypes = Array.from(
+          new Set(
+            (notesInClass.data.data as GradeType[]).map(
+              (note: GradeType) => note.grade_type
+            )
+          )
+        );
+        if (uniqueGradeTypes.length === 0) {
+          setError("Sınıfta not bulunmamaktadır.");
+          return;
+        }
+        setGradeType(uniqueGradeTypes);
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          const errorMessage = error.response.data.message;
+
+          switch (errorMessage) {
+            case "Invalid class_id":
+              setError("Geçersiz sınıf.");
+              break;
+            case "Class not found or not authorized":
+              setError("Sınıf bulunamadı veya yetkiniz yok.");
+              break;
+            default:
+              setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+          }
+          return;
+        }
+        setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+      }
+
       return;
     }
 
@@ -65,48 +106,14 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
       return;
     }
 
-    try {
-      const formattedGradeName = gradeName
-        .trim()
-        .toLowerCase()
-        .replace(/^[a-z]/, (c: string) => c.toUpperCase());
-
-      await instance.post(`grade/${selectedClassId}/`, {
-        grade_type: formattedGradeName,
-      });
-      setMessage("Not eklemek için yönlendiriliyorsunuz.");
+    if (gradeName !== "") {
+      setMessage("Not güncellemek için yönlendiriliyorsunuz.");
       setTimeout(() => {
-        navigate("/add-grade", {
-          state: { selectedClassId, formattedGradeName },
+        navigate("/update-grade", {
+          state: { selectedClassId, gradeName },
         });
         setGradeName("");
       }, 3000);
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        const errorMessage = error.response.data.message;
-
-        switch (errorMessage) {
-          case '"grade_type" is not allowed to be empty':
-            setError("Not adı boş bırakılamaz.");
-            break;
-          case '"grade_type" length must be at least 3 characters long':
-            setError("Not adı en az 3 karakter olmalıdır.");
-            break;
-          case '"grade_type" length must be less than or equal to 30 characters long':
-            setError("Not adı en fazla 30 karakter olmalıdır.");
-            break;
-          case "This grade has been entered in this class before":
-            setError("Bu türde not sınıf için zaten var.");
-            break;
-          case "There are no students in the classroom":
-            setError("Bu sınıfta öğrenci yok.");
-            break;
-          default:
-            setError("Bir hata oluştu. Lütfen tekrar deneyin.");
-        }
-        return;
-      }
-      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
     }
   };
 
@@ -114,17 +121,10 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
     setShowStudentSelection(true);
     setError("");
     setGradeName("");
+
     if (showStudentSelection) {
       setOpen(false);
       return;
-    }
-  };
-
-  const handleKeySelectClassName = (
-    e: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (e.key === "Enter") {
-      handleSelectClass();
     }
   };
 
@@ -154,7 +154,7 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
                   >
                     {showStudentSelection
                       ? "Bir sınıf seçiniz?"
-                      : "Hangi notu eklemek istediğinizi yazınız."}
+                      : "Hangi notu güncellemek istediğinizi seçiniz."}
                   </DialogTitle>
                 </div>
               </div>
@@ -174,24 +174,17 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
                 ))}
               </div>
             ) : (
-              <div className="mx-10">
-                <label
-                  htmlFor="studentName"
-                  className="mt-5 block text-base font-medium text-gray-900"
-                >
-                  Not Adı:
-                </label>
-
-                <input
-                  id="studentName"
-                  name="studentName"
-                  type="text"
-                  required
-                  value={gradeName}
-                  onChange={(e) => setGradeName(e.target.value)}
-                  onKeyDown={handleKeySelectClassName}
-                  className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-lg p-3"
-                />
+              <div className="mt-3">
+                {gradeType.map((grade, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    className="m-5 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 sm:mt-0 sm:w-24"
+                    onClick={() => setGradeName(grade)}
+                  >
+                    {grade}
+                  </button>
+                ))}
               </div>
             )}
 
@@ -208,7 +201,7 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
               <button
                 type="button"
                 className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24"
-                onClick={handleSelectClass}
+                onClick={handleSelectGrade}
               >
                 Devam Et
               </button>
@@ -228,4 +221,4 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
   );
 };
 
-export default AddStudent;
+export default SelectGrade;

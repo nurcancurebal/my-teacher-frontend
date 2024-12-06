@@ -62,6 +62,7 @@ const Navbar: React.FC = () => {
     ...navigation,
     { name: "Profili Düzenle", href: "/update-profile" },
     { name: "Not Ekle", href: "/add-grade" },
+    { name: "Not Güncelle", href: "/update-grade" },
   ];
 
   const currentNavItem = combinedNavigation.find(

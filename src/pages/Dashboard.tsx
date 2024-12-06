@@ -3,14 +3,13 @@ import instance from "../services/axiosInstance";
 import AddClass from "../components/AddClass";
 import AddStudent from "../components/AddStudent";
 import SelectClass from "../components/SelectClass";
+import SelectGrade from "../components/SelectGrade";
 
 const Dashboard: React.FC = () => {
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
   const [isAddStudentOpen, setIsAddStudentOpen] = useState(false);
   const [isSelectClassOpen, setIsSelectClassOpen] = useState(false);
-  const [selectClassMode, setSelectClassMode] = useState<"add" | "update">(
-    "add"
-  );
+  const [isSelectGradeOpen, setIsSelectGradeOpen] = useState(false);
   const [totalClasses, setTotalClasses] = useState<number | null>(0);
   const [totalStudents, setTotalStudents] = useState<number | null>(0);
 
@@ -90,10 +89,7 @@ const Dashboard: React.FC = () => {
         </button>
         <button
           className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center"
-          onClick={() => {
-            setSelectClassMode("add");
-            setIsSelectClassOpen(true);
-          }}
+          onClick={() => setIsSelectClassOpen(true)}
         >
           Not Ekle <span className="text-xl">+</span>
         </button>
@@ -101,10 +97,7 @@ const Dashboard: React.FC = () => {
           Kişisel Not Ekle <span className="text-xl">+</span>
         </button>
         <button
-          onClick={() => {
-            setSelectClassMode("update");
-            setIsSelectClassOpen(true);
-          }}
+          onClick={() => setIsSelectGradeOpen(true)}
           className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center"
         >
           Not Güncelle <span className="text-xl">+</span>
@@ -113,11 +106,8 @@ const Dashboard: React.FC = () => {
 
       <AddClass open={isAddClassOpen} setOpen={setIsAddClassOpen} />
       <AddStudent open={isAddStudentOpen} setOpen={setIsAddStudentOpen} />
-      <SelectClass
-        open={isSelectClassOpen}
-        setOpen={setIsSelectClassOpen}
-        mode={selectClassMode}
-      />
+      <SelectClass open={isSelectClassOpen} setOpen={setIsSelectClassOpen} />
+      <SelectGrade open={isSelectGradeOpen} setOpen={setIsSelectGradeOpen} />
     </div>
   );
 };
