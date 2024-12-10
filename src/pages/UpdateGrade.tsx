@@ -1,12 +1,121 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useLocation } from "react-router-dom";
+import instance from "../services/axiosInstance";
+
+interface Student {
+  id: number;
+  class_id: number;
+  teacher_id: number;
+  student_name: string;
+  student_lastname: string;
+  student_number: number;
+}
+
+interface Grade {
+  id: number;
+  student_id: number;
+  class_id: number;
+  grade_type: string;
+  grade_value: number | null;
+  created_at: string;
+  last_updated: string;
+}
 
 const UpdateGrade: React.FC = () => {
   const location = useLocation();
   const { selectedClassId, gradeName } = location.state || {};
+  const [students, setStudents] = useState<Student[]>([]);
+  const [grades, setGrades] = useState<Grade[]>([]);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const studentResponse = await instance.get(
+          `student/${selectedClassId}`
+        );
+        const gradeResponse = await instance.get(`grade/${selectedClassId}`);
+
+        setStudents(studentResponse.data.data);
+        setGrades(gradeResponse.data.data);
+      } catch (error) {
+        setError("Veriler alınırken bir hata oluştu. Lütfen tekrar deneyin.");
+      }
+    };
+
+    fetchData();
+  }, [selectedClassId]);
+
+  const getGradeValue = (studentId: number) => {
+    const grade = grades.find(
+      (grade) =>
+        grade.student_id === studentId && grade.grade_type === gradeName
+    );
+    console.log(grade);
+    return grade && grade.grade_value !== null ? grade.grade_value : "-";
+  };
+
+  const handleGradeChange = (studentId: number, value: string) => {
+    setError("");
+    setMessage("");
+    if (value === "" || /^[0-9]*\.?[0-9]*$/.test(value)) {
+      const numericValue = value === "" ? null : parseFloat(value);
+      setGrades((prevGrades) =>
+        prevGrades.map((grade) =>
+          grade.student_id === studentId && grade.grade_type === gradeName
+            ? { ...grade, grade_value: numericValue }
+            : grade
+        )
+      );
+    } else {
+      setError("Notlar sadece sayısal değerler olabilir.");
+    }
+  };
+  const updateGradeClick = async () => {
+    setLoading(true);
+    setError("");
+    setMessage("");
+    try {
+      const updatePromises = grades.map((grade) =>
+        instance.patch(
+          `/grade/${selectedClassId}/${grade.student_id}/${grade.id}`,
+          {
+            grade_value: grade.grade_value,
+          }
+        )
+      );
+      await Promise.all(updatePromises);
+      setMessage("Notlar başarıyla güncellendi.");
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorMessage = error.response.data.message;
+        console.log(errorMessage);
+        switch (errorMessage) {
+          case "Otp code is invalid.":
+            setError("OTP kodu geçersiz. Lütfen kontrol edin.");
+            break;
+          case '"password" length must be at least 8 characters long':
+            setError("Şifre en az 8 karakter uzunluğunda olmalıdır.");
+            break;
+          case "The password must contain at least one letter and one number.":
+            setError("Şifre en az bir harf ve bir rakam içermelidir.");
+            break;
+          case '"otp" length must be 6 characters long':
+            setError("OTP kodu 6 karakter uzunluğunda olmalıdır.");
+            break;
+          default:
+            setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+        }
+        return;
+      }
+      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -30,23 +139,29 @@ const UpdateGrade: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td className="border border-slate-300 text-lg p-4">
-                  student_name
-                </td>
-                <td className="border border-slate-300 text-lg p-4">
-                  student_lastname
-                </td>
-                <td className="border border-slate-300 text-lg p-4">
-                  student_number
-                </td>
-                <td className="border border-slate-300 text-lg p-4">
-                  <input
-                    type="text"
-                    className="block w-full rounded-md border-0 py-1.5 pl-7 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 md:text-lg mt-3"
-                  />
-                </td>
-              </tr>
+              {students.map((student, index) => (
+                <tr key={index}>
+                  <td className="border border-slate-300 text-lg p-4">
+                    {student.student_name}
+                  </td>
+                  <td className="border border-slate-300 text-lg p-4">
+                    {student.student_lastname}
+                  </td>
+                  <td className="border border-slate-300 text-lg p-4">
+                    {student.student_number}
+                  </td>
+                  <td className="border border-slate-300 text-lg p-4">
+                    <input
+                      type="text"
+                      className="block w-full rounded-md border-0 py-1.5 pl-7 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 md:text-lg mt-3"
+                      defaultValue={getGradeValue(student.id)}
+                      onChange={(e) =>
+                        handleGradeChange(student.id, e.target.value)
+                      }
+                    />
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -64,8 +179,9 @@ const UpdateGrade: React.FC = () => {
             <button
               type="button"
               className="my-5 col-start-4 inline-flex w-44 justify-center rounded-md bg-green-600 px-3 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500"
+              onClick={updateGradeClick}
             >
-              {loading === false ? "Kayıt Et" : "Kaydediliyor..."}
+              {loading === false ? "Güncelle" : "Değişiklikler kaydediliyor..."}
             </button>
           </div>
         </div>
