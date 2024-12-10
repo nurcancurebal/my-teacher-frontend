@@ -54,7 +54,6 @@ const UpdateGrade: React.FC = () => {
       (grade) =>
         grade.student_id === studentId && grade.grade_type === gradeName
     );
-    console.log(grade);
     return grade && grade.grade_value !== null ? grade.grade_value : "-";
   };
 
@@ -92,19 +91,21 @@ const UpdateGrade: React.FC = () => {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const errorMessage = error.response.data.message;
-        console.log(errorMessage);
         switch (errorMessage) {
-          case "Otp code is invalid.":
-            setError("OTP kodu geçersiz. Lütfen kontrol edin.");
+          case "Student not found in the specified class":
+            setError("Öğrenci belirtilen sınıfta bulunamadı.");
             break;
-          case '"password" length must be at least 8 characters long':
-            setError("Şifre en az 8 karakter uzunluğunda olmalıdır.");
+          case "Not authorized to grade this student":
+            setError("Bu öğrenciye not verme yetkiniz yok.");
             break;
-          case "The password must contain at least one letter and one number.":
-            setError("Şifre en az bir harf ve bir rakam içermelidir.");
+          case "Invalid grade_id":
+            setError("Geçersiz not.");
             break;
-          case '"otp" length must be 6 characters long':
-            setError("OTP kodu 6 karakter uzunluğunda olmalıdır.");
+          case "Invalid student_id":
+            setError("Geçersiz öğrenci.");
+            break;
+          case "Invalid class_id":
+            setError("Geçersiz öğrenci.");
             break;
           default:
             setError("Bir hata oluştu. Lütfen tekrar deneyin.");

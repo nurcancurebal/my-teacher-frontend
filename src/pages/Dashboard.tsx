@@ -4,12 +4,14 @@ import AddClass from "../components/AddClass";
 import AddStudent from "../components/AddStudent";
 import SelectClass from "../components/SelectClass";
 import SelectGrade from "../components/SelectGrade";
+import SelectTeacherNote from "../components/SelectTeacherNote";
 
 const Dashboard: React.FC = () => {
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
   const [isAddStudentOpen, setIsAddStudentOpen] = useState(false);
   const [isSelectClassOpen, setIsSelectClassOpen] = useState(false);
   const [isSelectGradeOpen, setIsSelectGradeOpen] = useState(false);
+  const [isSelectTeacherNoteOpen, setIsSelectTeacherNoteOpen] = useState(false);
   const [totalClasses, setTotalClasses] = useState<number | null>(0);
   const [totalStudents, setTotalStudents] = useState<number | null>(0);
 
@@ -93,7 +95,10 @@ const Dashboard: React.FC = () => {
         >
           Not Ekle <span className="text-xl">+</span>
         </button>
-        <button className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center">
+        <button
+          className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center"
+          onClick={() => setIsSelectTeacherNoteOpen(true)}
+        >
           Kişisel Not Ekle <span className="text-xl">+</span>
         </button>
         <button
@@ -108,6 +113,10 @@ const Dashboard: React.FC = () => {
       <AddStudent open={isAddStudentOpen} setOpen={setIsAddStudentOpen} />
       <SelectClass open={isSelectClassOpen} setOpen={setIsSelectClassOpen} />
       <SelectGrade open={isSelectGradeOpen} setOpen={setIsSelectGradeOpen} />
+      <SelectTeacherNote
+        open={isSelectTeacherNoteOpen}
+        setOpen={setIsSelectTeacherNoteOpen}
+      />
     </div>
   );
 };
