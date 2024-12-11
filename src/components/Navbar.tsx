@@ -43,7 +43,7 @@ const Navbar: React.FC = () => {
 
   const navigation = [
     {
-      name: "Kontrol Paneli",
+      name: "Önizleme",
       href: "/dashboard",
       current: location.pathname === "/dashboard",
     },

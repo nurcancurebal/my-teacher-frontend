@@ -19,6 +19,8 @@ interface ClassItem {
   id: number;
   teacher_id: number;
   class_name: string;
+  created_at: Date;
+  last_updated: Date;
 }
 
 interface GradeType {
