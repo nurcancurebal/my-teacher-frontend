@@ -86,7 +86,7 @@ const SelectTeacherNote: React.FC<SelectTeacherNoteProps> = ({
         navigate("/add-teacher-note", {
           state: { selectedClassId, selectedStudentId },
         });
-      }, 4000);
+      }, 3000);
     } else {
       setError("Öğrenci seçimi yapılamadı.");
       return;

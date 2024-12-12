@@ -23,7 +23,7 @@ const ForgotPassword: React.FC = () => {
       );
       setTimeout(() => {
         navigate("/reset-password", { state: { email } }); // Başarılı girişten 5 saniye sonra yönlendirme
-      }, 5000);
+      }, 3000);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const errorMessage = error.response.data.message;

@@ -22,7 +22,7 @@ const Login: React.FC = () => {
 
       setMessage("Giriş başarılı. Yönlendiriliyorsunuz...");
       localStorage.setItem("token", response.data.accessToken);
-      setTimeout(() => navigate("/dashboard"), 5000);
+      setTimeout(() => navigate("/dashboard"), 3000);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const errorMessage = error.response.data.message;

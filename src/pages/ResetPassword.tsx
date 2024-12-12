@@ -38,7 +38,7 @@ const ResetPassword: React.FC = () => {
       );
       setTimeout(() => {
         navigate("/");
-      }, 5000);
+      }, 3000);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const errorMessage = error.response.data.message;
