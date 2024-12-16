@@ -3,11 +3,12 @@ import instance from "../services/axiosInstance";
 import UpdateClassDialog from "../components/UpdateClassDialog";
 
 interface Class {
-  class_name: string;
-  created_at: Date;
   id: number;
-  last_updated: Date;
   teacher_id: number;
+  class_name: string;
+  explanation: string;
+  created_at: Date;
+  last_updated: Date;
 }
 
 const Classes: React.FC = () => {
@@ -81,6 +82,9 @@ const Classes: React.FC = () => {
                 Sınıf Adı
               </th>
               <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
+                Açıklama
+              </th>
+              <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
                 Toplam Öğrenci
               </th>
               <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
@@ -100,16 +104,19 @@ const Classes: React.FC = () => {
           <tbody>
             {classes.map((classItem, index) => (
               <tr key={index}>
-                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
+                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4 text-center">
                   {classItem.class_name}
                 </td>
-                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
+                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4 text-center">
+                  {classItem.explanation}
+                </td>
+                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4 text-center">
                   {studentCount[classItem.id] || 0}
                 </td>
-                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
+                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4 text-center">
                   {new Date(classItem.created_at).toLocaleDateString()}
                 </td>
-                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
+                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4 text-center">
                   {new Date(classItem.last_updated).toLocaleDateString()}
                 </td>
                 <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
@@ -166,6 +173,7 @@ const Classes: React.FC = () => {
           setOpen={handleDialogClose}
           classId={selectedClass.id}
           className={selectedClass.class_name}
+          explanation={selectedClass.explanation}
           onUpdate={handleClassUpdate} // Geri çağırma fonksiyonunu geç
         />
       )}

@@ -13,6 +13,7 @@ interface UpdateClassDialogProps {
   setOpen: (open: boolean) => void;
   classId: number;
   className: string;
+  explanation: string;
   onUpdate: () => void; // Geri çağırma fonksiyonu
 }
 
@@ -21,19 +22,35 @@ const UpdateClassDialog: React.FC<UpdateClassDialogProps> = ({
   setOpen,
   classId,
   className,
+  explanation,
   onUpdate,
 }) => {
   const [newClassName, setNewClassName] = useState<string>(className);
+  const [newExplanation, setNewExplanation] = useState<string>(explanation);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
   const handleUpdateClass = async () => {
     setError(null);
     setMessage(null);
+
+    const updateFields: { class_name?: string; explanation?: string } = {};
+
+    if (newClassName !== className) {
+      updateFields.class_name = newClassName;
+    }
+
+    if (newExplanation !== explanation) {
+      updateFields.explanation = newExplanation;
+    }
+
+    if (Object.keys(updateFields).length === 0) {
+      setError("Değişiklik yapılmadı.");
+      return;
+    }
+
     try {
-      await instance.patch(`class/${classId}`, {
-        class_name: newClassName,
-      });
+      await instance.patch(`class/${classId}`, updateFields);
       setMessage("Sınıf adı başarıyla güncellendi.");
       setTimeout(() => {
         setMessage(null);
@@ -103,7 +120,7 @@ const UpdateClassDialog: React.FC<UpdateClassDialogProps> = ({
                     as="h3"
                     className="text-2xl font-semibold text-gray-900"
                   >
-                    Sınıf Adını Güncelle
+                    Sınıf Bilgilerini Güncelle
                   </DialogTitle>
                 </div>
               </div>
@@ -125,6 +142,23 @@ const UpdateClassDialog: React.FC<UpdateClassDialogProps> = ({
                 value={newClassName}
                 onChange={(e) => setNewClassName(e.target.value)}
                 onKeyDown={enterKeyHandler}
+              />
+            </div>
+
+            <div className="mx-10">
+              <label
+                htmlFor="explanation"
+                className="mt-5 block text-base font-medium text-gray-900"
+              >
+                Açıklama:
+              </label>
+              <textarea
+                id="explanation"
+                name="explanation"
+                required
+                className="row-5 mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-lg p-3"
+                value={newExplanation}
+                onChange={(e) => setNewExplanation(e.target.value)}
               />
             </div>
 
