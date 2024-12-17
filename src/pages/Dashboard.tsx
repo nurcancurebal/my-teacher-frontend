@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import instance from "../services/axiosInstance";
-import AddClass from "../components/AddClass";
+import AddClassDialog from "../components/AddClassDialog";
 import AddStudent from "../components/AddStudent";
-import SelectClass from "../components/SelectClass";
-import SelectGrade from "../components/SelectGrade";
+import SelectAddGrade from "../components/SelectAddGrade";
+import SelectUpdateGrade from "../components/SelectUpdateGrade";
 import SelectTeacherNote from "../components/SelectTeacherNote";
 
 const Dashboard: React.FC = () => {
@@ -109,10 +109,13 @@ const Dashboard: React.FC = () => {
         </button>
       </div>
 
-      <AddClass open={isAddClassOpen} setOpen={setIsAddClassOpen} />
+      <AddClassDialog open={isAddClassOpen} setOpen={setIsAddClassOpen} />
       <AddStudent open={isAddStudentOpen} setOpen={setIsAddStudentOpen} />
-      <SelectClass open={isSelectClassOpen} setOpen={setIsSelectClassOpen} />
-      <SelectGrade open={isSelectGradeOpen} setOpen={setIsSelectGradeOpen} />
+      <SelectAddGrade open={isSelectClassOpen} setOpen={setIsSelectClassOpen} />
+      <SelectUpdateGrade
+        open={isSelectGradeOpen}
+        setOpen={setIsSelectGradeOpen}
+      />
       <SelectTeacherNote
         open={isSelectTeacherNoteOpen}
         setOpen={setIsSelectTeacherNoteOpen}

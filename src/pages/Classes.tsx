@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import instance from "../services/axiosInstance";
 import UpdateClassDialog from "../components/UpdateClassDialog";
+import DeleteClassDialog from "../components/DeleteClassDialog";
+import AddClassDialog from "../components/AddClassDialog";
 
 interface Class {
   id: number;
@@ -17,8 +19,15 @@ const Classes: React.FC = () => {
   const [studentCount, setStudentCount] = useState<{ [key: number]: number }>(
     {}
   );
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [selectedClass, setSelectedClass] = useState<Class | null>(null);
+  const [updateDialogOpen, setUpdateDialogOpen] = useState<boolean>(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+  const [selectedUpdateClass, setSelectedUpdateClass] = useState<Class | null>(
+    null
+  );
+  const [selectedDeleteClass, setSelectedDeleteClass] = useState<Class | null>(
+    null
+  );
+  const [isAddClassOpen, setIsAddClassOpen] = useState(false);
 
   const classesData = async () => {
     try {
@@ -58,14 +67,24 @@ const Classes: React.FC = () => {
     }
   }, [classes, classInStudentCount]);
 
-  const handleUpdateClick = (classItem: Class) => {
-    setSelectedClass(classItem);
-    setIsDialogOpen(true);
+  const updateClick = (classItem: Class) => {
+    setSelectedUpdateClass(classItem);
+    setUpdateDialogOpen(true);
   };
 
-  const handleDialogClose = () => {
-    setIsDialogOpen(false);
-    setSelectedClass(null);
+  const deleteClick = (classItem: Class) => {
+    setSelectedDeleteClass(classItem);
+    setDeleteDialogOpen(true);
+  };
+
+  const updateDialogClose = () => {
+    setUpdateDialogOpen(false);
+    setSelectedUpdateClass(null);
+  };
+
+  const deleteDialogClose = () => {
+    setDeleteDialogOpen(false);
+    setSelectedUpdateClass(null);
   };
 
   const handleClassUpdate = () => {
@@ -73,7 +92,7 @@ const Classes: React.FC = () => {
   };
 
   return (
-    <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 px-12 xl:px-0">
+    <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 xl:px-0 md:px-24 px-12">
       <div className="overflow-x-auto xl:col-start-2 col-span-2 xl:p-0">
         <table className="border-collapse border border-slate-400 w-full">
           <thead>
@@ -122,7 +141,7 @@ const Classes: React.FC = () => {
                 <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
                   <button
                     className="flex m-auto"
-                    onClick={() => handleUpdateClick(classItem)}
+                    onClick={() => updateClick(classItem)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -141,7 +160,10 @@ const Classes: React.FC = () => {
                   </button>
                 </td>
                 <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
-                  <button className="flex m-auto">
+                  <button
+                    className="flex m-auto"
+                    onClick={() => deleteClick(classItem)}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -164,19 +186,44 @@ const Classes: React.FC = () => {
         </table>
       </div>
       {error && (
-        <p className="mt-2 text-center text-sm/6 text-red-600">{error}</p>
+        <p className="mt-2 text-center xl:text-lg md:text-base text-sm text-red-600">
+          {error}
+        </p>
       )}
+      <div className="xl:col-start-3 md:col-start-2 xl:p-0">
+        <div className="flex justify-end ">
+          <button
+            type="button"
+            className="my-5 col-start-4 inline-flex justify-center rounded-md bg-green-600 px-6 py-2 xl:text-lg md:text-base text-sm font-semibold text-white shadow-sm hover:bg-green-500"
+            onClick={() => setIsAddClassOpen(true)}
+          >
+            Sınıf Ekle
+          </button>
+        </div>
+      </div>
 
-      {selectedClass && (
+      {selectedUpdateClass && (
         <UpdateClassDialog
-          open={isDialogOpen}
-          setOpen={handleDialogClose}
-          classId={selectedClass.id}
-          className={selectedClass.class_name}
-          explanation={selectedClass.explanation}
+          open={updateDialogOpen}
+          setOpen={updateDialogClose}
+          id={selectedUpdateClass.id}
+          className={selectedUpdateClass.class_name}
+          explanation={selectedUpdateClass.explanation}
           onUpdate={handleClassUpdate} // Geri çağırma fonksiyonunu geç
         />
       )}
+
+      {selectedDeleteClass && (
+        <DeleteClassDialog
+          open={deleteDialogOpen}
+          setOpen={deleteDialogClose}
+          id={selectedDeleteClass.id}
+          className={selectedDeleteClass.class_name}
+          onDelete={handleClassUpdate} // Geri çağırma fonksiyonunu geç
+        />
+      )}
+
+      <AddClassDialog open={isAddClassOpen} setOpen={setIsAddClassOpen} />
     </div>
   );
 };
