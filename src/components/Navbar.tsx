@@ -52,6 +52,11 @@ const Navbar: React.FC = () => {
       href: "/classes",
       current: location.pathname === "/classes",
     },
+    {
+      name: "Öğrencileriniz",
+      href: "/students",
+      current: location.pathname === "/students",
+    },
   ];
   const userNavigation = [
     { name: "Profili Düzenle", href: "/update-profile" },

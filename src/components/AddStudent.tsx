@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Datepicker, { DateValueType } from "react-tailwindcss-datepicker";
+import { formatISO } from "date-fns";
 import instance from "../services/axiosInstance";
 
 import {
@@ -32,6 +34,12 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
   const [showStudentSelection, setShowStudentSelection] =
     useState<boolean>(true);
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
+  const [studentTc, setstudentTc] = useState<string>("");
+  const [date, setDate] = useState<DateValueType>({
+    startDate: new Date(),
+    endDate: new Date(),
+  });
+  const [gender, setGender] = useState<string>("");
 
   useEffect(() => {
     if (open) {
@@ -43,6 +51,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
       setMessage("");
       setError("");
       setSelectedClassId(null);
+      setDate({ startDate: new Date(), endDate: new Date() });
     }
   }, [open]); // `open` prop'u değiştiğinde `useEffect` çalışır
 
@@ -69,12 +78,21 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
       return;
     }
 
+    if (!date.startDate) {
+      setError("Doğum tarihi seçilmedi.");
+      return;
+    }
+
     try {
-      await instance.post("student", {
-        class_id: selectedClassId,
+      const birthdate = formatISO(new Date(date.startDate!));
+
+      await instance.post(`student${selectedClassId}`, {
+        tc: studentTc,
         student_name: studentName,
         student_lastname: studentLastname,
         student_number: studentNumber,
+        gender,
+        birthdate,
       });
       setMessage("Öğrenci başarıyla eklendi.");
       setTimeout(() => {
@@ -196,6 +214,26 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
                     htmlFor="studentName"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
+                    Öğrenci TC:
+                  </label>
+
+                  <input
+                    id="studentTc"
+                    name="studentTc"
+                    type="text"
+                    required
+                    value={studentTc}
+                    onChange={(e) => setstudentTc(e.target.value)}
+                    onKeyDown={handleKeyAddStudent}
+                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="studentName"
+                    className="mt-5 block text-lg font-medium text-gray-900"
+                  >
                     Öğrenci Adı:
                   </label>
 
@@ -248,6 +286,44 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
                     onChange={(e) => setStudentNumber(Number(e.target.value))}
                     onKeyDown={handleKeyAddStudent}
                     className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="studentNumber"
+                    className="mt-5 block text-lg font-medium text-gray-900"
+                  >
+                    Öğrenci Cinsiyeti:
+                  </label>
+
+                  <button
+                    type="button"
+                    className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24"
+                    onClick={() => setGender("K")}
+                  >
+                    K
+                  </button>
+                  <button
+                    type="button"
+                    className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24"
+                    onClick={() => setGender("E")}
+                  >
+                    E
+                  </button>
+                </div>
+                <div>
+                  <label
+                    htmlFor="studentNumber"
+                    className="mt-5 block text-lg font-medium text-gray-900"
+                  >
+                    Doğum Tarihi:
+                  </label>
+
+                  <Datepicker
+                    value={date}
+                    onChange={(newDate: DateValueType) => setDate(newDate)}
+                    asSingle={true}
                   />
                 </div>
               </div>

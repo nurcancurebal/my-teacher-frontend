@@ -12,6 +12,7 @@ import UpdateProfile from "./pages/UpdateProfile";
 import AddGrade from "./pages/AddGrade";
 import UpdateGrade from "./pages/UpdateGrade";
 import AddTeacherNote from "./pages/AddTeacherNote";
+import Students from "./pages/Students";
 
 const App: React.FC = () => {
   const token = localStorage.getItem("token");
@@ -49,6 +50,7 @@ const App: React.FC = () => {
           <Route path="/add-grade" element={<AddGrade />} />
           <Route path="/add-teacher-note" element={<AddTeacherNote />} />
           <Route path="/update-grade" element={<UpdateGrade />} />
+          <Route path="/students" element={<Students />} />
         </Routes>
       </main>
     </div>
