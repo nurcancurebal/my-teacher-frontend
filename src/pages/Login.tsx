@@ -70,7 +70,7 @@ const Login: React.FC = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-xl font-medium text-gray-900"
+                className="block text-lg font-medium text-gray-900"
               >
                 Email adresi
               </label>
@@ -83,7 +83,7 @@ const Login: React.FC = () => {
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-lg p-3"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-base p-3"
                 />
               </div>
             </div>
@@ -92,7 +92,7 @@ const Login: React.FC = () => {
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="password"
-                  className="block text-xl font-medium text-gray-900"
+                  className="block text-lg font-medium text-gray-900"
                 >
                   Şifre
                 </label>
@@ -100,7 +100,7 @@ const Login: React.FC = () => {
                   <button
                     onClick={() => navigate("/forgot-password")}
                     type="button"
-                    className="font-semibold text-indigo-600 hover:text-indigo-500 text-lg"
+                    className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
                   >
                     Şifrenizi mi unuttunuz?
                   </button>
@@ -114,7 +114,7 @@ const Login: React.FC = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-lg p-3"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-base p-3"
                 />
               </div>
             </div>
@@ -122,27 +122,27 @@ const Login: React.FC = () => {
             <div>
               <button
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-lg font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 disabled={loading}
               >
                 {loading ? "Giriş yapılıyor..." : "Giriş yap"}
               </button>
             </div>
             {message && (
-              <p className="mt-2 text-center text-lg text-green-600">
+              <p className="mt-2 text-center text-base text-green-600">
                 {message}
               </p>
             )}
             {error && (
-              <p className="mt-2 text-center text-lg text-red-600">{error}</p>
+              <p className="mt-2 text-center text-base text-red-600">{error}</p>
             )}
           </form>
 
-          <p className="mt-10 text-center text-lg text-gray-500">
+          <p className="mt-10 text-center text-base text-gray-500">
             Üye değil misiniz?{" "}
             <button
               onClick={() => navigate("/register")}
-              className="font-semibold text-indigo-600 hover:text-indigo-500 text-lg"
+              className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
             >
               Şimdi kaydolun
             </button>

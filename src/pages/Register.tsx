@@ -94,7 +94,7 @@ const Register: React.FC = () => {
             <div>
               <label
                 htmlFor="text"
-                className="block text-xl font-medium text-gray-900"
+                className="block text-lg font-medium text-gray-900"
               >
                 İsim
               </label>
@@ -107,14 +107,14 @@ const Register: React.FC = () => {
                   autoComplete="firstname"
                   value={firstname}
                   onChange={(e) => setFirstname(e.target.value)}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-lg p-3"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-base p-3"
                 />
               </div>
             </div>
             <div>
               <label
                 htmlFor="text"
-                className="block text-xl font-medium text-gray-900"
+                className="block text-lg font-medium text-gray-900"
               >
                 Soyisim
               </label>
@@ -127,7 +127,7 @@ const Register: React.FC = () => {
                   autoComplete="lastname"
                   value={lastname}
                   onChange={(e) => setLastname(e.target.value)}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-lg p-3"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-base p-3"
                 />
               </div>
             </div>
@@ -135,7 +135,7 @@ const Register: React.FC = () => {
             <div>
               <label
                 htmlFor="text"
-                className="block text-xl font-medium text-gray-900"
+                className="block text-lg font-medium text-gray-900"
               >
                 Kullanıcı adı
               </label>
@@ -148,7 +148,7 @@ const Register: React.FC = () => {
                   autoComplete="username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-lg p-3"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-base p-3"
                 />
               </div>
             </div>
@@ -156,7 +156,7 @@ const Register: React.FC = () => {
             <div>
               <label
                 htmlFor="text"
-                className="block text-xl font-medium text-gray-900"
+                className="block text-lg font-medium text-gray-900"
               >
                 E-posta
               </label>
@@ -169,7 +169,7 @@ const Register: React.FC = () => {
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-lg p-3"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-base p-3"
                 />
               </div>
             </div>
@@ -178,7 +178,7 @@ const Register: React.FC = () => {
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="password"
-                  className="block text-xl font-medium text-gray-900"
+                  className="block text-lg font-medium text-gray-900"
                 >
                   Şifre
                 </label>
@@ -191,7 +191,7 @@ const Register: React.FC = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-lg p-3"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-base p-3"
                 />
               </div>
             </div>
@@ -199,27 +199,27 @@ const Register: React.FC = () => {
             <div>
               <button
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-lg font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 disabled={loading}
               >
                 {loading ? "Kayıt işlemi gerçekleştiriliyor..." : "Kayıt ol"}
               </button>
             </div>
             {message && (
-              <p className="mt-2 text-center text-lg text-green-600">
+              <p className="mt-2 text-center text-base text-green-600">
                 {message}
               </p>
             )}
             {error && (
-              <p className="mt-2 text-center text-lg text-red-600">{error}</p>
+              <p className="mt-2 text-center text-base text-red-600">{error}</p>
             )}
           </form>
 
-          <p className="mt-10 text-center text-lg text-gray-500">
+          <p className="mt-10 text-center text-base text-gray-500">
             Zaten bir hesabınız var mı?{" "}
             <button
               onClick={() => navigate("/")}
-              className="font-semibold text-indigo-600 hover:text-indigo-500 text-lg"
+              className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
             >
               Giriş yapın
             </button>

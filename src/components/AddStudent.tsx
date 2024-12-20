@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Datepicker, { DateValueType } from "react-tailwindcss-datepicker";
+import Datepicker from "react-tailwindcss-datepicker";
 import { formatISO } from "date-fns";
 import instance from "../services/axiosInstance";
 
@@ -24,6 +24,11 @@ interface ClassItem {
   last_updated: Date;
 }
 
+interface DateValueType {
+  startDate: Date | null;
+  endDate: Date | null;
+}
+
 const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
   const [classes, setClasses] = useState<ClassItem[]>([]);
   const [studentName, setStudentName] = useState<string>("");
@@ -36,8 +41,8 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
   const [studentTc, setstudentTc] = useState<string>("");
   const [date, setDate] = useState<DateValueType>({
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: null,
+    endDate: null,
   });
   const [gender, setGender] = useState<string>("");
 
@@ -45,13 +50,15 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
     if (open) {
       getClasses();
       setShowStudentSelection(true);
+      setstudentTc("");
       setStudentName("");
       setStudentLastName("");
       setStudentNumber(0);
+      setGender("");
+      setDate({ startDate: null, endDate: null });
       setMessage("");
       setError("");
       setSelectedClassId(null);
-      setDate({ startDate: new Date(), endDate: new Date() });
     }
   }, [open]); // `open` prop'u değiştiğinde `useEffect` çalışır
 
@@ -84,9 +91,9 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
     }
 
     try {
-      const birthdate = formatISO(new Date(date.startDate!));
+      const birthdate = formatISO(new Date(date.startDate));
 
-      await instance.post(`student${selectedClassId}`, {
+      await instance.post(`student/${selectedClassId}`, {
         tc: studentTc,
         student_name: studentName,
         student_lastname: studentLastname,
@@ -96,9 +103,12 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
       });
       setMessage("Öğrenci başarıyla eklendi.");
       setTimeout(() => {
+        setstudentTc("");
         setStudentName("");
         setStudentLastName("");
         setStudentNumber(0);
+        setGender("");
+        setDate({ startDate: null, endDate: null });
         setMessage("");
         setError("");
       }, 3000);
@@ -106,6 +116,16 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
       if (axios.isAxiosError(error) && error.response) {
         const errorMessage = error.response.data.message;
         switch (errorMessage) {
+          case "'tc' must be a number":
+            setError("TC kimlik numarası sayı olmalıdır.");
+            break;
+          case "'tc' must be exactly 11 digits long":
+            setError("TC kimlik numarası 11 haneli olmalıdır.");
+            break;
+
+          case "TR ID number has already been used":
+            setError("TC kimlik numarası zaten kullanılmış.");
+            break;
           case "Student number is required":
             setError("Öğrenci numarası zorunludur.");
             break;
@@ -139,6 +159,9 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
           case '"student_number" is required':
             setError("Öğrenci numarası zorunludur.");
             break;
+          case "'gender' must be one of [K, E]":
+            setError("Cinsiyet Kadın veya Erkek olarak seçilmelidir.");
+            break;
           default:
             setError("Bir hata oluştu. Lütfen tekrar deneyin.");
         }
@@ -153,6 +176,15 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
       setOpen(false);
     }
     setShowStudentSelection(true);
+    setstudentTc("");
+    setStudentName("");
+    setStudentLastName("");
+    setStudentNumber(0);
+    setGender("");
+    setDate({ startDate: null, endDate: null });
+    setMessage("");
+    setError("");
+    setSelectedClassId(null);
   };
 
   const handleKeyAddStudent = (
@@ -200,7 +232,11 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
                   <button
                     key={index}
                     type="button"
-                    className="m-5 inline-flex justify-center rounded-md bg-white text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 w-24 py-2"
+                    className={`m-5 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${
+                      selectedClassId === classItem.id
+                        ? "bg-slate-200"
+                        : "bg-white"
+                    }`}
                     onClick={() => setSelectedClassId(classItem.id)}
                   >
                     {classItem.class_name}
@@ -299,14 +335,17 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
 
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24"
+                    className={`m-5 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100
+                    ${gender === "K" ? "bg-slate-200" : "bg-white"}`}
                     onClick={() => setGender("K")}
                   >
                     K
                   </button>
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24"
+                    className={`m-5 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${
+                      gender === "E" ? "bg-slate-200" : "bg-white"
+                    }`}
                     onClick={() => setGender("E")}
                   >
                     E
@@ -321,9 +360,17 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
                   </label>
 
                   <Datepicker
-                    value={date}
-                    onChange={(newDate: DateValueType) => setDate(newDate)}
+                    useRange={false}
                     asSingle={true}
+                    value={date}
+                    placeholder="Doğum Tarihi Seçiniz"
+                    displayFormat="DD.MM.YYYY"
+                    inputClassName="text-base"
+                    onChange={(newDate: DateValueType | null) => {
+                      if (newDate) {
+                        setDate(newDate);
+                      }
+                    }}
                   />
                 </div>
               </div>
@@ -341,7 +388,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
             <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
               <button
                 type="button"
-                className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24"
+                className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24 transition-all"
                 onClick={handleAddStudent}
               >
                 {showStudentSelection ? "Devam Et" : "Ekle"}
@@ -350,7 +397,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
                 type="button"
                 data-autofocus
                 onClick={cancelReturn}
-                className="mt-3 inline-flex w-full justify-center rounded-md bg-white py-2 text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-24"
+                className="mt-3 inline-flex w-full justify-center rounded-md bg-white py-2 text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-24  transition-all"
               >
                 {showStudentSelection ? "İptal Et" : "Geri Dön"}
               </button>
