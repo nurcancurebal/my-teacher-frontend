@@ -151,7 +151,7 @@ const SelectGrade: React.FC<SelectGradeProps> = ({ open, setOpen }) => {
           >
             <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
               <div className="sm:flex sm:items-start">
-                <div className="text-left">
+                <div className="text-left mx-auto">
                   <DialogTitle
                     as="h3"
                     className="text-2xl font-semibold text-gray-900"

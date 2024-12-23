@@ -177,12 +177,12 @@ const AddGrade: React.FC = () => {
 
         <div className="md:col-start-2 md:col-span-2 col-span-2 md:p-0 px-12">
           {error && (
-            <p className="my-5 xl:text-lg md:text-base text-sm text-center text-red-600">
+            <p className="my-5 xl:text-lg md:text-base text-sm text-center text-red-600 col-start-1 col-span-4">
               {error}
             </p>
           )}
           {message && (
-            <p className="my-5 xl:text-lg md:text-base text-sm text-center text-green-600">
+            <p className="my-5 xl:text-lg md:text-base text-sm text-center text-green-600 col-start-1 col-span-4">
               {message}
             </p>
           )}

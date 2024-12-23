@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import instance from "../services/axiosInstance";
 import AddClassDialog from "../components/AddClassDialog";
-import AddStudent from "../components/AddStudent";
-import SelectAddGrade from "../components/SelectAddGrade";
-import SelectUpdateGrade from "../components/SelectUpdateGrade";
-import SelectTeacherNote from "../components/SelectTeacherNote";
+import AddStudentDialog from "../components/AddStudentDialog";
+import AddGradeDialog from "../components/AddGradeDialog";
+import UpdateGradeDialog from "../components/UpdateGradeDialog";
+import SelectTeacherNoteDialog from "../components/SelectTeacherNoteDialog";
 
 const Dashboard: React.FC = () => {
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
@@ -110,13 +110,13 @@ const Dashboard: React.FC = () => {
       </div>
 
       <AddClassDialog open={isAddClassOpen} setOpen={setIsAddClassOpen} />
-      <AddStudent open={isAddStudentOpen} setOpen={setIsAddStudentOpen} />
-      <SelectAddGrade open={isSelectClassOpen} setOpen={setIsSelectClassOpen} />
-      <SelectUpdateGrade
+      <AddStudentDialog open={isAddStudentOpen} setOpen={setIsAddStudentOpen} />
+      <AddGradeDialog open={isSelectClassOpen} setOpen={setIsSelectClassOpen} />
+      <UpdateGradeDialog
         open={isSelectGradeOpen}
         setOpen={setIsSelectGradeOpen}
       />
-      <SelectTeacherNote
+      <SelectTeacherNoteDialog
         open={isSelectTeacherNoteOpen}
         setOpen={setIsSelectTeacherNoteOpen}
       />

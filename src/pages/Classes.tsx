@@ -32,6 +32,10 @@ const Classes: React.FC = () => {
   const classesData = async () => {
     try {
       const classes = await instance.get("class");
+      if (!classes.data.data || classes.data.data.length === 0) {
+        setError("Sınıf bulunamadı.");
+        return;
+      }
       setClasses(classes.data.data);
     } catch (error) {
       setError("Sınıflar getirilirken bir hata oluştu.");
@@ -112,12 +116,6 @@ const Classes: React.FC = () => {
               <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
                 Güncellenme Tarihi
               </th>
-              <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
-                Güncelle
-              </th>
-              <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
-                Sil
-              </th>
             </tr>
           </thead>
           <tbody>
@@ -186,7 +184,7 @@ const Classes: React.FC = () => {
         </table>
       </div>
       {error && (
-        <p className="mt-2 text-center xl:text-lg md:text-base text-sm text-red-600">
+        <p className="mt-2 text-center xl:text-lg md:text-base text-sm text-red-600 col-start-1 col-span-4">
           {error}
         </p>
       )}
