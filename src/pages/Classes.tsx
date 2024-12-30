@@ -29,20 +29,26 @@ const Classes: React.FC = () => {
   );
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
 
-  const classesData = async () => {
+  useEffect(() => {
+    fetchClasses();
+  }, []);
+
+  const fetchClasses = async () => {
     try {
-      const classes = await instance.get("class");
-      if (!classes.data.data || classes.data.data.length === 0) {
+      const response = await instance.get("class");
+      const classesData = response.data.data;
+
+      if (!classesData || classesData.length === 0) {
         setError("Sınıf bulunamadı.");
         return;
       }
-      setClasses(classes.data.data);
+      setClasses(classesData);
     } catch (error) {
       setError("Sınıflar getirilirken bir hata oluştu.");
     }
   };
 
-  const classInStudentCount = useCallback(async () => {
+  const fetchStudentCounts = useCallback(async () => {
     try {
       const countPromises = classes.map(async (classItem) => {
         const response = await instance.get(
@@ -62,37 +68,33 @@ const Classes: React.FC = () => {
   }, [classes]);
 
   useEffect(() => {
-    classesData();
-  }, []);
-
-  useEffect(() => {
     if (classes.length > 0) {
-      classInStudentCount();
+      fetchStudentCounts();
     }
-  }, [classes, classInStudentCount]);
+  }, [classes, fetchStudentCounts]);
 
-  const updateClick = (classItem: Class) => {
+  const handleUpdateClick = (classItem: Class) => {
     setSelectedUpdateClass(classItem);
     setUpdateDialogOpen(true);
   };
 
-  const deleteClick = (classItem: Class) => {
+  const handleDeleteClick = (classItem: Class) => {
     setSelectedDeleteClass(classItem);
     setDeleteDialogOpen(true);
   };
 
-  const updateDialogClose = () => {
+  const handleUpdateDialogClose = () => {
     setUpdateDialogOpen(false);
     setSelectedUpdateClass(null);
   };
 
-  const deleteDialogClose = () => {
+  const handleDeleteDialogClose = () => {
     setDeleteDialogOpen(false);
     setSelectedUpdateClass(null);
   };
 
   const handleClassUpdate = () => {
-    classesData(); // Sınıf listesini yeniden yükle
+    fetchClasses(); // Sınıf listesini yeniden yükle
   };
 
   return (
@@ -139,7 +141,7 @@ const Classes: React.FC = () => {
                 <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
                   <button
                     className="flex m-auto"
-                    onClick={() => updateClick(classItem)}
+                    onClick={() => handleUpdateClick(classItem)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -160,7 +162,7 @@ const Classes: React.FC = () => {
                 <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
                   <button
                     className="flex m-auto"
-                    onClick={() => deleteClick(classItem)}
+                    onClick={() => handleDeleteClick(classItem)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -203,7 +205,7 @@ const Classes: React.FC = () => {
       {selectedUpdateClass && (
         <UpdateClassDialog
           open={updateDialogOpen}
-          setOpen={updateDialogClose}
+          setOpen={handleUpdateDialogClose}
           id={selectedUpdateClass.id}
           className={selectedUpdateClass.class_name}
           explanation={selectedUpdateClass.explanation}
@@ -214,7 +216,7 @@ const Classes: React.FC = () => {
       {selectedDeleteClass && (
         <DeleteClassDialog
           open={deleteDialogOpen}
-          setOpen={deleteDialogClose}
+          setOpen={handleDeleteDialogClose}
           id={selectedDeleteClass.id}
           className={selectedDeleteClass.class_name}
           onDelete={handleClassUpdate} // Geri çağırma fonksiyonunu geç

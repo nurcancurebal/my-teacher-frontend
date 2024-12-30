@@ -15,6 +15,15 @@ const Dashboard: React.FC = () => {
   const [totalClasses, setTotalClasses] = useState<number | null>(0);
   const [totalStudents, setTotalStudents] = useState<number | null>(0);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      await totalClassesFunc();
+      await totalStudentsFunc();
+    };
+
+    fetchData();
+  }, []);
+
   const stats = [
     {
       id: 1,
@@ -46,15 +55,6 @@ const Dashboard: React.FC = () => {
       console.error(error);
     }
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await totalClassesFunc();
-      await totalStudentsFunc();
-    };
-
-    fetchData();
-  }, []);
 
   return (
     <div>

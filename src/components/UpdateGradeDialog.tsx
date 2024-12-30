@@ -36,7 +36,6 @@ const SelectGrade: React.FC<SelectGradeProps> = ({ open, setOpen }) => {
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
   const [gradeName, setGradeName] = useState<string>("");
   const [gradeType, setGradeType] = useState<string[]>([]);
-
   const navigate = useNavigate();
 
   useEffect(() => {

@@ -1,26 +1,40 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import Datepicker from "react-tailwindcss-datepicker";
-import instance from "../services/axiosInstance";
-
 import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import Datepicker from "react-tailwindcss-datepicker";
+import axios from "axios";
+import instance from "../services/axiosInstance";
 
-interface AddStudentProps {
-  open: boolean;
-  setOpen: (open: boolean) => void;
+interface Student {
+  id: number;
+  class_id: number;
+  teacher_id: number;
+  tc: bigint;
+  student_name: string;
+  student_lastname: string;
+  student_number: number;
+  gender: string;
+  birthdate: Date;
 }
 
-interface ClassItem {
+interface Class {
   id: number;
   teacher_id: number;
   class_name: string;
+  explanation: string;
   created_at: Date;
-  last_updated: Date;
+  last_update: Date;
+}
+
+interface UpdateStudentDialogProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  student: Student;
+  onUpdate: () => void; // Güncelleme sonrası çağrılacak callback fonksiyonu
 }
 
 interface DateValueType {
@@ -28,79 +42,95 @@ interface DateValueType {
   endDate: Date | null;
 }
 
-const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
-  const [classes, setClasses] = useState<ClassItem[]>([]);
-  const [studentName, setStudentName] = useState<string>("");
-  const [studentLastname, setStudentLastName] = useState<string>("");
-  const [studentNumber, setStudentNumber] = useState<number>();
-  const [error, setError] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
-  const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
-  const [studentTc, setstudentTc] = useState<string>("");
+const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
+  open,
+  setOpen,
+  student,
+  onUpdate,
+}) => {
+  const [studentTc, setstudentTc] = useState<string>(student.tc.toString());
+  const [studentName, setStudentName] = useState<string>(student.student_name);
+  const [studentLastname, setStudentLastName] = useState<string>(
+    student.student_lastname
+  );
+  const [studentNumber, setStudentNumber] = useState<number>(
+    student.student_number
+  );
+  const [gender, setGender] = useState<string>(student.gender);
   const [date, setDate] = useState<DateValueType>({
-    startDate: null,
-    endDate: null,
+    startDate: student.birthdate,
+    endDate: student.birthdate,
   });
-  const [gender, setGender] = useState<string>("");
+  const [classId, setClassId] = useState<number>(student.class_id);
+  const [classes, setClasses] = useState<Class[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (open) {
-      getClasses();
-      setstudentTc("");
-      setStudentName("");
-      setStudentLastName("");
-      setStudentNumber(0);
-      setGender("");
-      setDate({ startDate: null, endDate: null });
-      setMessage("");
-      setError("");
-      setSelectedClassId(null);
+    const fetchClasses = async () => {
+      try {
+        const classes = await instance.get("class");
+        setClasses(classes.data.data);
+      } catch (error) {
+        setError("Sınıflar getirilirken bir hata oluştu.");
+      }
+    };
+    fetchClasses();
+  }, []);
+
+  const handleUpdateStudent = async () => {
+    const updateFields: {
+      tc?: string;
+      class_id?: number;
+      student_name?: string;
+      student_lastname?: string;
+      student_number?: number;
+      gender?: string;
+      birthdate?: Date;
+    } = {};
+
+    if (studentTc !== student.tc.toString()) {
+      updateFields.tc = studentTc;
     }
-  }, [open]); // `open` prop'u değiştiğinde `useEffect` çalışır
 
-  const getClasses = async () => {
-    try {
-      const classes = await instance.get("class");
-      setClasses(classes.data.data);
-    } catch (error) {
-      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+    if (studentName !== student.student_name) {
+      updateFields.student_name = studentName;
     }
-  };
 
-  const handleAddStudent = async () => {
-    setError("");
-    setMessage("");
+    if (studentLastname !== student.student_lastname) {
+      updateFields.student_lastname = studentLastname;
+    }
 
-    if (selectedClassId === null) {
-      setError("Sınıf seçimi yapılmadı.");
+    if (studentNumber !== student.student_number) {
+      updateFields.student_number = studentNumber;
+    }
+
+    if (gender !== student.gender) {
+      updateFields.gender = gender;
+    }
+
+    if (date.startDate && date.startDate !== student.birthdate) {
+      updateFields.birthdate = date.startDate;
+    }
+
+    if (classId !== student.class_id) {
+      updateFields.class_id = classId;
+    }
+
+    if (Object.keys(updateFields).length === 0) {
+      setError("Değişiklik yapılmadı.");
       return;
     }
 
-    if (!date.startDate) {
-      setError("Doğum tarihi seçilmedi.");
-      return;
-    }
-
     try {
-      await instance.post(`student/${selectedClassId}`, {
-        tc: studentTc,
-        student_name: studentName,
-        student_lastname: studentLastname,
-        student_number: studentNumber,
-        gender,
-        birthdate: date.startDate,
-      });
-      setMessage("Öğrenci başarıyla eklendi.");
+      await instance.patch(`student/${student.id}`, updateFields);
+      setMessage("Öğrenci başarıyla güncellendi.");
+
       setTimeout(() => {
-        setstudentTc("");
-        setStudentName("");
-        setStudentLastName("");
-        setStudentNumber(0);
-        setGender("");
-        setDate({ startDate: null, endDate: null });
-        setMessage("");
-        setError("");
-        setSelectedClassId(null);
+        setOpen(false);
+        setMessage(null);
+        setError(null);
+        onUpdate(); // Güncelleme sonrası callback fonksiyonunu çağır
       }, 3000);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -154,30 +184,18 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
             break;
           default:
             setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+            console.log(errorMessage);
         }
         return;
       }
       setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+      console.log(error);
     }
   };
 
-  const cancelReturn = () => {
-    setstudentTc("");
-    setStudentName("");
-    setStudentLastName("");
-    setStudentNumber(0);
-    setGender("");
-    setDate({ startDate: null, endDate: null });
-    setMessage("");
-    setError("");
-    setSelectedClassId(null);
-  };
-
-  const handleKeyAddStudent = (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (event.key === "Enter") {
-      handleAddStudent();
+  const enterKeyHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleUpdateStudent();
     }
   };
 
@@ -193,19 +211,19 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
       />
 
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div className="flex min-h-full items-end justify-center p-4 items-center sm:p-0">
+        <div className="flex min-h-full items-end justify-center p-4 text-center items-center sm:p-0">
           <DialogPanel
             transition
-            className="relative transform overflow-hidden rounded-lg bg-white shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:p-12 sm:max-w-lg data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95x"
+            className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:p-12 sm:max-w-lg data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
           >
             <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
               <div className="sm:flex sm:items-start">
-                <div className="mt-3 sm:mt-0 mx-auto">
+                <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                   <DialogTitle
                     as="h3"
                     className="text-2xl font-semibold text-gray-900"
                   >
-                    Öğrenci Ekle
+                    Öğrenci Bilgilerini Güncelle
                   </DialogTitle>
                 </div>
               </div>
@@ -223,11 +241,9 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
                   key={index}
                   type="button"
                   className={`m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${
-                    selectedClassId === classItem.id
-                      ? "bg-slate-200"
-                      : "bg-white"
+                    classId === classItem.id ? "bg-slate-200" : "bg-white"
                   }`}
-                  onClick={() => setSelectedClassId(classItem.id)}
+                  onClick={() => setClassId(classItem.id)}
                 >
                   {classItem.class_name}
                 </button>
@@ -250,7 +266,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
                   required
                   value={studentTc}
                   onChange={(e) => setstudentTc(e.target.value)}
-                  onKeyDown={handleKeyAddStudent}
+                  onKeyDown={enterKeyHandler}
                   className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3"
                 />
               </div>
@@ -270,7 +286,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
                   required
                   value={studentName}
                   onChange={(e) => setStudentName(e.target.value)}
-                  onKeyDown={handleKeyAddStudent}
+                  onKeyDown={enterKeyHandler}
                   className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3"
                 />
               </div>
@@ -290,7 +306,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
                   required
                   value={studentLastname}
                   onChange={(e) => setStudentLastName(e.target.value)}
-                  onKeyDown={handleKeyAddStudent}
+                  onKeyDown={enterKeyHandler}
                   className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3"
                 />
               </div>
@@ -310,7 +326,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
                   required
                   value={studentNumber}
                   onChange={(e) => setStudentNumber(Number(e.target.value))}
-                  onKeyDown={handleKeyAddStudent}
+                  onKeyDown={enterKeyHandler}
                   className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3"
                 />
               </div>
@@ -368,28 +384,28 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
               </div>
             </div>
 
+            {error && (
+              <p className="mt-2 text-center text-base text-red-600">{error}</p>
+            )}
             {message && (
               <p className="mt-2 text-center text-base text-green-600">
                 {message}
               </p>
             )}
-            {error && (
-              <p className="mt-2 text-center text-base text-red-600">{error}</p>
-            )}
 
-            <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+            <div className="my-5 bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
               <button
                 type="button"
-                className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24 transition-all"
-                onClick={handleAddStudent}
+                className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24"
+                onClick={handleUpdateStudent}
               >
-                Ekle
+                Güncelle
               </button>
               <button
                 type="button"
                 data-autofocus
-                onClick={cancelReturn}
-                className="mt-3 inline-flex w-full justify-center rounded-md bg-white py-2 text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-24  transition-all"
+                className="mt-3 inline-flex w-full justify-center rounded-md bg-white py-2 text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-24"
+                onClick={() => setOpen(false)}
               >
                 İptal Et
               </button>
@@ -401,4 +417,4 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
   );
 };
 
-export default AddStudent;
+export default UpdateStudentDialog;

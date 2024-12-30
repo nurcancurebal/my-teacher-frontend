@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import instance from "../services/axiosInstance";
-import ViewDetailDialog from "../components/ViewDetailDialog";
+import DetailStudentDialog from "../components/DetailStudentDialog";
+import UpdateStudentDialog from "../components/UpdateStudentDialog";
 
 interface Student {
   id: number;
@@ -29,46 +30,64 @@ const Students: React.FC = () => {
   const [selectedDetailStudent, setSelectedDetailStudent] =
     useState<Student | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState<boolean>(false);
+  const [selectedUpdateStudent, setSelectedUpdateStudent] =
+    useState<Student | null>(null);
+  const [updateDialogOpen, setUpdateDialogOpen] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const studentsData = async () => {
-    try {
-      const students = await instance.get("/student");
+  useEffect(() => {
+    fetchStudents();
+    fetchClasses();
+  }, []);
 
-      if (!students.data.data || students.data.data.length === 0) {
+  const fetchStudents = async () => {
+    try {
+      const response = await instance.get("/student");
+      const studentsData = response.data.data;
+
+      if (!studentsData || studentsData.length === 0) {
         setError("Öğrenci bulunamadı.");
         return;
       }
 
-      setStudents(students.data.data);
+      setStudents(studentsData);
     } catch (error) {
       setError("Öğrenciler getirilirken bir hata oluştu.");
     }
   };
 
-  const classesData = async () => {
+  const fetchClasses = async () => {
     try {
-      const classes = await instance.get("/class");
-      setClasses(classes.data.data);
+      const response = await instance.get("/class");
+      setClasses(response.data.data);
     } catch (error) {
       setError("Sınıflar getirilirken bir hata oluştu.");
     }
   };
 
-  const viewDetail = (student: Student) => {
+  const handleDetailClick = (student: Student) => {
     setDetailDialogOpen(true);
     setSelectedDetailStudent(student);
   };
 
-  const detailDialogClose = () => {
+  const handleDetailDialogClose = () => {
     setDetailDialogOpen(false);
     setSelectedDetailStudent(null);
   };
 
-  useEffect(() => {
-    studentsData();
-    classesData();
-  }, []);
+  const handleUpdateClick = (student: Student) => {
+    setUpdateDialogOpen(true);
+    setSelectedUpdateStudent(student);
+  };
+
+  const handleUpdateDialogClose = () => {
+    setUpdateDialogOpen(false);
+    setSelectedUpdateStudent(null);
+  };
+
+  const handleStudentUpdate = () => {
+    fetchStudents();
+  };
 
   return (
     <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 xl:px-0 md:px-24 px-12">
@@ -110,7 +129,7 @@ const Students: React.FC = () => {
                     <button
                       className="mx-4"
                       title="Detay"
-                      onClick={() => viewDetail(student)}
+                      onClick={() => handleDetailClick(student)}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -127,7 +146,11 @@ const Students: React.FC = () => {
                         />
                       </svg>
                     </button>
-                    <button className="mx-4" title="Güncelle">
+                    <button
+                      className="mx-4"
+                      title="Güncelle"
+                      onClick={() => handleUpdateClick(student)}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -183,10 +206,19 @@ const Students: React.FC = () => {
       </div>
 
       {selectedDetailStudent && (
-        <ViewDetailDialog
+        <DetailStudentDialog
           open={detailDialogOpen}
-          setOpen={detailDialogClose}
+          setOpen={handleDetailDialogClose}
           student={selectedDetailStudent}
+        />
+      )}
+
+      {selectedUpdateStudent && (
+        <UpdateStudentDialog
+          open={updateDialogOpen}
+          setOpen={handleUpdateDialogClose}
+          student={selectedUpdateStudent}
+          onUpdate={handleStudentUpdate} // Geri çağırma fonksiyonunu geç
         />
       )}
     </div>

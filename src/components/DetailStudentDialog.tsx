@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -30,8 +30,6 @@ const ViewDetailDialog: React.FC<ViewDetailDialogProps> = ({
   setOpen,
   student,
 }) => {
-  const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
   return (
     <Dialog
       open={open}
@@ -92,16 +90,6 @@ const ViewDetailDialog: React.FC<ViewDetailDialogProps> = ({
                 {format(new Date(student.birthdate), "dd.MM.yyyy")}
               </span>
             </div>
-
-            {error && (
-              <p className="mt-2 text-center text-base text-red-600">{error}</p>
-            )}
-            {message && (
-              <p className="mt-2 text-center text-base text-green-600">
-                {message}
-              </p>
-            )}
-
             <div className="my-5 bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
               <button
                 type="button"

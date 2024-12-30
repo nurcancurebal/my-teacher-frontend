@@ -30,7 +30,6 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
     useState<boolean>(true);
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
   const [gradeName, setGradeName] = useState<string>("");
-
   const navigate = useNavigate();
 
   useEffect(() => {
