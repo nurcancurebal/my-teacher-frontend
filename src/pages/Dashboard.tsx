@@ -56,6 +56,10 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const handleStudentUpdate = async () => {
+    await totalStudentsFunc();
+  };
+
   return (
     <div>
       <div className="bg-white py-14 sm:py-16 lg:py-24">
@@ -110,7 +114,11 @@ const Dashboard: React.FC = () => {
       </div>
 
       <AddClassDialog open={isAddClassOpen} setOpen={setIsAddClassOpen} />
-      <AddStudentDialog open={isAddStudentOpen} setOpen={setIsAddStudentOpen} />
+      <AddStudentDialog
+        open={isAddStudentOpen}
+        setOpen={setIsAddStudentOpen}
+        onAdd={handleStudentUpdate}
+      />
       <AddGradeDialog open={isSelectClassOpen} setOpen={setIsSelectClassOpen} />
       <UpdateGradeDialog
         open={isSelectGradeOpen}

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import instance from "../services/axiosInstance";
 import DetailStudentDialog from "../components/DetailStudentDialog";
 import UpdateStudentDialog from "../components/UpdateStudentDialog";
+import DeleteStudentDialog from "../components/DeleteStudentDialog";
+import AddStudentDialog from "../components/AddStudentDialog";
 
 interface Student {
   id: number;
@@ -32,7 +34,11 @@ const Students: React.FC = () => {
   const [detailDialogOpen, setDetailDialogOpen] = useState<boolean>(false);
   const [selectedUpdateStudent, setSelectedUpdateStudent] =
     useState<Student | null>(null);
+  const [selectedDeleteStudent, setSelectedDeleteStudent] =
+    useState<Student | null>(null);
   const [updateDialogOpen, setUpdateDialogOpen] = useState<boolean>(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+  const [addDialogOpen, setAddDialogOpen] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -87,6 +93,20 @@ const Students: React.FC = () => {
 
   const handleStudentUpdate = () => {
     fetchStudents();
+  };
+
+  const handleDeleteClick = async (student: Student) => {
+    setSelectedDeleteStudent(student);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteDialogClose = () => {
+    setDeleteDialogOpen(false);
+    setSelectedDeleteStudent(null);
+  };
+
+  const handleAddDialogClose = () => {
+    setAddDialogOpen(false);
   };
 
   return (
@@ -166,7 +186,11 @@ const Students: React.FC = () => {
                         />
                       </svg>
                     </button>
-                    <button className="mx-4" title="Sil">
+                    <button
+                      className="mx-4"
+                      title="Sil"
+                      onClick={() => handleDeleteClick(student)}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -199,6 +223,7 @@ const Students: React.FC = () => {
           <button
             type="button"
             className="my-5 col-start-4 inline-flex justify-center rounded-md bg-green-600 px-6 py-2 xl:text-lg md:text-base text-sm font-semibold text-white shadow-sm hover:bg-green-500"
+            onClick={() => setAddDialogOpen(true)}
           >
             Öğrenci Ekle
           </button>
@@ -219,6 +244,25 @@ const Students: React.FC = () => {
           setOpen={handleUpdateDialogClose}
           student={selectedUpdateStudent}
           onUpdate={handleStudentUpdate} // Geri çağırma fonksiyonunu geç
+        />
+      )}
+
+      {selectedDeleteStudent && (
+        <DeleteStudentDialog
+          open={deleteDialogOpen}
+          setOpen={handleDeleteDialogClose}
+          id={selectedDeleteStudent.id}
+          studentName={selectedDeleteStudent.student_name}
+          studentLastName={selectedDeleteStudent.student_lastname}
+          onDelete={handleStudentUpdate} // Geri çağırma fonksiyonunu geç
+        />
+      )}
+
+      {addDialogOpen && (
+        <AddStudentDialog
+          open={addDialogOpen}
+          setOpen={handleAddDialogClose}
+          onAdd={handleStudentUpdate} // Geri çağırma fonksiyonunu geç
         />
       )}
     </div>

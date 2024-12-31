@@ -13,6 +13,7 @@ import {
 interface AddStudentProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+  onAdd: () => void;
 }
 
 interface ClassItem {
@@ -28,7 +29,7 @@ interface DateValueType {
   endDate: Date | null;
 }
 
-const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
+const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
   const [classes, setClasses] = useState<ClassItem[]>([]);
   const [studentName, setStudentName] = useState<string>("");
   const [studentLastname, setStudentLastName] = useState<string>("");
@@ -101,6 +102,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
         setMessage("");
         setError("");
         setSelectedClassId(null);
+        onAdd();
       }, 3000);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -162,6 +164,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen }) => {
   };
 
   const cancelReturn = () => {
+    setOpen(false);
     setstudentTc("");
     setStudentName("");
     setStudentLastName("");
