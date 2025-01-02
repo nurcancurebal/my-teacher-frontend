@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import instance from "../services/axiosInstance";
 import DetailStudentDialog from "../components/DetailStudentDialog";
 import UpdateStudentDialog from "../components/UpdateStudentDialog";
@@ -40,11 +41,10 @@ const Students: React.FC = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
   const [addDialogOpen, setAddDialogOpen] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
 
-  useEffect(() => {
-    fetchStudents();
-    fetchClasses();
-  }, []);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const fetchStudents = async () => {
     try {
@@ -53,6 +53,8 @@ const Students: React.FC = () => {
 
       if (!studentsData || studentsData.length === 0) {
         setError("Öğrenci bulunamadı.");
+        setStudents([]);
+
         return;
       }
 
@@ -70,6 +72,52 @@ const Students: React.FC = () => {
       setError("Sınıflar getirilirken bir hata oluştu.");
     }
   };
+
+  const handleSelectedClass = useCallback(
+    async (classItem: Class) => {
+      setSelectedClassId(classItem.id);
+      setError(null);
+
+      if (classItem.id !== null) {
+        navigate(`?class=${classItem.class_name}`);
+      } else {
+        navigate(`?class=all`);
+      }
+
+      try {
+        const response = await instance.get(`/student/${classItem.id}`);
+        const studentsData = response.data.data;
+
+        if (!studentsData || studentsData.length === 0) {
+          setError("Öğrenci bulunamadı.");
+          setStudents([]);
+          return;
+        }
+
+        setStudents(studentsData);
+      } catch (error) {
+        setError("Öğrenciler getirilirken bir hata oluştu.");
+      }
+    },
+    [navigate]
+  );
+
+  useEffect(() => {
+    fetchClasses();
+  }, []);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const className = queryParams.get("class");
+    if (className && classes.length > 0) {
+      const classItem = classes.find((c) => c.class_name === className);
+      if (classItem) {
+        handleSelectedClass(classItem);
+      }
+    } else {
+      fetchStudents();
+    }
+  }, [location.search, handleSelectedClass, classes]);
 
   const handleDetailClick = (student: Student) => {
     setDetailDialogOpen(true);
@@ -91,10 +139,6 @@ const Students: React.FC = () => {
     setSelectedUpdateStudent(null);
   };
 
-  const handleStudentUpdate = () => {
-    fetchStudents();
-  };
-
   const handleDeleteClick = async (student: Student) => {
     setSelectedDeleteStudent(student);
     setDeleteDialogOpen(true);
@@ -105,14 +149,46 @@ const Students: React.FC = () => {
     setSelectedDeleteStudent(null);
   };
 
-  const handleAddDialogClose = () => {
-    setAddDialogOpen(false);
+  const handleAllStudents = async () => {
+    setSelectedClassId(null);
+    navigate(`?class=all`);
+    fetchStudents();
+    setError(null);
+  };
+
+  const handleAddStudent = () => {
+    setAddDialogOpen(true);
+    setError(null);
+    setSelectedClassId(null);
+    navigate(`?class=all`);
   };
 
   return (
     <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 xl:px-0 md:px-24 px-12">
       <div className="overflow-x-auto xl:col-start-2 col-span-2 xl:p-0">
-        <table className="border-collapse border border-slate-400 w-full">
+        {classes.map((classItem, index) => (
+          <button
+            key={index}
+            type="button"
+            className={`m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${
+              selectedClassId === classItem.id ? "bg-slate-200" : "bg-white"
+            }`}
+            onClick={() => handleSelectedClass(classItem)}
+          >
+            {classItem.class_name}
+          </button>
+        ))}
+        <button
+          type="button"
+          className={`m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${
+            selectedClassId === null ? "bg-slate-200" : "bg-white"
+          }`}
+          onClick={() => handleAllStudents()}
+        >
+          Tümü
+        </button>
+
+        <table className="border-collapse border border-slate-400 w-full mt-5">
           <thead>
             <tr>
               <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
@@ -223,7 +299,7 @@ const Students: React.FC = () => {
           <button
             type="button"
             className="my-5 col-start-4 inline-flex justify-center rounded-md bg-green-600 px-6 py-2 xl:text-lg md:text-base text-sm font-semibold text-white shadow-sm hover:bg-green-500"
-            onClick={() => setAddDialogOpen(true)}
+            onClick={() => handleAddStudent()}
           >
             Öğrenci Ekle
           </button>
@@ -243,7 +319,7 @@ const Students: React.FC = () => {
           open={updateDialogOpen}
           setOpen={handleUpdateDialogClose}
           student={selectedUpdateStudent}
-          onUpdate={handleStudentUpdate} // Geri çağırma fonksiyonunu geç
+          onUpdate={() => fetchStudents()} // Geri çağırma fonksiyonunu geç
         />
       )}
 
@@ -254,15 +330,15 @@ const Students: React.FC = () => {
           id={selectedDeleteStudent.id}
           studentName={selectedDeleteStudent.student_name}
           studentLastName={selectedDeleteStudent.student_lastname}
-          onDelete={handleStudentUpdate} // Geri çağırma fonksiyonunu geç
+          onDelete={() => fetchStudents()} // Geri çağırma fonksiyonunu geç
         />
       )}
 
       {addDialogOpen && (
         <AddStudentDialog
           open={addDialogOpen}
-          setOpen={handleAddDialogClose}
-          onAdd={handleStudentUpdate} // Geri çağırma fonksiyonunu geç
+          setOpen={() => setAddDialogOpen(false)}
+          onAdd={() => fetchStudents()} // Geri çağırma fonksiyonunu geç
         />
       )}
     </div>
