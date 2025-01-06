@@ -24,6 +24,7 @@ interface User {
 
 const Navbar: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -99,7 +100,27 @@ const Navbar: React.FC = () => {
               <div className="hidden md:block">
                 <div className="ml-4 flex items-center md:ml-6">
                   {user && (
-                    <span className="text-white text-lg">{user.username}</span>
+                    <div
+                      className="relative inline-block text-left"
+                      onMouseEnter={() => setIsMenuOpen(true)}
+                      onMouseLeave={() => setIsMenuOpen(false)}
+                    >
+                      <button className="text-white text-lg">
+                        {user.username}
+                      </button>
+                      {isMenuOpen && (
+                        <div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5">
+                          <div className="py-1">
+                            <button className="block px-4 py-2 text-sm text-gray-700">
+                              {user.firstname} {user.lastname}
+                            </button>
+                            <button className="block px-4 py-2 text-sm text-gray-700">
+                              {user.email}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   )}
 
                   {/* Profile dropdown */}

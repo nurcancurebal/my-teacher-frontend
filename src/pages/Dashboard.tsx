@@ -14,11 +14,13 @@ const Dashboard: React.FC = () => {
   const [isSelectTeacherNoteOpen, setIsSelectTeacherNoteOpen] = useState(false);
   const [totalClasses, setTotalClasses] = useState<number | null>(0);
   const [totalStudents, setTotalStudents] = useState<number | null>(0);
+  const [lastAddedGrade, setLastAddedGrade] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      await totalClassesFunc();
-      await totalStudentsFunc();
+      await fetchTotalClassesFunc();
+      await fetchTotalStudentsFunc();
+      await fetchLastAddedGrade();
     };
 
     fetchData();
@@ -35,10 +37,14 @@ const Dashboard: React.FC = () => {
       name: "Toplam Öğrencileriniz",
       value: totalStudents !== null ? totalStudents : 0,
     },
-    { id: 3, name: "En Son Eklenen Not Tarihi", value: "13.05.2024" },
+    {
+      id: 3,
+      name: "En Son Eklenen Not Tarihi",
+      value: lastAddedGrade !== null ? lastAddedGrade : "N/A",
+    },
   ];
 
-  const totalClassesFunc = async () => {
+  const fetchTotalClassesFunc = async () => {
     try {
       const classes = await instance.get("/class/count");
       setTotalClasses(classes.data.data);
@@ -47,7 +53,7 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const totalStudentsFunc = async () => {
+  const fetchTotalStudentsFunc = async () => {
     try {
       const count = await instance.get("/student/count");
       setTotalStudents(count.data.data);
@@ -57,7 +63,16 @@ const Dashboard: React.FC = () => {
   };
 
   const handleStudentUpdate = async () => {
-    await totalStudentsFunc();
+    await fetchTotalStudentsFunc();
+  };
+
+  const fetchLastAddedGrade = async () => {
+    try {
+      const response = await instance.get("/grade/last-added");
+      setLastAddedGrade(response.data.data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
