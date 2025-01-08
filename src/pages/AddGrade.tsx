@@ -78,7 +78,7 @@ const AddGrade: React.FC = () => {
       setMessage(
         "Notlar başarıyla kaydedildi. Ana sayfaya yönlendiriliyorsunuz."
       );
-      setTimeout(() => navigate("/dashboard"), 3000);
+      setTimeout(() => navigate("/onizleme"), 3000);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const errorMessage = error.response.data.message;

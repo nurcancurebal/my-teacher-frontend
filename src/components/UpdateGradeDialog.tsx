@@ -110,7 +110,7 @@ const SelectGrade: React.FC<SelectGradeProps> = ({ open, setOpen }) => {
     if (gradeName !== "") {
       setMessage("Not güncellemek için yönlendiriliyorsunuz.");
       setTimeout(() => {
-        navigate("/update-grade", {
+        navigate("/not-guncelle", {
           state: { selectedClassId, gradeName },
         });
         setGradeName("");

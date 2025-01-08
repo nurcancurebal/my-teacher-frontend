@@ -81,7 +81,7 @@ const Students: React.FC = () => {
       if (classItem.id !== null) {
         navigate(`?class=${classItem.class_name}`);
       } else {
-        navigate(`?class=all`);
+        navigate(`?class=tumu`);
       }
 
       try {
@@ -151,7 +151,7 @@ const Students: React.FC = () => {
 
   const handleAllStudents = async () => {
     setSelectedClassId(null);
-    navigate(`?class=all`);
+    navigate(`?class=tumu`);
     fetchStudents();
     setError(null);
   };
@@ -160,7 +160,7 @@ const Students: React.FC = () => {
     setAddDialogOpen(true);
     setError(null);
     setSelectedClassId(null);
-    navigate(`?class=all`);
+    navigate(`?class=tumu`);
   };
 
   return (

@@ -22,7 +22,7 @@ const ForgotPassword: React.FC = () => {
         "OTP kodu email adresinize gönderildi. Şifrenizi sıfırlamak için yönlendiriliyorsunuz..."
       );
       setTimeout(() => {
-        navigate("/reset-password", { state: { email } }); // Başarılı girişten 5 saniye sonra yönlendirme
+        navigate("/sifremi-sifirla", { state: { email } }); // Başarılı girişten 5 saniye sonra yönlendirme
       }, 3000);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -106,7 +106,7 @@ const ForgotPassword: React.FC = () => {
           <p className="mt-10 text-center text-base text-gray-500">
             Üye değil misiniz?{" "}
             <button
-              onClick={() => navigate("/register")}
+              onClick={() => navigate("/kayit-ol")}
               className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
             >
               Şimdi kaydolun

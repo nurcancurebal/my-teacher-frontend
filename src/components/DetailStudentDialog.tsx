@@ -5,7 +5,6 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import { format } from "date-fns";
 
 interface Student {
   id: number;
@@ -87,7 +86,7 @@ const ViewDetailDialog: React.FC<ViewDetailDialogProps> = ({
             <div className="sm:mx-0 mx-4 my-2">
               <span className="text-lg font-medium">Doğum Tarihi:</span>
               <span className="text-base ml-3">
-                {format(new Date(student.birthdate), "dd.MM.yyyy")}
+                {new Date(student.birthdate).toLocaleDateString()}
               </span>
             </div>
             <div className="my-5 bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">

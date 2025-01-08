@@ -22,7 +22,7 @@ const Login: React.FC = () => {
 
       setMessage("Giriş başarılı. Yönlendiriliyorsunuz...");
       localStorage.setItem("token", response.data.accessToken);
-      setTimeout(() => navigate("/dashboard"), 3000);
+      setTimeout(() => navigate("/onizleme"), 3000);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const errorMessage = error.response.data.message;
@@ -98,7 +98,7 @@ const Login: React.FC = () => {
                 </label>
                 <div>
                   <button
-                    onClick={() => navigate("/forgot-password")}
+                    onClick={() => navigate("/parolami-unuttum")}
                     type="button"
                     className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
                   >
@@ -141,7 +141,7 @@ const Login: React.FC = () => {
           <p className="mt-10 text-center text-base text-gray-500">
             Üye değil misiniz?{" "}
             <button
-              onClick={() => navigate("/register")}
+              onClick={() => navigate("/kayit-ol")}
               className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
             >
               Şimdi kaydolun

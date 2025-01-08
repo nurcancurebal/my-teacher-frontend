@@ -18,8 +18,8 @@ interface Grade {
   class_id: number;
   grade_type: string;
   grade_value: number | null;
-  created_at: string;
-  last_updated: string;
+  created_at: Date;
+  last_updated: Date;
 }
 
 const UpdateGrade: React.FC = () => {

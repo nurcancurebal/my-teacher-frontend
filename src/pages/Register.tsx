@@ -30,7 +30,7 @@ const Register: React.FC = () => {
       setMessage("Kayıt başarılı. Yönlendiriliyorsunuz...");
       localStorage.setItem("token", response.data.accessToken);
       setTimeout(() => {
-        navigate("/dashboard");
+        navigate("/onizleme");
       }, 3000);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {

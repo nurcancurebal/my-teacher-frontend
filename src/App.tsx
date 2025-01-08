@@ -8,7 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import Headers from "./components/Headers";
 import Classes from "./pages/Classes";
 import Navbar from "./components/Navbar";
-import UpdateProfile from "./pages/UpdateProfile";
+import UserInformaition from "./pages/UserInformation";
 import AddGrade from "./pages/AddGrade";
 import UpdateGrade from "./pages/UpdateGrade";
 import AddTeacherNote from "./pages/AddTeacherNote";
@@ -21,9 +21,9 @@ const App: React.FC = () => {
 
   const WHITE_NONTOKEN_PATH_NAMES = [
     "/",
-    "/register",
-    "/forgot-password",
-    "/reset-password",
+    "/kayit-ol",
+    "/parolami-unuttum",
+    "/sifremi-sifirla",
   ];
 
   const isTokenValid = token && token !== "undefined" && token !== "";
@@ -41,16 +41,16 @@ const App: React.FC = () => {
       <main>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/classes" element={<Classes />} />
-          <Route path="/update-profile" element={<UpdateProfile />} />
-          <Route path="/add-grade" element={<AddGrade />} />
-          <Route path="/add-teacher-note" element={<AddTeacherNote />} />
-          <Route path="/update-grade" element={<UpdateGrade />} />
-          <Route path="/students" element={<Students />} />
+          <Route path="/parolami-unuttum" element={<ForgotPassword />} />
+          <Route path="/sifremi-sifirla" element={<ResetPassword />} />
+          <Route path="/kayit-ol" element={<Register />} />
+          <Route path="/onizleme" element={<Dashboard />} />
+          <Route path="/siniflarim" element={<Classes />} />
+          <Route path="/kullanici-bilgilerim" element={<UserInformaition />} />
+          <Route path="/not-ekle" element={<AddGrade />} />
+          <Route path="/ogretmen-notu-ekle" element={<AddTeacherNote />} />
+          <Route path="/not-guncelle" element={<UpdateGrade />} />
+          <Route path="/ogrencilerim" element={<Students />} />
         </Routes>
       </main>
     </div>

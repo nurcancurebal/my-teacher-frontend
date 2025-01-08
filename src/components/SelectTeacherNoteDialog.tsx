@@ -83,7 +83,7 @@ const SelectTeacherNote: React.FC<SelectTeacherNoteProps> = ({
     if (selectedStudentId) {
       setMessage("Öğrenci seçimi başarılı. Not eklemeye yönlendiriliyorsunuz.");
       setTimeout(() => {
-        navigate("/add-teacher-note", {
+        navigate("/ogretmen-notu-ekle", {
           state: { selectedClassId, selectedStudentId },
         });
       }, 3000);

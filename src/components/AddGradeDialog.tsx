@@ -77,7 +77,7 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
       });
       setMessage("Not eklemek için yönlendiriliyorsunuz.");
       setTimeout(() => {
-        navigate("/add-grade", {
+        navigate("/not-ekle", {
           state: { selectedClassId, formattedGradeName },
         });
         setGradeName("");

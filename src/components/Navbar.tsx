@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Disclosure,
@@ -6,8 +6,6 @@ import {
   DisclosurePanel,
   Menu,
   MenuButton,
-  MenuItem,
-  MenuItems,
 } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import instance from "../services/axiosInstance";
@@ -18,49 +16,52 @@ interface User {
   lastname: string;
   username: string;
   email: string;
-  created_at: string;
-  last_updated: string;
+  created_at: Date;
+  last_updated: Date;
 }
 
 const Navbar: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const user = await instance.get<{ data: User }>("user");
-        setUser(user.data.data);
-      } catch (error) {
-        console.error("Kullanıcı bilgileri alınamadı:", error);
-        navigate("/");
-      }
-    };
-
-    fetchUser();
+  const fetchUser = useCallback(async () => {
+    try {
+      const user = await instance.get<{ data: User }>("user");
+      setUser(user.data.data);
+    } catch (error) {
+      console.error("Kullanıcı bilgileri alınamadı:", error);
+      navigate("/");
+    }
   }, [navigate]);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
 
   const navigation = [
     {
       name: "Önizleme",
-      href: "/dashboard",
-      current: location.pathname === "/dashboard",
+      href: "/onizleme",
+      current: location.pathname === "/onizleme",
     },
     {
-      name: "Sınıflarınız",
-      href: "/classes",
-      current: location.pathname === "/classes",
+      name: "Sınıflarım",
+      href: "/siniflarim",
+      current: location.pathname === "/siniflarim",
     },
     {
-      name: "Öğrencileriniz",
-      href: "/students",
-      current: location.pathname === "/students",
+      name: "Öğrencilerim",
+      href: "/ogrencilerim",
+      current: location.pathname === "/ogrencilerim",
     },
   ];
   const userNavigation = [
-    { name: "Profili Düzenle", href: "/update-profile" },
+    {
+      name: "Kullanıcı Bilgilerim",
+      href: "/kullanici-bilgilerim",
+      current: location.pathname === "/kullanici-bilgilerim",
+    },
     { name: "Çıkış", href: "/" },
   ];
 
@@ -99,36 +100,20 @@ const Navbar: React.FC = () => {
 
               <div className="hidden md:block">
                 <div className="ml-4 flex items-center md:ml-6">
-                  {user && (
-                    <div
-                      className="relative inline-block text-left"
-                      onMouseEnter={() => setIsMenuOpen(true)}
-                      onMouseLeave={() => setIsMenuOpen(false)}
-                    >
-                      <button className="text-white text-lg">
-                        {user.username}
-                      </button>
-                      {isMenuOpen && (
-                        <div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5">
-                          <div className="py-1">
-                            <button className="block px-4 py-2 text-sm text-gray-700">
-                              {user.firstname} {user.lastname}
-                            </button>
-                            <button className="block px-4 py-2 text-sm text-gray-700">
-                              {user.email}
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
                   {/* Profile dropdown */}
                   <Menu as="div" className="relative ml-3">
                     <div>
-                      <MenuButton className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                      <MenuButton
+                        className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 p-2"
+                        onClick={() => navigate("/kullanici-bilgilerim")}
+                      >
                         <span className="absolute -inset-1.5" />
                         <span className="sr-only">Open user menu</span>
+                        {user && (
+                          <div className="text-white text-lg mr-2">
+                            {user.username}
+                          </div>
+                        )}
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -145,21 +130,6 @@ const Navbar: React.FC = () => {
                         </svg>
                       </MenuButton>
                     </div>
-                    <MenuItems
-                      transition
-                      className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-                    >
-                      {userNavigation.map((item) => (
-                        <MenuItem key={item.name}>
-                          <a
-                            href={item.href}
-                            className="block px-4 py-2 text-lg text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none"
-                          >
-                            {item.name}
-                          </a>
-                        </MenuItem>
-                      ))}
-                    </MenuItems>
                   </Menu>
                 </div>
               </div>
