@@ -95,37 +95,39 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      <div className="p-16 grid gap-6 lg:grid-cols-5 bg-white my-10">
-        <button
-          className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center"
-          onClick={() => setIsAddClassOpen(true)}
-        >
-          Sınıf Ekle <span className="text-xl">+</span>
-        </button>
-        <button
-          className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center"
-          onClick={() => setIsAddStudentOpen(true)}
-        >
-          Öğrenci Ekle <span className="text-xl">+</span>
-        </button>
-        <button
-          className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center"
-          onClick={() => setIsSelectClassOpen(true)}
-        >
-          Not Ekle <span className="text-xl">+</span>
-        </button>
-        <button
-          className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center"
-          onClick={() => setIsSelectTeacherNoteOpen(true)}
-        >
-          Kişisel Not Ekle <span className="text-xl">+</span>
-        </button>
-        <button
-          onClick={() => setIsSelectGradeOpen(true)}
-          className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center"
-        >
-          Not Güncelle <span className="text-xl">+</span>
-        </button>
+      <div className="p-16 bg-white my-10">
+        <div className="mx-auto max-w-7xl grid gap-6 lg:grid-cols-5 px-5 sm:px-6 lg:px-8">
+          <button
+            className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center min-w-48"
+            onClick={() => setIsAddClassOpen(true)}
+          >
+            <span>Sınıf Ekle</span> <span className="text-xl">+</span>
+          </button>
+          <button
+            className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center min-w-48"
+            onClick={() => setIsAddStudentOpen(true)}
+          >
+            Öğrenci Ekle <span className="text-xl">+</span>
+          </button>
+          <button
+            className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center min-w-48"
+            onClick={() => setIsSelectClassOpen(true)}
+          >
+            Not Ekle <span className="text-xl">+</span>
+          </button>
+          <button
+            className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center min-w-48"
+            onClick={() => setIsSelectTeacherNoteOpen(true)}
+          >
+            Kişisel Not Ekle <span className="text-xl">+</span>
+          </button>
+          <button
+            onClick={() => setIsSelectGradeOpen(true)}
+            className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center min-w-48"
+          >
+            Not Güncelle <span className="text-xl">+</span>
+          </button>
+        </div>
       </div>
 
       <AddClassDialog open={isAddClassOpen} setOpen={setIsAddClassOpen} />

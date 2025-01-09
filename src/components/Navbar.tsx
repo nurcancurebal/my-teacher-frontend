@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Disclosure,
@@ -8,7 +8,6 @@ import {
   MenuButton,
 } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import instance from "../services/axiosInstance";
 
 interface User {
   id: number;
@@ -20,24 +19,24 @@ interface User {
   last_updated: Date;
 }
 
-const Navbar: React.FC = () => {
-  const [user, setUser] = useState<User | null>(null);
+interface NavbarProps {
+  userData: User | null;
+  onProfileUpdate: () => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ userData, onProfileUpdate }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const fetchUser = useCallback(async () => {
-    try {
-      const user = await instance.get<{ data: User }>("user");
-      setUser(user.data.data);
-    } catch (error) {
-      console.error("Kullanıcı bilgileri alınamadı:", error);
-      navigate("/");
-    }
-  }, [navigate]);
+  const handleProfileUpdate = useCallback(() => {
+    console.log("navbar handleProfileUpdate");
+    onProfileUpdate();
+  }, [onProfileUpdate]);
 
   useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
+    console.log("navbar useEffect");
+    handleProfileUpdate();
+  }, [handleProfileUpdate]);
 
   const navigation = [
     {
@@ -72,11 +71,17 @@ const Navbar: React.FC = () => {
   return (
     <>
       <div className="min-h-full">
-        <Disclosure as="nav" className="bg-gray-800">
+        <Disclosure as="nav" style={{ backgroundColor: "#191b2b" }}>
           <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
             <div className="flex h-24 items-center justify-between">
               <div className="flex items-center">
                 <div className="shrink-0" />
+                <div
+                  style={{ textShadow: "3px 2px 1px #322240" }}
+                  className="text-3xl font-sans font-bold text-white"
+                >
+                  My Teacher
+                </div>
                 <div className="hidden md:block">
                   <div className="ml-10 flex items-baseline space-x-4">
                     {navigation.map((item) => (
@@ -104,14 +109,14 @@ const Navbar: React.FC = () => {
                   <Menu as="div" className="relative ml-3">
                     <div>
                       <MenuButton
-                        className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 p-2"
+                        className="relative flex max-w-xs items-center rounded-full hover:bg-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 p-2"
                         onClick={() => navigate("/kullanici-bilgilerim")}
                       >
                         <span className="absolute -inset-1.5" />
                         <span className="sr-only">Open user menu</span>
-                        {user && (
+                        {userData && (
                           <div className="text-white text-lg mr-2">
-                            {user.username}
+                            {userData.username}
                           </div>
                         )}
                         <svg
@@ -190,10 +195,10 @@ const Navbar: React.FC = () => {
                 </div>
                 <div className="ml-3">
                   <div className="text-base/5 font-medium text-white">
-                    {user?.username}
+                    {userData?.username}
                   </div>
                   <div className="text-sm font-medium text-gray-400">
-                    {user?.email}
+                    {userData?.email}
                   </div>
                 </div>
               </div>

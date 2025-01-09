@@ -1,7 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 
-import instance from "../services/axiosInstance";
 import UpdateProfileDialog from "../components/UpdateProfileDialog";
 
 interface User {
@@ -14,29 +12,26 @@ interface User {
   last_updated: Date;
 }
 
-const UserInformaition: React.FC = () => {
-  const navigate = useNavigate();
-  const [userData, setUserData] = useState<User | undefined>();
+interface UserInformaitionProps {
+  userData: User | null;
+  onProfileUpdate: () => void;
+}
+
+const UserInformaition: React.FC<UserInformaitionProps> = ({
+  userData,
+  onProfileUpdate,
+}) => {
   const [updateProfileOpen, setUpdateProfileOpen] = useState(false);
 
-  const fetchUser = useCallback(async () => {
-    try {
-      const user = await instance.get<{ data: User }>("user");
-      const userData = user.data.data;
-      setUserData(userData);
-    } catch (error) {
-      console.error(error);
-      navigate("/onizleme");
-    }
-  }, [navigate]);
+  const handleProfileUpdate = () => {
+    console.log("user information handleProfileUpdate");
+    onProfileUpdate();
+  };
 
   useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
-
-  const handleProfileUpdate = () => {
-    fetchUser();
-  };
+    console.log("user information useEffect");
+    onProfileUpdate();
+  }, [onProfileUpdate]);
 
   return (
     <>

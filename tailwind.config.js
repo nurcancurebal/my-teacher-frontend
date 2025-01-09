@@ -6,7 +6,11 @@ module.exports = {
   ],
 
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ["Noto Serif", "serif"],
+      },
+    },
   },
   plugins: [],
 };
