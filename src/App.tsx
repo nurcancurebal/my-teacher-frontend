@@ -11,14 +11,15 @@ import ForgotPassword from "./pages/ForgotPasword";
 import ResetPassword from "./pages/ResetPassword";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
-import Headers from "./components/Headers";
 import Classes from "./pages/Classes";
-import Navbar from "./components/Navbar";
 import UserInformaition from "./pages/UserInformation";
 import AddGrade from "./pages/AddGrade";
 import UpdateGrade from "./pages/UpdateGrade";
 import AddTeacherNote from "./pages/AddTeacherNote";
 import Students from "./pages/Students";
+import UpdateProfile from "./pages/UpdateProfile";
+import Navbar from "./components/Navbar";
+import Headers from "./components/Headers";
 
 import instance from "./services/axiosInstance";
 
@@ -80,11 +81,7 @@ const App: React.FC = () => {
   }
   return (
     <div>
-      {isTokenValid ? (
-        <Navbar userData={user} onProfileUpdate={handleProfileUpdate} />
-      ) : (
-        <Headers />
-      )}
+      {isTokenValid ? <Navbar userData={user} /> : <Headers />}
       <main>
         <Routes>
           <Route path="/" element={<Login />} />
@@ -95,17 +92,21 @@ const App: React.FC = () => {
           <Route path="/siniflarim" element={<Classes />} />
           <Route
             path="/kullanici-bilgilerim"
-            element={
-              <UserInformaition
-                userData={user}
-                onProfileUpdate={handleProfileUpdate}
-              />
-            }
+            element={<UserInformaition userData={user} />}
           />
           <Route path="/not-ekle" element={<AddGrade />} />
           <Route path="/ogretmen-notu-ekle" element={<AddTeacherNote />} />
           <Route path="/not-guncelle" element={<UpdateGrade />} />
           <Route path="/ogrencilerim" element={<Students />} />
+          <Route
+            path="/profili-guncelle"
+            element={
+              <UpdateProfile
+                userData={user}
+                onProfileUpdate={handleProfileUpdate}
+              />
+            }
+          />
         </Routes>
       </main>
     </div>

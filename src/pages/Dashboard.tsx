@@ -98,32 +98,32 @@ const Dashboard: React.FC = () => {
       <div className="p-16 bg-white my-10">
         <div className="mx-auto max-w-7xl grid gap-6 lg:grid-cols-5 px-5 sm:px-6 lg:px-8">
           <button
-            className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center min-w-48"
+            className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-md text-center min-w-48"
             onClick={() => setIsAddClassOpen(true)}
           >
             <span>Sınıf Ekle</span> <span className="text-xl">+</span>
           </button>
           <button
-            className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center min-w-48"
+            className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-md text-center min-w-48"
             onClick={() => setIsAddStudentOpen(true)}
           >
             Öğrenci Ekle <span className="text-xl">+</span>
           </button>
           <button
-            className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center min-w-48"
+            className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-md text-center min-w-48"
             onClick={() => setIsSelectClassOpen(true)}
           >
             Not Ekle <span className="text-xl">+</span>
           </button>
           <button
-            className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center min-w-48"
+            className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-md text-center min-w-48"
             onClick={() => setIsSelectTeacherNoteOpen(true)}
           >
             Kişisel Not Ekle <span className="text-xl">+</span>
           </button>
           <button
             onClick={() => setIsSelectGradeOpen(true)}
-            className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-center min-w-48"
+            className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-md text-center min-w-48"
           >
             Not Güncelle <span className="text-xl">+</span>
           </button>

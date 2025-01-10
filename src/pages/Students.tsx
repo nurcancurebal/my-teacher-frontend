@@ -188,39 +188,43 @@ const Students: React.FC = () => {
           Tümü
         </button>
 
-        <table className="border-collapse border border-slate-400 w-full mt-5">
+        <table className="border-collapse w-full mt-5 border border-slate-300">
           <thead>
             <tr>
-              <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
+              <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
                 Öğrenci Numarası
               </th>
-              <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
+              <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
                 Öğrenci Adı Soyadı
               </th>
-              <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
+              <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
                 Cinsiyeti
               </th>
-              <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
+              <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
                 Sınıfı
               </th>
+              <th className="border-b border-slate-400"></th>
             </tr>
           </thead>
           <tbody>
             {students.map((student, index) => (
-              <tr key={index}>
-                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4 text-center">
+              <tr
+                key={index}
+                className={index % 2 === 0 ? "bg-gray-200" : "bg-gray-100"}
+              >
+                <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                   {student.student_number}
                 </td>
-                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4 text-center">
+                <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                   {student.student_name} {student.student_lastname}
                 </td>
-                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4 text-center">
+                <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                   {student.gender}
                 </td>
-                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4 text-center">
+                <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                   {classes.find((c) => c.id === student.class_id)?.class_name}
                 </td>
-                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
+                <td className="xl:text-lg md:text-base text-sm p-4">
                   <div className="flex justify-center mx-auto">
                     <button
                       className="mx-4"

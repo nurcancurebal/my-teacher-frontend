@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Disclosure,
@@ -6,6 +6,8 @@ import {
   DisclosurePanel,
   Menu,
   MenuButton,
+  MenuItems,
+  MenuItem,
 } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
@@ -21,22 +23,12 @@ interface User {
 
 interface NavbarProps {
   userData: User | null;
-  onProfileUpdate: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ userData, onProfileUpdate }) => {
+const Navbar: React.FC<NavbarProps> = ({ userData }) => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const handleProfileUpdate = useCallback(() => {
-    console.log("navbar handleProfileUpdate");
-    onProfileUpdate();
-  }, [onProfileUpdate]);
-
-  useEffect(() => {
-    console.log("navbar useEffect");
-    handleProfileUpdate();
-  }, [handleProfileUpdate]);
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
 
   const navigation = [
     {
@@ -57,9 +49,9 @@ const Navbar: React.FC<NavbarProps> = ({ userData, onProfileUpdate }) => {
   ];
   const userNavigation = [
     {
-      name: "Kullanıcı Bilgilerim",
-      href: "/kullanici-bilgilerim",
-      current: location.pathname === "/kullanici-bilgilerim",
+      name: "Profili Güncelle",
+      href: "/profili-guncelle",
+      current: location.pathname === "/profili-guncelle",
     },
     { name: "Çıkış", href: "/" },
   ];
@@ -71,17 +63,18 @@ const Navbar: React.FC<NavbarProps> = ({ userData, onProfileUpdate }) => {
   return (
     <>
       <div className="min-h-full">
-        <Disclosure as="nav" style={{ backgroundColor: "#191b2b" }}>
+        <Disclosure as="nav" style={{ backgroundColor: "#291b35" }}>
           <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
             <div className="flex h-24 items-center justify-between">
               <div className="flex items-center">
                 <div className="shrink-0" />
-                <div
+                <button
                   style={{ textShadow: "3px 2px 1px #322240" }}
                   className="text-3xl font-sans font-bold text-white"
+                  onClick={() => navigate("/onizleme")}
                 >
                   My Teacher
-                </div>
+                </button>
                 <div className="hidden md:block">
                   <div className="ml-10 flex items-baseline space-x-4">
                     {navigation.map((item) => (
@@ -107,18 +100,32 @@ const Navbar: React.FC<NavbarProps> = ({ userData, onProfileUpdate }) => {
                 <div className="ml-4 flex items-center md:ml-6">
                   {/* Profile dropdown */}
                   <Menu as="div" className="relative ml-3">
-                    <div>
-                      <MenuButton
-                        className="relative flex max-w-xs items-center rounded-full hover:bg-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 p-2"
-                        onClick={() => navigate("/kullanici-bilgilerim")}
-                      >
-                        <span className="absolute -inset-1.5" />
-                        <span className="sr-only">Open user menu</span>
+                    <div className="flex items-center">
+                      <div className="relative inline-block text-left">
                         {userData && (
-                          <div className="text-white text-lg mr-2">
+                          <button
+                            className="text-white text-lg mr-2"
+                            onClick={() => navigate("/kullanici-bilgilerim")}
+                            onMouseEnter={() => setIsDropdownOpen(true)}
+                            onMouseLeave={() => setIsDropdownOpen(false)}
+                          >
                             {userData.username}
+                          </button>
+                        )}
+                        {isDropdownOpen && (
+                          <div
+                            className="absolute z-10 w-32 right-0 origin-top-right text-white"
+                            onMouseEnter={() => setIsDropdownOpen(true)}
+                            onMouseLeave={() => setIsDropdownOpen(false)}
+                          >
+                            Kullanıcı Bilgileri
                           </div>
                         )}
+                      </div>
+
+                      <MenuButton className="relative flex max-w-xs items-center rounded-full hover:bg-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 p-1">
+                        <span className="absolute -inset-1.5" />
+                        <span className="sr-only">Open user menu</span>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -135,6 +142,21 @@ const Navbar: React.FC<NavbarProps> = ({ userData, onProfileUpdate }) => {
                         </svg>
                       </MenuButton>
                     </div>
+                    <MenuItems
+                      transition
+                      className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in rounded-md"
+                    >
+                      {userNavigation.map((item) => (
+                        <MenuItem key={item.name}>
+                          <a
+                            href={item.href}
+                            className="block px-4 py-2 text-lg text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none"
+                          >
+                            {item.name}
+                          </a>
+                        </MenuItem>
+                      ))}
+                    </MenuItems>
                   </Menu>
                 </div>
               </div>
@@ -176,7 +198,10 @@ const Navbar: React.FC<NavbarProps> = ({ userData, onProfileUpdate }) => {
               ))}
             </div>
             <div className="border-t border-gray-700 pb-3 pt-4">
-              <div className="flex items-center px-5">
+              <button
+                className="flex items-center px-5"
+                onClick={() => navigate("/kullanici-bilgilerim")}
+              >
                 <div className="shrink-0">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -194,14 +219,14 @@ const Navbar: React.FC<NavbarProps> = ({ userData, onProfileUpdate }) => {
                   </svg>
                 </div>
                 <div className="ml-3">
-                  <div className="text-base/5 font-medium text-white">
+                  <div className="text-base/5 font-medium text-white text-left">
                     {userData?.username}
                   </div>
                   <div className="text-sm font-medium text-gray-400">
                     {userData?.email}
                   </div>
                 </div>
-              </div>
+              </button>
               <div className="mt-3 space-y-1 px-2">
                 {userNavigation.map((item) => (
                   <DisclosureButton

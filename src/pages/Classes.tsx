@@ -100,45 +100,50 @@ const Classes: React.FC = () => {
   return (
     <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 xl:px-0 md:px-24 px-12">
       <div className="overflow-x-auto xl:col-start-2 col-span-2 xl:p-0">
-        <table className="border-collapse border border-slate-400 w-full">
+        <table className="border-collapse border border-slate-300 w-full">
           <thead>
             <tr>
-              <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
+              <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
                 Sınıf Adı
               </th>
-              <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
+              <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
                 Açıklama
               </th>
-              <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
+              <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
                 Toplam Öğrenci
               </th>
-              <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
+              <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
                 Oluşturulma Tarihi
               </th>
-              <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
+              <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
                 Güncellenme Tarihi
               </th>
+              <th className="border-b border-slate-400"></th>
+              <th className="border-b border-slate-400"></th>
             </tr>
           </thead>
           <tbody>
             {classes.map((classItem, index) => (
-              <tr key={index}>
-                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4 text-center">
+              <tr
+                key={index}
+                className={index % 2 === 0 ? "bg-gray-200" : "bg-gray-100"}
+              >
+                <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                   {classItem.class_name}
                 </td>
-                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4 text-center">
+                <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                   {classItem.explanation}
                 </td>
-                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4 text-center">
+                <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                   {studentCount[classItem.id] || 0}
                 </td>
-                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4 text-center">
+                <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                   {new Date(classItem.created_at).toLocaleDateString()}
                 </td>
-                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4 text-center">
+                <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                   {new Date(classItem.last_updated).toLocaleDateString()}
                 </td>
-                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
+                <td className="xl:text-lg md:text-base text-sm p-4">
                   <button
                     className="flex m-auto"
                     onClick={() => handleUpdateClick(classItem)}
@@ -159,7 +164,7 @@ const Classes: React.FC = () => {
                     </svg>
                   </button>
                 </td>
-                <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
+                <td className="xl:text-lg md:text-base text-sm p-4">
                   <button
                     className="flex m-auto"
                     onClick={() => handleDeleteClick(classItem)}
