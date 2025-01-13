@@ -141,13 +141,13 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
       />
 
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div className="flex min-h-full items-end justify-center p-4 text-center items-center sm:p-0">
+        <div className="flex min-h-full items-end justify-center text-center items-center">
           <DialogPanel
             transition
-            className="relative transform overflow-hidden rounded-md bg-white text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:p-12 sm:max-w-lg data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
+            className="relative transform overflow-hidden rounded-md bg-white text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 p-5 sm:max-w-lg data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
           >
-            <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-              <div className="sm:flex sm:items-start">
+            <div className="p-5">
+              <div className="sm:flex sm:items-start pb-5">
                 <div className="text-left mx-auto">
                   <DialogTitle
                     as="h3"
@@ -159,57 +159,55 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
                   </DialogTitle>
                 </div>
               </div>
+
+              {showStudentSelection ? (
+                <div className="grid sm:grid-cols-3 grid-cols-2 gap-5">
+                  {classes.map((classItem, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      className={`mx-auto m-4 inline-flex w-24 py-2 justify-center rounded-md text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 focus:bg-gray-200 active:bg-gray-100 transition-all ${
+                        selectedClassId === classItem.id
+                          ? "bg-gray-200"
+                          : "bg-white"
+                      }`}
+                      onClick={() => setSelectedClassId(classItem.id)}
+                    >
+                      {classItem.class_name}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="mx-10">
+                  <label
+                    htmlFor="studentName"
+                    className="block text-lg font-medium text-gray-900"
+                  >
+                    Not Adı:
+                  </label>
+
+                  <input
+                    id="studentName"
+                    name="studentName"
+                    type="text"
+                    required
+                    value={gradeName}
+                    onChange={(e) => setGradeName(e.target.value)}
+                    onKeyDown={handleKeySelectClassName}
+                    className="mt-5 block w-full rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3"
+                  />
+                </div>
+              )}
             </div>
 
-            {showStudentSelection ? (
-              <div className="mt-3">
-                {classes.map((classItem, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    className={`m-4 inline-flex w-24 py-2 justify-center rounded-md text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 focus:bg-gray-200 active:bg-gray-100 transition-all ${
-                      selectedClassId === classItem.id
-                        ? "bg-gray-200"
-                        : "bg-white"
-                    }`}
-                    onClick={() => setSelectedClassId(classItem.id)}
-                  >
-                    {classItem.class_name}
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <div className="mx-10">
-                <label
-                  htmlFor="studentName"
-                  className="mt-5 block text-lg font-medium text-gray-900"
-                >
-                  Not Adı:
-                </label>
-
-                <input
-                  id="studentName"
-                  name="studentName"
-                  type="text"
-                  required
-                  value={gradeName}
-                  onChange={(e) => setGradeName(e.target.value)}
-                  onKeyDown={handleKeySelectClassName}
-                  className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3"
-                />
-              </div>
-            )}
-
             {message && (
-              <p className="mt-2 text-center text-base text-green-600">
-                {message}
-              </p>
+              <p className="text-center text-base text-green-600">{message}</p>
             )}
             {error && (
-              <p className="mt-2 text-center text-base text-red-600">{error}</p>
+              <p className="text-center text-base text-red-600">{error}</p>
             )}
 
-            <div className="my-5 bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+            <div className="bg-gray-50 p-5 sm:flex sm:flex-row-reverse">
               <button
                 type="button"
                 className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24"

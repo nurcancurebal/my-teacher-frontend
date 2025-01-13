@@ -11,9 +11,10 @@ import instance from "../services/axiosInstance";
 interface AddClassProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+  onAdd: () => void;
 }
 
-const AddClass: React.FC<AddClassProps> = ({ open, setOpen }) => {
+const AddClass: React.FC<AddClassProps> = ({ open, setOpen, onAdd }) => {
   const [className, setClassName] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -31,6 +32,7 @@ const AddClass: React.FC<AddClassProps> = ({ open, setOpen }) => {
         setClassName("");
         setExplanation("");
         setMessage("");
+        onAdd();
       }, 3000);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -86,24 +88,24 @@ const AddClass: React.FC<AddClassProps> = ({ open, setOpen }) => {
       />
 
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div className="flex min-h-full items-end justify-center p-4 text-center items-center sm:p-0">
+        <div className="flex min-h-full items-end justify-center text-center items-center">
           <DialogPanel
             transition
             className="relative transform overflow-hidden rounded-md bg-white text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:p-5 sm:max-w-lg data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
           >
-            <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+            <div className="bg-white p-5">
               <div className="sm:flex sm:items-start">
                 <div className="mt-3 sm:ml-4 sm:mt-0 text-left">
                   <DialogTitle
                     as="h3"
-                    className="text-2xl text-center font-semibold text-gray-900"
+                    className="text-2xl text-center font-semibold text-gray-900 mb-5"
                   >
                     Sınıf Ekle
                   </DialogTitle>
                   <div>
                     <label
                       htmlFor="className"
-                      className="mt-5 block text-lg font-medium text-gray-900"
+                      className="block text-lg font-medium text-gray-900"
                     >
                       Sınıf Adı:
                     </label>
@@ -135,16 +137,14 @@ const AddClass: React.FC<AddClassProps> = ({ open, setOpen }) => {
                       onChange={(e) => setExplanation(e.target.value)}
                     />
                   </div>
-                  {error && (
-                    <p className="mt-3 text-base text-red-600">{error}</p>
-                  )}
+                  {error && <p className="text-base text-red-600">{error}</p>}
                   {message && (
-                    <p className="mt-3 text-base text-green-600">{message}</p>
+                    <p className="text-base text-green-600">{message}</p>
                   )}
                 </div>
               </div>
             </div>
-            <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+            <div className="bg-gray-50 p-5 sm:flex sm:flex-row-reverse">
               <button
                 type="button"
                 onClick={addClass}

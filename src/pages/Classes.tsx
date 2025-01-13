@@ -93,8 +93,8 @@ const Classes: React.FC = () => {
     setSelectedUpdateClass(null);
   };
 
-  const handleClassUpdate = () => {
-    fetchClasses(); // Sınıf listesini yeniden yükle
+  const handleClassUpdate = async () => {
+    await fetchClasses(); // Sınıf listesini yeniden yükle
   };
 
   return (
@@ -228,7 +228,11 @@ const Classes: React.FC = () => {
         />
       )}
 
-      <AddClassDialog open={isAddClassOpen} setOpen={setIsAddClassOpen} />
+      <AddClassDialog
+        open={isAddClassOpen}
+        setOpen={setIsAddClassOpen}
+        onAdd={handleClassUpdate}
+      />
     </div>
   );
 };

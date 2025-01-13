@@ -69,7 +69,7 @@ const Navbar: React.FC<NavbarProps> = ({ userData }) => {
               <div className="flex items-center">
                 <div className="shrink-0" />
                 <button
-                  style={{ textShadow: "3px 2px 1px #322240" }}
+                  style={{ textShadow: "3px 2px 1px #54376d" }}
                   className="text-3xl font-sans font-bold text-white"
                   onClick={() => navigate("/onizleme")}
                 >

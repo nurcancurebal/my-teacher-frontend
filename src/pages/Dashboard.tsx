@@ -3,14 +3,12 @@ import instance from "../services/axiosInstance";
 import AddClassDialog from "../components/AddClassDialog";
 import AddStudentDialog from "../components/AddStudentDialog";
 import AddGradeDialog from "../components/AddGradeDialog";
-import UpdateGradeDialog from "../components/UpdateGradeDialog";
-import SelectTeacherNoteDialog from "../components/SelectTeacherNoteDialog";
+import AddTeacherNoteDialog from "../components/AddTeacherNoteDialog";
 
 const Dashboard: React.FC = () => {
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
   const [isAddStudentOpen, setIsAddStudentOpen] = useState(false);
   const [isSelectClassOpen, setIsSelectClassOpen] = useState(false);
-  const [isSelectGradeOpen, setIsSelectGradeOpen] = useState(false);
   const [isSelectTeacherNoteOpen, setIsSelectTeacherNoteOpen] = useState(false);
   const [totalClasses, setTotalClasses] = useState<number | null>(0);
   const [totalStudents, setTotalStudents] = useState<number | null>(0);
@@ -62,10 +60,6 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const handleStudentUpdate = async () => {
-    await fetchTotalStudentsFunc();
-  };
-
   const fetchLastAddedGrade = async () => {
     try {
       const response = await instance.get("/grade/last-added");
@@ -96,7 +90,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       <div className="p-16 bg-white my-10">
-        <div className="mx-auto max-w-7xl grid gap-6 lg:grid-cols-5 px-5 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl grid gap-8 lg:grid-cols-4 px-5 sm:px-6 lg:px-8">
           <button
             className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-md text-center min-w-48"
             onClick={() => setIsAddClassOpen(true)}
@@ -121,27 +115,21 @@ const Dashboard: React.FC = () => {
           >
             Kişisel Not Ekle <span className="text-xl">+</span>
           </button>
-          <button
-            onClick={() => setIsSelectGradeOpen(true)}
-            className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-md text-center min-w-48"
-          >
-            Not Güncelle <span className="text-xl">+</span>
-          </button>
         </div>
       </div>
 
-      <AddClassDialog open={isAddClassOpen} setOpen={setIsAddClassOpen} />
+      <AddClassDialog
+        open={isAddClassOpen}
+        setOpen={setIsAddClassOpen}
+        onAdd={() => fetchTotalClassesFunc()}
+      />
       <AddStudentDialog
         open={isAddStudentOpen}
         setOpen={setIsAddStudentOpen}
-        onAdd={handleStudentUpdate}
+        onAdd={async () => await fetchTotalStudentsFunc()}
       />
       <AddGradeDialog open={isSelectClassOpen} setOpen={setIsSelectClassOpen} />
-      <UpdateGradeDialog
-        open={isSelectGradeOpen}
-        setOpen={setIsSelectGradeOpen}
-      />
-      <SelectTeacherNoteDialog
+      <AddTeacherNoteDialog
         open={isSelectTeacherNoteOpen}
         setOpen={setIsSelectTeacherNoteOpen}
       />

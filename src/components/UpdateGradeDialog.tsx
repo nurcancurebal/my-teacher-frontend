@@ -148,7 +148,7 @@ const SelectGrade: React.FC<SelectGradeProps> = ({ open, setOpen }) => {
             transition
             className="relative transform overflow-hidden rounded-md bg-white text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:p-12 sm:max-w-lg data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
           >
-            <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+            <div className="bg-white p-5">
               <div className="sm:flex sm:items-start">
                 <div className="text-left mx-auto">
                   <DialogTitle
@@ -164,12 +164,16 @@ const SelectGrade: React.FC<SelectGradeProps> = ({ open, setOpen }) => {
             </div>
 
             {showStudentSelection ? (
-              <div className="mt-3">
+              <div className="grid sm:grid-cols-3 grid-cols-2 gap-5">
                 {classes.map((classItem, index) => (
                   <button
                     key={index}
                     type="button"
-                    className="m-5 inline-flex justify-center rounded-md bg-white text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 w-24 py-2"
+                    className={`mx-auto m-4 inline-flex w-24 py-2 justify-center rounded-md text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 focus:bg-gray-200 active:bg-gray-100 transition-all ${
+                      selectedClassId === classItem.id
+                        ? "bg-gray-200"
+                        : "bg-white"
+                    }`}
                     onClick={() => setSelectedClassId(classItem.id)}
                   >
                     {classItem.class_name}
@@ -192,12 +196,10 @@ const SelectGrade: React.FC<SelectGradeProps> = ({ open, setOpen }) => {
             )}
 
             {message && (
-              <p className="mt-2 text-center text-base text-green-600">
-                {message}
-              </p>
+              <p className="text-center text-base text-green-600">{message}</p>
             )}
             {error && (
-              <p className="mt-2 text-center text-base text-red-600">{error}</p>
+              <p className="text-center text-base text-red-600">{error}</p>
             )}
 
             <div className="my-5 bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">

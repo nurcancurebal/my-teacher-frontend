@@ -166,27 +166,29 @@ const Students: React.FC = () => {
   return (
     <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 xl:px-0 md:px-24 px-12">
       <div className="overflow-x-auto xl:col-start-2 col-span-2 xl:p-0">
-        {classes.map((classItem, index) => (
+        <div className="grid 2xl:grid-cols-7 xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 grid-cols-2">
+          {classes.map((classItem, index) => (
+            <button
+              key={index}
+              type="button"
+              className={`mx-auto m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${
+                selectedClassId === classItem.id ? "bg-slate-200" : "bg-white"
+              }`}
+              onClick={() => handleSelectedClass(classItem)}
+            >
+              {classItem.class_name}
+            </button>
+          ))}
           <button
-            key={index}
             type="button"
-            className={`m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${
-              selectedClassId === classItem.id ? "bg-slate-200" : "bg-white"
+            className={`mx-auto m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${
+              selectedClassId === null ? "bg-slate-200" : "bg-white"
             }`}
-            onClick={() => handleSelectedClass(classItem)}
+            onClick={() => handleAllStudents()}
           >
-            {classItem.class_name}
+            Tümü
           </button>
-        ))}
-        <button
-          type="button"
-          className={`m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${
-            selectedClassId === null ? "bg-slate-200" : "bg-white"
-          }`}
-          onClick={() => handleAllStudents()}
-        >
-          Tümü
-        </button>
+        </div>
 
         <table className="border-collapse w-full mt-5 border border-slate-300">
           <thead>
@@ -323,7 +325,7 @@ const Students: React.FC = () => {
           open={updateDialogOpen}
           setOpen={handleUpdateDialogClose}
           student={selectedUpdateStudent}
-          onUpdate={() => fetchStudents()} // Geri çağırma fonksiyonunu geç
+          onUpdate={async () => await fetchStudents()} // Geri çağırma fonksiyonunu geç
         />
       )}
 
@@ -334,7 +336,7 @@ const Students: React.FC = () => {
           id={selectedDeleteStudent.id}
           studentName={selectedDeleteStudent.student_name}
           studentLastName={selectedDeleteStudent.student_lastname}
-          onDelete={() => fetchStudents()} // Geri çağırma fonksiyonunu geç
+          onDelete={async () => await fetchStudents()} // Geri çağırma fonksiyonunu geç
         />
       )}
 
@@ -342,7 +344,7 @@ const Students: React.FC = () => {
         <AddStudentDialog
           open={addDialogOpen}
           setOpen={() => setAddDialogOpen(false)}
-          onAdd={() => fetchStudents()} // Geri çağırma fonksiyonunu geç
+          onAdd={async () => await fetchStudents()} // Geri çağırma fonksiyonunu geç
         />
       )}
     </div>
