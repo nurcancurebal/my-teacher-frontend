@@ -116,7 +116,6 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({
             setError("Şifre en az bir harf ve bir rakam içermelidir.");
             break;
           default:
-            console.log(errorMessage);
             setError(
               "Bir hata oluştu. Lütfen tekrar deneyin veya daha sonra tekrar deneyin."
             );

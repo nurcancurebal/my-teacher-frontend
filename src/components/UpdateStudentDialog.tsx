@@ -184,12 +184,10 @@ const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
             break;
           default:
             setError("Bir hata oluştu. Lütfen tekrar deneyin.");
-            console.log(errorMessage);
         }
         return;
       }
       setError("Bir hata oluştu. Lütfen tekrar deneyin.");
-      console.log(error);
     }
   };
 
@@ -229,12 +227,9 @@ const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
               </div>
 
               <div className="mt-3 mx-6">
-                <label
-                  htmlFor="className"
-                  className="block text-lg font-medium text-gray-900"
-                >
+                <div className="block text-lg font-medium text-gray-900">
                   Sınıf Seçiniz:
-                </label>
+                </div>
                 <div className="grid sm:grid-cols-3 grid-cols-2 gap-5">
                   {classes.map((classItem, index) => (
                     <button
@@ -254,7 +249,7 @@ const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
               <div className="mx-5 mt-5">
                 <div>
                   <label
-                    htmlFor="studentName"
+                    htmlFor="studentTc"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
                     Öğrenci TC:
@@ -333,12 +328,9 @@ const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="studentNumber"
-                    className="mt-5 block text-lg font-medium text-gray-900"
-                  >
+                  <div className="mt-5 block text-lg font-medium text-gray-900">
                     Öğrenci Cinsiyeti:
-                  </label>
+                  </div>
 
                   <div className="grid grid-cols-2">
                     <button
@@ -362,7 +354,7 @@ const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
                 </div>
                 <div>
                   <label
-                    htmlFor="studentNumber"
+                    htmlFor="datePicker"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
                     Doğum Tarihi:
@@ -372,8 +364,8 @@ const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
                     useRange={false}
                     asSingle={true}
                     required={true}
-                    inputId="datepicker"
-                    inputName="datepicker"
+                    inputId="datePicker"
+                    inputName="datePicker"
                     value={date}
                     placeholder="Doğum Tarihi Seçiniz"
                     displayFormat="DD.MM.YYYY"

@@ -46,6 +46,11 @@ const Navbar: React.FC<NavbarProps> = ({ userData }) => {
       href: "/ogrencilerim",
       current: location.pathname === "/ogrencilerim",
     },
+    {
+      name: "Notlar",
+      href: "/notlar",
+      current: location.pathname === "/notlar",
+    },
   ];
   const userNavigation = [
     {

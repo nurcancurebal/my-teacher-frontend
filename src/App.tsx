@@ -20,6 +20,7 @@ import Students from "./pages/Students";
 import UpdateProfile from "./pages/UpdateProfile";
 import Navbar from "./components/Navbar";
 import Headers from "./components/Headers";
+import Grades from "./pages/Grades";
 
 import instance from "./services/axiosInstance";
 
@@ -50,7 +51,6 @@ const App: React.FC = () => {
   const isTokenValid = token && token !== "undefined" && token !== "";
 
   const fetchUser = useCallback(async () => {
-    console.log("app.tsx fetchUser");
     try {
       const user = await instance.get<{ data: User }>("user");
       setUser(user.data.data);
@@ -61,14 +61,12 @@ const App: React.FC = () => {
   }, [navigate]);
 
   useEffect(() => {
-    console.log("app.tsx useEffect");
     if (isTokenValid) {
       fetchUser();
     }
   }, [isTokenValid, fetchUser]);
 
   const handleProfileUpdate = useCallback(() => {
-    console.log("app.tsx handleProfileUpdate");
     fetchUser();
   }, [fetchUser]);
 
@@ -107,6 +105,7 @@ const App: React.FC = () => {
               />
             }
           />
+          <Route path="/notlar" element={<Grades />} />
         </Routes>
       </main>
     </div>

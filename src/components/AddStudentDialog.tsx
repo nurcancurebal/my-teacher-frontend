@@ -33,7 +33,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
   const [classes, setClasses] = useState<ClassItem[]>([]);
   const [studentName, setStudentName] = useState<string>("");
   const [studentLastname, setStudentLastName] = useState<string>("");
-  const [studentNumber, setStudentNumber] = useState<number>();
+  const [studentNumber, setStudentNumber] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
@@ -44,28 +44,39 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
   });
   const [gender, setGender] = useState<string>("");
 
+  const isDisabled = classes.length === 0;
+
   useEffect(() => {
     if (open) {
-      getClasses();
-      setstudentTc("");
-      setStudentName("");
-      setStudentLastName("");
-      setStudentNumber(0);
-      setGender("");
-      setDate({ startDate: null, endDate: null });
-      setMessage("");
-      setError("");
-      setSelectedClassId(null);
+      fetchClasses();
+      resetForm();
     }
   }, [open]); // `open` prop'u değiştiğinde `useEffect` çalışır
 
-  const getClasses = async () => {
+  const fetchClasses = async () => {
     try {
-      const classes = await instance.get("class");
-      setClasses(classes.data.data);
+      const response = await instance.get("class");
+      const classes = response.data.data;
+      if (classes.length > 0) {
+        setClasses(classes);
+      } else {
+        setError("Sınıf bulunamadı. Lütfen önce sınıf ekleyin.");
+      }
     } catch (error) {
       setError("Bir hata oluştu. Lütfen tekrar deneyin.");
     }
+  };
+
+  const resetForm = () => {
+    setstudentTc("");
+    setStudentName("");
+    setStudentLastName("");
+    setStudentNumber("");
+    setGender("");
+    setDate({ startDate: null, endDate: null });
+    setMessage("");
+    setError("");
+    setSelectedClassId(null);
   };
 
   const handleAddStudent = async () => {
@@ -93,13 +104,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
       });
       setMessage("Öğrenci başarıyla eklendi.");
       setTimeout(() => {
-        setstudentTc("");
-        setStudentName("");
-        setStudentLastName("");
-        setStudentNumber(0);
-        setGender("");
-        setDate({ startDate: null, endDate: null });
-        setSelectedClassId(null);
+        resetForm();
         onAdd();
       }, 3000);
     } catch (error) {
@@ -163,15 +168,6 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
 
   const cancelReturn = () => {
     setOpen(false);
-    setstudentTc("");
-    setStudentName("");
-    setStudentLastName("");
-    setStudentNumber(0);
-    setGender("");
-    setDate({ startDate: null, endDate: null });
-    setMessage("");
-    setError("");
-    setSelectedClassId(null);
   };
 
   const handleKeyAddStudent = (
@@ -236,7 +232,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
               <div className="m-6">
                 <div>
                   <label
-                    htmlFor="studentName"
+                    htmlFor="studentTc"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
                     Öğrenci TC:
@@ -250,7 +246,8 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
                     value={studentTc}
                     onChange={(e) => setstudentTc(e.target.value)}
                     onKeyDown={handleKeyAddStudent}
-                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3"
+                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3 disabled:opacity-75"
+                    disabled={isDisabled}
                   />
                 </div>
 
@@ -270,7 +267,8 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
                     value={studentName}
                     onChange={(e) => setStudentName(e.target.value)}
                     onKeyDown={handleKeyAddStudent}
-                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3"
+                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3 disabled:opacity-75"
+                    disabled={isDisabled}
                   />
                 </div>
 
@@ -290,7 +288,8 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
                     value={studentLastname}
                     onChange={(e) => setStudentLastName(e.target.value)}
                     onKeyDown={handleKeyAddStudent}
-                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3"
+                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3 disabled:opacity-75"
+                    disabled={isDisabled}
                   />
                 </div>
 
@@ -308,35 +307,36 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
                     type="text"
                     required
                     value={studentNumber}
-                    onChange={(e) => setStudentNumber(Number(e.target.value))}
+                    onChange={(e) => setStudentNumber(e.target.value)}
                     onKeyDown={handleKeyAddStudent}
-                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3"
+                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3 disabled:opacity-75"
+                    disabled={isDisabled}
                   />
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="studentNumber"
-                    className="mt-5 block text-lg font-medium text-gray-900"
-                  >
+                  <div className="mt-5 block text-lg font-medium text-gray-900">
                     Öğrenci Cinsiyeti:
-                  </label>
+                  </div>
 
                   <div className="grid grid-cols-2">
                     <button
                       type="button"
-                      className={`my-5 mx-auto inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100
-                    ${gender === "K" ? "bg-slate-200" : "bg-white"}`}
+                      className={`my-5 mx-auto inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 disabled:opacity-75 disabled:hover:bg-white ${
+                        gender === "K" ? "bg-slate-200" : "bg-white"
+                      }`}
                       onClick={() => setGender("K")}
+                      disabled={isDisabled}
                     >
                       Kadın
                     </button>
                     <button
                       type="button"
-                      className={`my-5 mx-auto inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${
+                      className={`my-5 mx-auto inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 disabled:opacity-75 disabled:hover:bg-white ${
                         gender === "E" ? "bg-slate-200" : "bg-white"
                       }`}
                       onClick={() => setGender("E")}
+                      disabled={isDisabled}
                     >
                       Erkek
                     </button>
@@ -344,7 +344,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
                 </div>
                 <div>
                   <label
-                    htmlFor="studentNumber"
+                    htmlFor="datePicker"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
                     Doğum Tarihi:
@@ -354,17 +354,18 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
                     useRange={false}
                     asSingle={true}
                     required={true}
-                    inputId="datepicker"
-                    inputName="datepicker"
+                    inputId="datePicker"
+                    inputName="datePicker"
                     value={date}
                     placeholder="Doğum Tarihi Seçiniz"
                     displayFormat="DD.MM.YYYY"
-                    inputClassName="text-base"
+                    inputClassName="text-base  disabled:opacity-75"
                     onChange={(newDate: DateValueType | null) => {
                       if (newDate) {
                         setDate(newDate);
                       }
                     }}
+                    disabled={isDisabled}
                   />
                 </div>
               </div>
@@ -380,8 +381,9 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
             <div className="bg-gray-50 p-5 sm:flex sm:flex-row-reverse">
               <button
                 type="button"
-                className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24 transition-all"
+                className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24 transition-all disabled:opacity-75 disabled:hover:bg-green-600"
                 onClick={handleAddStudent}
+                disabled={isDisabled}
               >
                 Ekle
               </button>

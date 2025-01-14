@@ -110,8 +110,8 @@ const AddClass: React.FC<AddClassProps> = ({ open, setOpen, onAdd }) => {
                       Sınıf Adı:
                     </label>
                     <input
-                      id="class-name"
-                      name="class-name"
+                      id="className"
+                      name="className"
                       type="text"
                       required
                       value={className}

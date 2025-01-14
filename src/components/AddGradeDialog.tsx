@@ -31,10 +31,11 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
   const [gradeName, setGradeName] = useState<string>("");
   const navigate = useNavigate();
+  const isDisabled = classes.length === 0;
 
   useEffect(() => {
     if (open) {
-      getClasses();
+      fetchClasses();
       setShowStudentSelection(true);
       setMessage("");
       setError("");
@@ -43,10 +44,15 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
     }
   }, [open]);
 
-  const getClasses = async () => {
+  const fetchClasses = async () => {
     try {
-      const classes = await instance.get("class");
-      setClasses(classes.data.data);
+      const response = await instance.get("class");
+      const classes = response.data.data;
+      if (classes.length > 0) {
+        setClasses(classes);
+      } else {
+        setError("Sınıf bulunamadı. Lütfen önce sınıf ekleyin.");
+      }
     } catch (error) {
       setError("Bir hata oluştu. Lütfen tekrar deneyin.");
     }
@@ -57,7 +63,17 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
     setMessage("");
 
     if (showStudentSelection && selectedClassId !== null) {
-      setShowStudentSelection(false);
+      try {
+        const result = await instance.get(`student/${selectedClassId}`);
+        const students = result.data.data;
+        if (students.length === 0) {
+          setError("Bu sınıfta öğrenci bulunamadı.");
+          return;
+        }
+        setShowStudentSelection(false);
+      } catch (error) {
+        setError("Öğrenci bulunamadı. Lütfen tekrar deneyin.");
+      }
       return;
     }
 
@@ -171,7 +187,10 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
                           ? "bg-gray-200"
                           : "bg-white"
                       }`}
-                      onClick={() => setSelectedClassId(classItem.id)}
+                      onClick={() => {
+                        setSelectedClassId(classItem.id);
+                        setError("");
+                      }}
                     >
                       {classItem.class_name}
                     </button>
@@ -210,8 +229,9 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
             <div className="bg-gray-50 p-5 sm:flex sm:flex-row-reverse">
               <button
                 type="button"
-                className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24"
+                className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24 disabled:opacity-75 disabled:hover:bg-green-600"
                 onClick={handleSelectClass}
+                disabled={isDisabled}
               >
                 Devam Et
               </button>
