@@ -1,5 +1,19 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import {
+  MagnifyingGlassIcon,
+  ChevronUpDownIcon,
+} from "@heroicons/react/16/solid";
+import { CheckIcon } from "@heroicons/react/20/solid";
+
+import {
+  Label,
+  Listbox,
+  ListboxButton,
+  ListboxOption,
+  ListboxOptions,
+} from "@headlessui/react";
+
 import instance from "../services/axiosInstance";
 import DetailStudentDialog from "../components/DetailStudentDialog";
 import UpdateStudentDialog from "../components/UpdateStudentDialog";
@@ -41,7 +55,9 @@ const Students: React.FC = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
   const [addDialogOpen, setAddDialogOpen] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [filteredStudents, setFilteredStudents] = useState<Student[]>([]);
+  const [classSelected, classSetSelected] = useState("Tüm Sınıflar");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -54,11 +70,12 @@ const Students: React.FC = () => {
       if (!studentsData || studentsData.length === 0) {
         setError("Öğrenci bulunamadı.");
         setStudents([]);
-
+        setFilteredStudents([]);
         return;
       }
 
       setStudents(studentsData);
+      setFilteredStudents(studentsData);
     } catch (error) {
       setError("Öğrenciler getirilirken bir hata oluştu.");
     }
@@ -75,7 +92,6 @@ const Students: React.FC = () => {
 
   const handleSelectedClass = useCallback(
     async (classItem: Class) => {
-      setSelectedClassId(classItem.id);
       setError(null);
 
       if (classItem.id !== null) {
@@ -91,10 +107,12 @@ const Students: React.FC = () => {
         if (!studentsData || studentsData.length === 0) {
           setError("Öğrenci bulunamadı.");
           setStudents([]);
+          setFilteredStudents([]);
           return;
         }
 
         setStudents(studentsData);
+        setFilteredStudents(studentsData);
       } catch (error) {
         setError("Öğrenciler getirilirken bir hata oluştu.");
       }
@@ -150,7 +168,6 @@ const Students: React.FC = () => {
   };
 
   const handleAllStudents = async () => {
-    setSelectedClassId(null);
     navigate(`?class=tumu`);
     fetchStudents();
     setError(null);
@@ -159,36 +176,139 @@ const Students: React.FC = () => {
   const handleAddStudent = () => {
     setAddDialogOpen(true);
     setError(null);
-    setSelectedClassId(null);
     navigate(`?class=tumu`);
+  };
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let value = event.target.value;
+    setSearchTerm(value);
+
+    if (value === "") {
+      setFilteredStudents(students);
+    } else {
+      // İlk aşama: Tam arama
+      let filtered = students.filter(
+        (student) =>
+          student.student_name.toLowerCase().includes(value.toLowerCase()) ||
+          student.student_lastname.toLowerCase().includes(value.toLowerCase())
+      );
+
+      // Eğer tam arama sonuç vermediyse, ikinci aşama: Bölünmüş terimlerle arama
+      if (filtered.length === 0 && value.includes(" ")) {
+        const terms = value.toLowerCase().split(" ");
+
+        if (terms.length >= 2) {
+          const firstName = terms.slice(0, terms.length - 1).join(" ");
+          const lastName = terms[terms.length - 1];
+          filtered = students.filter(
+            (student) =>
+              student.student_name.toLowerCase().includes(firstName) &&
+              student.student_lastname.toLowerCase().includes(lastName)
+          );
+        }
+      }
+
+      setFilteredStudents(filtered);
+      if (filtered.length === 0) {
+        setError("Bu isimde öğrenci bulunamadı.");
+      } else {
+        setError(null);
+      }
+    }
+  };
+
+  const handleClassChange = (selectedClass: string) => {
+    classSetSelected(selectedClass);
+    if (selectedClass === "Tüm Sınıflar") {
+      handleAllStudents();
+    } else {
+      const classItem = classes.find((c) => c.class_name === selectedClass);
+      if (classItem) {
+        handleSelectedClass(classItem);
+      }
+    }
   };
 
   return (
     <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 xl:px-0 md:px-24 px-12">
       <div className="overflow-x-auto xl:col-start-2 col-span-2 xl:p-0">
-        <div className="grid 2xl:grid-cols-7 xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 grid-cols-2">
-          {classes.map((classItem, index) => (
-            <button
-              key={index}
-              type="button"
-              className={`mx-auto m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${
-                selectedClassId === classItem.id ? "bg-slate-200" : "bg-white"
-              }`}
-              onClick={() => handleSelectedClass(classItem)}
-            >
-              {classItem.class_name}
-            </button>
-          ))}
-          <button
-            type="button"
-            className={`mx-auto m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${
-              selectedClassId === null ? "bg-slate-200" : "bg-white"
-            }`}
-            onClick={() => handleAllStudents()}
-          >
-            Tümü
-          </button>
+        <div className="mb-5 flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-gray-600 has-[input:focus-within]:border has-[input:focus-within]:border-4 has-[input:focus-within]:border-gray-900">
+          <input
+            id="price"
+            name="price"
+            type="text"
+            placeholder="Öğrenci Adı Soyadı"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            onBlur={() => {
+              setSearchTerm("");
+              setFilteredStudents(students);
+            }}
+            className="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0"
+          />
+          <div className="grid shrink-0 grid-cols-1 focus-within:relative">
+            <MagnifyingGlassIcon
+              aria-hidden="true"
+              className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
+            />
+          </div>
         </div>
+
+        <Listbox value={classSelected} onChange={handleClassChange}>
+          <Label className="block text-sm/6 font-medium text-gray-900">
+            Sınıf Seçiniz
+          </Label>
+          <div className="relative mt-2">
+            <ListboxButton className="grid w-full cursor-default grid-cols-1 rounded-md bg-white py-1.5 pl-3 pr-2 text-left text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+              <span className="col-start-1 row-start-1 flex items-center gap-3 pr-6">
+                <span className="block truncate">{classSelected}</span>
+              </span>
+              <ChevronUpDownIcon
+                aria-hidden="true"
+                className="col-start-1 row-start-1 size-5 self-center justify-self-end text-gray-500 sm:size-4"
+              />
+            </ListboxButton>
+
+            <ListboxOptions
+              transition
+              className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none data-[closed]:data-[leave]:opacity-0 data-[leave]:transition data-[leave]:duration-100 data-[leave]:ease-in sm:text-sm"
+            >
+              <ListboxOption
+                key="all"
+                value={"Tüm Sınıflar"}
+                className="group relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900 data-[focus]:bg-indigo-600 data-[focus]:text-white data-[focus]:outline-none"
+              >
+                <div className="flex items-center">
+                  <span className="ml-3 block truncate font-normal group-data-[selected]:font-semibold">
+                    Tüm Sınıflar
+                  </span>
+                </div>
+
+                <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-indigo-600 group-[&:not([data-selected])]:hidden group-data-[focus]:text-white">
+                  <CheckIcon aria-hidden="true" className="size-5" />
+                </span>
+              </ListboxOption>
+
+              {classes.map((classItem) => (
+                <ListboxOption
+                  key={classItem.id}
+                  value={classItem.class_name}
+                  className="group relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900 data-[focus]:bg-indigo-600 data-[focus]:text-white data-[focus]:outline-none"
+                >
+                  <div className="flex items-center">
+                    <span className="ml-3 block truncate font-normal group-data-[selected]:font-semibold">
+                      {classItem.class_name}
+                    </span>
+                  </div>
+
+                  <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-indigo-600 group-[&:not([data-selected])]:hidden group-data-[focus]:text-white">
+                    <CheckIcon aria-hidden="true" className="size-5" />
+                  </span>
+                </ListboxOption>
+              ))}
+            </ListboxOptions>
+          </div>
+        </Listbox>
 
         <table className="border-collapse w-full mt-5 border border-slate-300">
           <thead>
@@ -209,7 +329,7 @@ const Students: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {students.map((student, index) => (
+            {filteredStudents.map((student, index) => (
               <tr
                 key={index}
                 className={index % 2 === 0 ? "bg-gray-200" : "bg-gray-100"}

@@ -79,6 +79,9 @@ const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
   }, []);
 
   const handleUpdateStudent = async () => {
+    setError(null);
+    setMessage(null);
+
     const updateFields: {
       tc?: string;
       class_id?: number;
