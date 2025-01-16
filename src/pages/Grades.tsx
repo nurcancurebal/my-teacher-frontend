@@ -48,7 +48,7 @@ const Grade: React.FC = () => {
               selectedClassId === null ? "bg-slate-200" : "bg-white"
             }`}
           >
-            Tümü
+            Tüm Sınıflar
           </button>
         </div>
 

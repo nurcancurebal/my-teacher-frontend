@@ -7,7 +7,6 @@ import {
 import { CheckIcon } from "@heroicons/react/20/solid";
 
 import {
-  Label,
   Listbox,
   ListboxButton,
   ListboxOption,
@@ -57,7 +56,7 @@ const Students: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([]);
-  const [classSelected, classSetSelected] = useState("Tüm Sınıflar");
+  const [classSelected, classSetSelected] = useState("Filtre");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -97,7 +96,7 @@ const Students: React.FC = () => {
       if (classItem.id !== null) {
         navigate(`?class=${classItem.class_name}`);
       } else {
-        navigate(`?class=tumu`);
+        navigate(`?class=tum-siniflar`);
       }
 
       try {
@@ -168,7 +167,7 @@ const Students: React.FC = () => {
   };
 
   const handleAllStudents = async () => {
-    navigate(`?class=tumu`);
+    navigate(`?class=tum-siniflar`);
     fetchStudents();
     setError(null);
   };
@@ -176,7 +175,7 @@ const Students: React.FC = () => {
   const handleAddStudent = () => {
     setAddDialogOpen(true);
     setError(null);
-    navigate(`?class=tumu`);
+    navigate(`?class=tum-siniflar`);
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -218,7 +217,6 @@ const Students: React.FC = () => {
   };
 
   const handleClassChange = (selectedClass: string) => {
-    classSetSelected(selectedClass);
     if (selectedClass === "Tüm Sınıflar") {
       handleAllStudents();
     } else {
@@ -227,12 +225,92 @@ const Students: React.FC = () => {
         handleSelectedClass(classItem);
       }
     }
+    classSetSelected(selectedClass);
   };
 
   return (
     <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 xl:px-0 md:px-24 px-12">
       <div className="overflow-x-auto xl:col-start-2 col-span-2 xl:p-0">
-        <div className="mb-5 flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-gray-600 has-[input:focus-within]:border has-[input:focus-within]:border-4 has-[input:focus-within]:border-gray-900">
+        <Listbox value={classSelected} onChange={handleClassChange}>
+          <div className="relative mt-2">
+            <ListboxButton className="grid cursor-default grid-cols-1 rounded-md bg-white py-1.5 pl-3 pr-2 text-left text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-gray-600 text-base focus:border focus:border-4 focus:border-gray-900">
+              <span className="col-start-1 row-start-1 flex items-center gap-5 pr-6">
+                <span className="block truncate">{classSelected}</span>
+              </span>
+              <ChevronUpDownIcon
+                aria-hidden="true"
+                className="col-start-1 row-start-1 size-5 self-center justify-self-end text-gray-500 sm:size-4"
+              />
+            </ListboxButton>
+
+            <ListboxOptions
+              transition
+              className="absolute z-10 mt-1 max-h-56 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none data-[closed]:data-[leave]:opacity-0 data-[leave]:transition data-[leave]:duration-100 data-[leave]:ease-in"
+            >
+              <ListboxOption
+                key="all"
+                value={"Tüm Sınıflar"}
+                className="group relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900 data-[focus]:bg-gray-600 data-[focus]:text-white data-[focus]:outline-none"
+              >
+                <div className="flex items-center">
+                  <span className="ml-3 block truncate font-normal group-data-[selected]:font-semibold">
+                    Öğrenci Numarası
+                  </span>
+                </div>
+
+                <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-900 group-[&:not([data-selected])]:hidden group-data-[focus]:text-white">
+                  <CheckIcon aria-hidden="true" className="size-5" />
+                </span>
+              </ListboxOption>
+              <ListboxOption
+                key="all"
+                value={"Tüm Sınıflar"}
+                className="group relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900 data-[focus]:bg-gray-600 data-[focus]:text-white data-[focus]:outline-none"
+              >
+                <div className="flex items-center">
+                  <span className="ml-3 block truncate font-normal group-data-[selected]:font-semibold">
+                    Öğrenci Adı Soyadı
+                  </span>
+                </div>
+
+                <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-900 group-[&:not([data-selected])]:hidden group-data-[focus]:text-white">
+                  <CheckIcon aria-hidden="true" className="size-5" />
+                </span>
+              </ListboxOption>
+              <ListboxOption
+                key="all"
+                value={"Tüm Sınıflar"}
+                className="group relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900 data-[focus]:bg-gray-600 data-[focus]:text-white data-[focus]:outline-none"
+              >
+                <div className="flex items-center">
+                  <span className="ml-3 block truncate font-normal group-data-[selected]:font-semibold">
+                    Öğrenci Cinsiyeti
+                  </span>
+                </div>
+
+                <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-900 group-[&:not([data-selected])]:hidden group-data-[focus]:text-white">
+                  <CheckIcon aria-hidden="true" className="size-5" />
+                </span>
+              </ListboxOption>
+              <ListboxOption
+                key="all"
+                value={"Tüm Sınıflar"}
+                className="group relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900 data-[focus]:bg-gray-600 data-[focus]:text-white data-[focus]:outline-none"
+              >
+                <div className="flex items-center">
+                  <span className="ml-3 block truncate font-normal group-data-[selected]:font-semibold">
+                    Öğrenci Sınıfı
+                  </span>
+                </div>
+
+                <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-900 group-[&:not([data-selected])]:hidden group-data-[focus]:text-white">
+                  <CheckIcon aria-hidden="true" className="size-5" />
+                </span>
+              </ListboxOption>
+            </ListboxOptions>
+          </div>
+        </Listbox>
+        <div className="my-5 flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-gray-600 has-[input:focus-within]:border has-[input:focus-within]:border-4 has-[input:focus-within]:border-gray-900">
           <input
             id="price"
             name="price"
@@ -244,7 +322,7 @@ const Students: React.FC = () => {
               setSearchTerm("");
               setFilteredStudents(students);
             }}
-            className="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0"
+            className="min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0"
           />
           <div className="grid shrink-0 grid-cols-1 focus-within:relative">
             <MagnifyingGlassIcon
@@ -253,62 +331,6 @@ const Students: React.FC = () => {
             />
           </div>
         </div>
-
-        <Listbox value={classSelected} onChange={handleClassChange}>
-          <Label className="block text-sm/6 font-medium text-gray-900">
-            Sınıf Seçiniz
-          </Label>
-          <div className="relative mt-2">
-            <ListboxButton className="grid w-full cursor-default grid-cols-1 rounded-md bg-white py-1.5 pl-3 pr-2 text-left text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-              <span className="col-start-1 row-start-1 flex items-center gap-3 pr-6">
-                <span className="block truncate">{classSelected}</span>
-              </span>
-              <ChevronUpDownIcon
-                aria-hidden="true"
-                className="col-start-1 row-start-1 size-5 self-center justify-self-end text-gray-500 sm:size-4"
-              />
-            </ListboxButton>
-
-            <ListboxOptions
-              transition
-              className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none data-[closed]:data-[leave]:opacity-0 data-[leave]:transition data-[leave]:duration-100 data-[leave]:ease-in sm:text-sm"
-            >
-              <ListboxOption
-                key="all"
-                value={"Tüm Sınıflar"}
-                className="group relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900 data-[focus]:bg-indigo-600 data-[focus]:text-white data-[focus]:outline-none"
-              >
-                <div className="flex items-center">
-                  <span className="ml-3 block truncate font-normal group-data-[selected]:font-semibold">
-                    Tüm Sınıflar
-                  </span>
-                </div>
-
-                <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-indigo-600 group-[&:not([data-selected])]:hidden group-data-[focus]:text-white">
-                  <CheckIcon aria-hidden="true" className="size-5" />
-                </span>
-              </ListboxOption>
-
-              {classes.map((classItem) => (
-                <ListboxOption
-                  key={classItem.id}
-                  value={classItem.class_name}
-                  className="group relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900 data-[focus]:bg-indigo-600 data-[focus]:text-white data-[focus]:outline-none"
-                >
-                  <div className="flex items-center">
-                    <span className="ml-3 block truncate font-normal group-data-[selected]:font-semibold">
-                      {classItem.class_name}
-                    </span>
-                  </div>
-
-                  <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-indigo-600 group-[&:not([data-selected])]:hidden group-data-[focus]:text-white">
-                    <CheckIcon aria-hidden="true" className="size-5" />
-                  </span>
-                </ListboxOption>
-              ))}
-            </ListboxOptions>
-          </div>
-        </Listbox>
 
         <table className="border-collapse w-full mt-5 border border-slate-300">
           <thead>
