@@ -183,7 +183,7 @@ const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
             setError("Öğrenci numarası zorunludur.");
             break;
           case "'gender' must be one of [K, E]":
-            setError("Cinsiyet Kadın veya Erkek olarak seçilmelidir.");
+            setError("Cinsiyet Kız veya Erkek olarak seçilmelidir.");
             break;
           default:
             setError("Bir hata oluştu. Lütfen tekrar deneyin.");
@@ -342,7 +342,7 @@ const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
                     ${gender === "K" ? "bg-slate-200" : "bg-white"}`}
                       onClick={() => setGender("K")}
                     >
-                      Kadın
+                      Kız
                     </button>
                     <button
                       type="button"

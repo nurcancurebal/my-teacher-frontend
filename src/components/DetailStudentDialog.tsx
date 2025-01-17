@@ -76,7 +76,7 @@ const ViewDetailDialog: React.FC<ViewDetailDialogProps> = ({
               <div className="sm:mx-0 mx-4 pb-5">
                 <span className="text-lg font-medium">Cinsiyeti:</span>
                 <span className="text-base ml-3">
-                  {student.gender === "K" ? "Kadın" : "Erkek"}
+                  {student.gender === "K" ? "Kız" : "Erkek"}
                 </span>
               </div>
 

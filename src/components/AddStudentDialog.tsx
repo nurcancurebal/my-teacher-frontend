@@ -155,7 +155,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
             setError("Öğrenci numarası zorunludur.");
             break;
           case "'gender' must be one of [K, E]":
-            setError("Cinsiyet Kadın veya Erkek olarak seçilmelidir.");
+            setError("Cinsiyet Kız veya Erkek olarak seçilmelidir.");
             break;
           default:
             setError("Bir hata oluştu. Lütfen tekrar deneyin.");
@@ -328,7 +328,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
                       onClick={() => setGender("K")}
                       disabled={isDisabled}
                     >
-                      Kadın
+                      Kız
                     </button>
                     <button
                       type="button"
