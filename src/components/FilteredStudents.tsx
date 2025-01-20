@@ -94,17 +94,17 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
 
   const handleSelectedClass = useCallback(
     async (classItem: Class) => {
-      setError(null);
-
-      if (classItem.id !== null) {
+      if (classItem.id !== null && filterSelected === "Öğrenci Sınıfı") {
         navigate(`?class=${classItem.class_name}&filter=${filterSelected}`);
       } else {
-        navigate(`?class=tum-siniflar&filter=${filterSelected}`);
+        navigate(`?class=Tüm Sınıflar&filter=${filterSelected}`);
       }
 
       try {
         const response = await instance.get(`/student/${classItem.id}`);
         const studentsData = response.data.data;
+
+        setError(null);
 
         if (!studentsData || studentsData.length === 0) {
           setError("Öğrenci bulunamadı.");
@@ -119,7 +119,7 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
         setError("Öğrenciler getirilirken bir hata oluştu.");
       }
     },
-    [navigate, setStudents, setError, filterSelected]
+    [setStudents, setError, filterSelected, navigate]
   );
 
   useEffect(() => {
@@ -127,7 +127,7 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
     const className = queryParams.get("class");
     const filter = queryParams.get("filter");
 
-    if (filter) {
+    if (filter && filter !== "Filtre") {
       setFilterSelected(filter);
     }
 
@@ -136,11 +136,37 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
       if (classItem) {
         setClassNameSelected(classItem.class_name);
         handleSelectedClass(classItem);
+      } else {
+        fetchStudents();
       }
     } else {
       fetchStudents();
     }
   }, [location.search, handleSelectedClass, localClasses, fetchStudents]);
+
+  const handleClassChange = (classNameSelected: string) => {
+    if (classNameSelected === "Tüm Sınıflar") {
+      navigate(`?class=Tüm Sınıflar&filter=${filterSelected}`);
+      fetchStudents();
+      setError(null);
+    } else {
+      const classItem = localClasses.find(
+        (c) => c.class_name === classNameSelected
+      );
+      if (classItem) {
+        handleSelectedClass(classItem);
+      }
+    }
+    setClassNameSelected(classNameSelected);
+  };
+
+  const handleFilterChange = (filterSelected: string) => {
+    try {
+      setFilterSelected(filterSelected);
+      setClassNameSelected("Tüm Sınıflar");
+      navigate(`?class=Tüm Sınıflar&filter=${filterSelected}`);
+    } catch (error) {}
+  };
 
   const searchFirstnameLastname = (value: string) => {
     setSearchTerm(value);
@@ -181,33 +207,14 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
     }
   };
 
-  const handleClassChange = (classNameSelected: string) => {
-    if (classNameSelected === "Tüm Sınıflar") {
-      navigate(`?class=tum-siniflar&filter=${filterSelected}`);
-      fetchStudents();
-      setError(null);
-    } else {
-      const classItem = localClasses.find(
-        (c) => c.class_name === classNameSelected
-      );
-      if (classItem) {
-        handleSelectedClass(classItem);
-      }
-    }
-    setClassNameSelected(classNameSelected);
-    setFilterSelected("Öğrenci Sınıfı");
-  };
-
   const searchInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     switch (filterSelected) {
       case "Öğrenci Numarası":
-        console.log("Öğrenci Numarası");
         break;
       case "Öğrenci Adı Soyadı":
         searchFirstnameLastname(event.target.value);
         break;
       case "Öğrenci Cinsiyeti":
-        console.log("Öğrenci Cinsiyeti");
         break;
       default:
         break;
@@ -219,9 +226,7 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
       <Listbox
         value={filterSelected}
         onChange={(value) => {
-          setFilterSelected(value);
-          setClassNameSelected("Tüm Sınıflar");
-          navigate(`?class=tum-siniflar&filter=${value}`);
+          handleFilterChange(value);
         }}
       >
         <div className="relative mt-2">
