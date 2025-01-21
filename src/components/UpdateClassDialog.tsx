@@ -6,6 +6,7 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import axios from "axios";
+
 import instance from "../services/axiosInstance";
 
 interface UpdateClassDialogProps {

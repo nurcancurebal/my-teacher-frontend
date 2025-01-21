@@ -5,6 +5,7 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+
 import instance from "../services/axiosInstance";
 
 interface DeleteClassDialogProps {

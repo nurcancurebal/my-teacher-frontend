@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+
 import instance from "../services/axiosInstance";
 
 interface Student {

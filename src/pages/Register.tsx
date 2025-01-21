@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
 import instance from "../services/axiosInstance";
 
 const Register: React.FC = () => {

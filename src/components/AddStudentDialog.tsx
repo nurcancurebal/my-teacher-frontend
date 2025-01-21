@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Datepicker from "react-tailwindcss-datepicker";
-import instance from "../services/axiosInstance";
-
 import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+
+import instance from "../services/axiosInstance";
 
 interface AddStudentProps {
   open: boolean;
