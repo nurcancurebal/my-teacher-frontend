@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+
 import {
   MagnifyingGlassIcon,
   ChevronDownIcon,
+  CheckIcon,
 } from "@heroicons/react/16/solid";
-import { CheckIcon } from "@heroicons/react/20/solid";
-
 import {
   Listbox,
   ListboxButton,
@@ -13,6 +13,8 @@ import {
   ListboxOptions,
 } from "@headlessui/react";
 
+import FilterStudentGenderSelect from "./FilterStudentGenderSelect";
+import FilterClassNameSelect from "./FilterClassNameSelect";
 import instance from "../services/axiosInstance";
 
 interface Student {
@@ -49,11 +51,8 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
 }) => {
   const [originalStudents, setOriginalStudents] = useState<Student[]>([]);
   const [localStudents, setLocalStudents] = useState<Student[]>([]);
-  const [localClasses, setLocalClasses] = useState<Class[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filterSelected, setFilterSelected] = useState("Filtre");
-  const [classNameSelected, setClassNameSelected] =
-    useState<string>("Tüm Sınıflar");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -73,6 +72,7 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
       setStudents(studentsData);
       setLocalStudents(studentsData);
       setOriginalStudents(studentsData);
+      setError(null);
     } catch (error) {
       setError("Öğrenciler getirilirken bir hata oluştu.");
     }
@@ -82,7 +82,6 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
     try {
       const response = await instance.get("/class");
       setClasses(response.data.data);
-      setLocalClasses(response.data.data);
     } catch (error) {
       setError("Sınıflar getirilirken bir hata oluştu.");
     }
@@ -90,96 +89,28 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
 
   useEffect(() => {
     fetchClasses();
-  }, [fetchClasses]);
-
-  const handleSelectedClass = useCallback(
-    async (classItem: Class) => {
-      if (classItem.id !== null && filterSelected === "Öğrenci Sınıfı") {
-        navigate(`?class=${classItem.class_name}&filter=${filterSelected}`);
-      } else {
-        navigate(`?class=Tüm Sınıflar&filter=${filterSelected}`);
-      }
-
-      try {
-        const response = await instance.get(`/student/${classItem.id}`);
-        const studentsData = response.data.data;
-
-        setError(null);
-
-        if (!studentsData || studentsData.length === 0) {
-          setError("Öğrenci bulunamadı.");
-          setStudents([]);
-          setLocalStudents([]);
-          return;
-        }
-
-        setLocalStudents(studentsData);
-        setStudents(studentsData);
-      } catch (error) {
-        setError("Öğrenciler getirilirken bir hata oluştu.");
-      }
-    },
-    [setStudents, setError, filterSelected, navigate]
-  );
+    fetchStudents();
+  }, [fetchClasses, fetchStudents]);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    const className = queryParams.get("class");
     const filter = queryParams.get("filter");
 
     if (filter && filter !== "Filtre") {
       setFilterSelected(filter);
     }
-
-    if (className && localClasses.length > 0) {
-      const classItem = localClasses.find((c) => c.class_name === className);
-      if (classItem) {
-        setClassNameSelected(classItem.class_name);
-        handleSelectedClass(classItem);
-      } else {
-        fetchStudents();
-      }
-    } else {
-      fetchStudents();
-    }
-  }, [location.search, handleSelectedClass, localClasses, fetchStudents]);
-
-  const handleClassChange = (classNameSelected: string) => {
-    if (classNameSelected === "Tüm Sınıflar") {
-      navigate(`?class=Tüm Sınıflar&filter=${filterSelected}`);
-      fetchStudents();
-      setError(null);
-    } else {
-      const classItem = localClasses.find(
-        (c) => c.class_name === classNameSelected
-      );
-      if (classItem) {
-        handleSelectedClass(classItem);
-      }
-    }
-    setClassNameSelected(classNameSelected);
-  };
-
-  const handleFilterChange = (filterSelected: string) => {
-    try {
-      setFilterSelected(filterSelected);
-      setClassNameSelected("Tüm Sınıflar");
-      navigate(`?class=Tüm Sınıflar&filter=${filterSelected}`);
-    } catch (error) {}
-  };
+  }, [location.search]);
 
   const searchFirstnameLastname = (value: string) => {
     setSearchTerm(value);
 
     if (value !== "") {
-      // İlk aşama: Tam arama
       let filtered = originalStudents.filter(
         (student) =>
           student.student_name.toLowerCase().includes(value.toLowerCase()) ||
           student.student_lastname.toLowerCase().includes(value.toLowerCase())
       );
 
-      // Eğer tam arama sonuç vermediyse, ikinci aşama: Bölünmüş terimlerle arama
       if (filtered.length === 0 && value.includes(" ")) {
         const terms = value.toLowerCase().split(" ");
 
@@ -195,11 +126,33 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
       }
       setLocalStudents(filtered);
       setStudents(filtered);
-      if (filtered.length === 0) {
-        setError("Bu isimde öğrenci bulunamadı.");
-      } else {
-        setError(null);
-      }
+      setError(filtered.length === 0 ? "Bu isimde öğrenci bulunamadı." : null);
+    } else {
+      setLocalStudents(originalStudents);
+      setStudents(originalStudents);
+      setError(null);
+    }
+  };
+
+  const searchStudentNumber = (value: string) => {
+    setSearchTerm(value);
+
+    if (isNaN(Number(value))) {
+      setStudents([]);
+      setError("Öğrenci numarası sadece sayısal değerlerden oluşabilir.");
+      return;
+    }
+
+    if (value !== "") {
+      let filtered = originalStudents.filter((student) =>
+        student.student_number.toString().includes(value)
+      );
+
+      setLocalStudents(filtered);
+      setStudents(filtered);
+      setError(
+        filtered.length === 0 ? "Bu numaraya ait öğrenci bulunamadı." : null
+      );
     } else {
       setLocalStudents(originalStudents);
       setStudents(originalStudents);
@@ -208,16 +161,12 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
   };
 
   const searchInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    switch (filterSelected) {
-      case "Öğrenci Numarası":
-        break;
-      case "Öğrenci Adı Soyadı":
-        searchFirstnameLastname(event.target.value);
-        break;
-      case "Öğrenci Cinsiyeti":
-        break;
-      default:
-        break;
+    if (filterSelected === "Öğrenci Numarası") {
+      return searchStudentNumber(event.target.value);
+    }
+
+    if (filterSelected === "Öğrenci Adı Soyadı") {
+      return searchFirstnameLastname(event.target.value);
     }
   };
 
@@ -226,7 +175,9 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
       <Listbox
         value={filterSelected}
         onChange={(value) => {
-          handleFilterChange(value);
+          setFilterSelected(value);
+          fetchStudents();
+          navigate(`?class=Tüm Sınıflar&filter=${value}`);
         }}
       >
         <div className="relative mt-2">
@@ -249,7 +200,7 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
               value={"Öğrenci Numarası"}
               className="group relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900 data-[focus]:bg-gray-600 data-[focus]:text-white data-[focus]:outline-none"
             >
-              <div className="flex items-center">
+              <div className="flex items-center mr-2">
                 <span className="ml-3 block truncate font-normal group-data-[selected]:font-semibold">
                   Öğrenci Numarası
                 </span>
@@ -264,7 +215,7 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
               value={"Öğrenci Adı Soyadı"}
               className="group relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900 data-[focus]:bg-gray-600 data-[focus]:text-white data-[focus]:outline-none"
             >
-              <div className="flex items-center">
+              <div className="flex items-center mr-2">
                 <span className="ml-3 block truncate font-normal group-data-[selected]:font-semibold">
                   Öğrenci Adı Soyadı
                 </span>
@@ -279,7 +230,7 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
               value={"Öğrenci Cinsiyeti"}
               className="group relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900 data-[focus]:bg-gray-600 data-[focus]:text-white data-[focus]:outline-none"
             >
-              <div className="flex items-center">
+              <div className="flex items-center mr-2">
                 <span className="ml-3 block truncate font-normal group-data-[selected]:font-semibold">
                   Öğrenci Cinsiyeti
                 </span>
@@ -294,7 +245,7 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
               value={"Öğrenci Sınıfı"}
               className="group relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900 data-[focus]:bg-gray-600 data-[focus]:text-white data-[focus]:outline-none"
             >
-              <div className="flex items-center">
+              <div className="flex items-center mr-2">
                 <span className="ml-3 block truncate font-normal group-data-[selected]:font-semibold">
                   Öğrenci Sınıfı
                 </span>
@@ -308,8 +259,7 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
         </div>
       </Listbox>
       {filterSelected === "Öğrenci Numarası" ||
-      filterSelected === "Öğrenci Adı Soyadı" ||
-      filterSelected === "Öğrenci Cinsiyeti" ? (
+      filterSelected === "Öğrenci Adı Soyadı" ? (
         <div className="my-5 flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-gray-600 has-[input:focus-within]:border has-[input:focus-within]:border-4 has-[input:focus-within]:border-gray-900">
           <input
             id="price"
@@ -334,57 +284,13 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
           </div>
         </div>
       ) : filterSelected === "Öğrenci Sınıfı" ? (
-        <Listbox value={classNameSelected} onChange={handleClassChange}>
-          <div className="relative mt-2">
-            <ListboxButton className="grid cursor-default grid-cols-1 rounded-md bg-white py-1.5 pl-3 pr-2 text-left text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-gray-600 text-base focus:border focus:border-4 focus:border-gray-900">
-              <span className="col-start-1 row-start-1 flex items-center gap-5 pr-6">
-                <span className="block truncate">{classNameSelected}</span>
-              </span>
-              <ChevronDownIcon
-                aria-hidden="true"
-                className="col-start-1 row-start-1 size-5 self-center justify-self-end text-gray-500 sm:size-4"
-              />
-            </ListboxButton>
-
-            <ListboxOptions
-              transition
-              className="absolute z-10 mt-1 max-h-56 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none data-[closed]:data-[leave]:opacity-0 data-[leave]:transition data-[leave]:duration-100 data-[leave]:ease-in"
-            >
-              <ListboxOption
-                key="all"
-                value={"Tüm Sınıflar"}
-                className="group relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900 data-[focus]:bg-gray-600 data-[focus]:text-white data-[focus]:outline-none"
-              >
-                <div className="flex items-center">
-                  <span className="ml-3 block truncate font-normal group-data-[selected]:font-semibold">
-                    Tüm Sınıflar
-                  </span>
-                </div>
-
-                <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-900 group-[&:not([data-selected])]:hidden group-data-[focus]:text-white">
-                  <CheckIcon aria-hidden="true" className="size-5" />
-                </span>
-              </ListboxOption>
-              {localClasses.map((classItem) => (
-                <ListboxOption
-                  key={classItem.id}
-                  value={classItem.class_name}
-                  className="group relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900 data-[focus]:bg-gray-600 data-[focus]:text-white data-[focus]:outline-none"
-                >
-                  <div className="flex items-center">
-                    <span className="ml-3 block truncate font-normal group-data-[selected]:font-semibold">
-                      {classItem.class_name}
-                    </span>
-                  </div>
-
-                  <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-900 group-[&:not([data-selected])]:hidden group-data-[focus]:text-white">
-                    <CheckIcon aria-hidden="true" className="size-5" />
-                  </span>
-                </ListboxOption>
-              ))}
-            </ListboxOptions>
-          </div>
-        </Listbox>
+        <FilterClassNameSelect
+          filterSelected={filterSelected}
+          setStudents={setStudents}
+          setError={setError}
+        />
+      ) : filterSelected === "Öğrenci Cinsiyeti" ? (
+        <FilterStudentGenderSelect />
       ) : null}
     </>
   );
