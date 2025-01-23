@@ -32,14 +32,16 @@ interface Class {
 }
 
 interface FilterClassNameSelectProps {
-  filterSelected: string;
-  setStudents: React.Dispatch<React.SetStateAction<Student[]>>;
+  students: Student[];
+  filteredStudents: Student[];
+  handleFilter: (filtered: Student[]) => void;
   setError: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const FilterClassNameSelect: React.FC<FilterClassNameSelectProps> = ({
-  filterSelected,
-  setStudents,
+  students,
+  filteredStudents,
+  handleFilter,
   setError,
 }) => {
   const [classes, setClasses] = useState<Class[]>([]);
@@ -143,7 +145,7 @@ const FilterClassNameSelect: React.FC<FilterClassNameSelectProps> = ({
 
   return (
     <Listbox value={classNameSelected} onChange={handleClassChange}>
-      <div className="relative mt-2">
+      <div className="relative mb-5 float-right ml-5">
         <ListboxButton className="grid cursor-default grid-cols-1 rounded-md bg-white py-1.5 pl-3 pr-2 text-left text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-gray-600 text-base focus:border focus:border-4 focus:border-gray-900">
           <span className="col-start-1 row-start-1 flex items-center gap-5 pr-6">
             <span className="block truncate">{classNameSelected}</span>

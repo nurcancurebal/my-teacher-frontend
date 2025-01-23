@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import instance from "../services/axiosInstance";
@@ -62,6 +62,27 @@ const Students: React.FC = () => {
     }
   }, []);
 
+  const fetchClasses = async () => {
+    try {
+      const response = await instance.get("/class");
+      const classesData = response.data.data;
+
+      if (!classesData || classesData.length === 0) {
+        setError("Sınıf bulunamadı.");
+        setClasses([]);
+        return;
+      }
+
+      setClasses(classesData);
+    } catch (error) {
+      setError("Sınıflar getirilirken bir hata oluştu.");
+    }
+  };
+
+  useEffect(() => {
+    fetchClasses();
+  }, []);
+
   const handleDetailClick = (student: Student) => {
     setDetailDialogOpen(true);
     setSelectedDetailStudent(student);
@@ -101,11 +122,7 @@ const Students: React.FC = () => {
   return (
     <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 xl:px-0 md:px-24 px-12">
       <div className="overflow-x-auto xl:col-start-2 col-span-2 xl:p-0">
-        <FilteredStudents
-          setStudents={setStudents}
-          setClasses={setClasses}
-          setError={setError}
-        />
+        <FilteredStudents setStudents={setStudents} setError={setError} />
         <table className="border-collapse w-full mt-5 border border-slate-300">
           <thead>
             <tr>

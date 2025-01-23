@@ -14,12 +14,15 @@ const Dashboard: React.FC = () => {
   const [totalClasses, setTotalClasses] = useState<number | null>(0);
   const [totalStudents, setTotalStudents] = useState<number | null>(0);
   const [lastAddedGrade, setLastAddedGrade] = useState<string | null>(null);
+  const [maleCount, setMaleCount] = useState<number>(0);
+  const [femaleCount, setFemaleCount] = useState<number>(0);
 
   useEffect(() => {
     const fetchData = async () => {
       await fetchTotalClassesFunc();
       await fetchTotalStudentsFunc();
       await fetchLastAddedGrade();
+      await fetchGenderCount();
     };
 
     fetchData();
@@ -70,6 +73,17 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const fetchGenderCount = async () => {
+    try {
+      const response = await instance.get("/student/gender-count");
+
+      setFemaleCount(response.data.data.femaleCount);
+      setMaleCount(response.data.data.maleCount);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div>
       <div className="bg-white py-14 sm:py-16 lg:py-24">
@@ -80,7 +94,21 @@ const Dashboard: React.FC = () => {
                 key={stat.id}
                 className="mx-auto flex max-w-xs flex-col gap-y-4"
               >
-                <dt className="text-base/7 text-gray-600">{stat.name}</dt>
+                <dt className="text-base/7 text-gray-600">
+                  {stat.name}
+                  {stat.name === "Toplam Öğrencileriniz" ? (
+                    <div>
+                      <span className="text-base text-gray-500">Erkek:</span>
+                      <span className="mr-2 ml-1 text-lg text-gray-500">
+                        {maleCount}
+                      </span>
+                      <span className="text-base text-gray-500 mr-1">Kız:</span>
+                      <span className="text-lg text-gray-500">
+                        {femaleCount}
+                      </span>
+                    </div>
+                  ) : null}
+                </dt>
                 <dd className="order-first text-2xl font-semibold tracking-tight text-gray-900 sm:text-4xl">
                   {stat.value}
                 </dd>
