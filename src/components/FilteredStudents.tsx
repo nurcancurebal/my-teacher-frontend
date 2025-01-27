@@ -28,16 +28,11 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
   setStudents,
   setError,
 }) => {
-  const [students, setLocalStudents] = useState<Student[]>([]);
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([]);
   const [filterNumber, setFilterNumber] = useState<boolean>(false);
   const [filterNameLastname, setFilterNameLastname] = useState<boolean>(false);
   const [filterGender, setFilterGender] = useState<boolean>(false);
   const [filterClassName, setFilterClassName] = useState<boolean>(false);
-  const genderDisabled = filterGender;
-  const classNameDisabled = filterClassName;
-  const nameLastnameDisabled = filterNameLastname;
-  const numberDisabled = filterNumber;
 
   const fetchStudents = useCallback(async () => {
     try {
@@ -51,7 +46,6 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
       }
 
       setStudents(studentsData);
-      setLocalStudents(studentsData);
       setFilteredStudents(studentsData);
       setError(null);
     } catch (error) {
@@ -95,7 +89,7 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
                     : "text-gray-900"
                 }`}
                 onClick={() => setFilterNumber(!filterNumber)}
-                disabled={numberDisabled}
+                disabled={filterNumber}
               >
                 Öğrenci Numarası
               </MenuItem>
@@ -107,7 +101,7 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
                     : "text-gray-900"
                 }`}
                 onClick={() => setFilterNameLastname(!filterNameLastname)}
-                disabled={nameLastnameDisabled}
+                disabled={filterNameLastname}
               >
                 Öğrenci Adı Soyadı
               </MenuItem>
@@ -119,7 +113,7 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
                     : "text-gray-900"
                 }`}
                 onClick={() => setFilterGender(!filterGender)}
-                disabled={genderDisabled}
+                disabled={filterGender}
               >
                 Öğrenci Cinsiyeti
               </MenuItem>
@@ -131,7 +125,7 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
                     : "text-gray-900"
                 }`}
                 onClick={() => setFilterClassName(!filterClassName)}
-                disabled={classNameDisabled}
+                disabled={filterClassName}
               >
                 Öğrenci Sınıfı
               </MenuItem>
@@ -142,15 +136,15 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
       <div>
         {filterNumber || filterNameLastname ? (
           <FilterStudentInput
-            students={students}
             filteredStudents={filteredStudents}
             handleFilter={handleFilter}
+            filterNumber={filterNumber}
+            filterNameLastname={filterNameLastname}
             setError={setError}
           />
         ) : null}
         {filterClassName ? (
           <FilterClassNameSelect
-            students={students}
             filteredStudents={filteredStudents}
             handleFilter={handleFilter}
             setError={setError}
@@ -158,7 +152,6 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
         ) : null}
         {filterGender ? (
           <FilterStudentGenderSelect
-            students={students}
             filteredStudents={filteredStudents}
             handleFilter={handleFilter}
           />

@@ -1,12 +1,6 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import {
-  Listbox,
-  ListboxButton,
-  ListboxOption,
-  ListboxOptions,
-} from "@headlessui/react";
-import { ChevronDownIcon, CheckIcon } from "@heroicons/react/16/solid";
+import React, { useState, useCallback, useEffect } from "react";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/16/solid";
 
 import instance from "../services/axiosInstance";
 
@@ -32,24 +26,22 @@ interface Class {
 }
 
 interface FilterClassNameSelectProps {
-  students: Student[];
   filteredStudents: Student[];
   handleFilter: (filtered: Student[]) => void;
   setError: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const FilterClassNameSelect: React.FC<FilterClassNameSelectProps> = ({
-  students,
   filteredStudents,
   handleFilter,
   setError,
 }) => {
   const [classes, setClasses] = useState<Class[]>([]);
-  const [classNameSelected, setClassNameSelected] =
-    useState<string>("Tüm Sınıflar");
-
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [localFilteredStudents, setLocalFilteredStudents] = useState<Student[]>(
+    []
+  );
+  const [localStudents, setLocalStudents] = useState<Student[]>([]);
+  const [selectClassName, setSelectClassName] = useState<string[]>([]);
 
   const fetchClasses = useCallback(async () => {
     try {
@@ -60,141 +52,111 @@ const FilterClassNameSelect: React.FC<FilterClassNameSelectProps> = ({
     }
   }, [setError]);
 
-  const fetchStudents = useCallback(async () => {
-    try {
-      const response = await instance.get("/student");
-      const studentsData = response.data.data;
-
-      if (!studentsData || studentsData.length === 0) {
-        setStudents([]);
-        setError("Öğrenci bulunamadı.");
-        return;
-      }
-
-      setStudents(studentsData);
-      setError(null);
-    } catch (error) {
-      setError("Öğrenciler getirilirken bir hata oluştu.");
-    }
-  }, [setError, setStudents]);
-
-  const handleSelectedClass = useCallback(
-    async (classItem: Class) => {
-      navigate(`?class=${classItem.class_name}&filter=${filterSelected}`);
-
-      try {
-        const response = await instance.get(`/student/${classItem.id}`);
-        const studentsData = response.data.data;
-
-        if (!studentsData || studentsData.length === 0) {
-          setError("Öğrenci bulunamadı.");
-          setStudents([]);
-          return;
-        }
-
-        setStudents(studentsData);
-        setError(null);
-      } catch (error) {
-        setError("Öğrenciler getirilirken bir hata oluştu.");
-      }
-    },
-    [filterSelected, navigate, setError, setStudents]
-  );
-
   useEffect(() => {
     fetchClasses();
   }, [fetchClasses]);
 
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const className = queryParams.get("class");
-
-    if (className && classes.length > 0) {
-      const classItem = classes.find((c) => c.class_name === className);
-      if (classItem) {
-        setClassNameSelected(classItem.class_name);
-        handleSelectedClass(classItem);
-      } else {
-        fetchStudents();
-      }
-    } else {
-      fetchStudents();
-    }
-  }, [location.search, classes, handleSelectedClass, fetchStudents]);
-
-  useEffect(() => {
-    if (filterSelected !== "Öğrenci Sınıfı") {
-      setClassNameSelected("Tüm Sınıflar");
-      navigate(`?filter=${filterSelected}`);
-    }
-  }, [filterSelected, navigate]);
-
-  const handleClassChange = (classNameSelected: string) => {
-    if (classNameSelected === "Tüm Sınıflar") {
-      navigate(`?class=Tüm Sınıflar&filter=${filterSelected}`);
-      fetchStudents();
+  const handleSelectClass = (className: string) => {
+    if (className === "Tüm Sınıflar") {
+      setSelectClassName(["Tüm Sınıflar"]);
+      setLocalFilteredStudents(localStudents);
       setError(null);
     } else {
-      const classItem = classes.find((c) => c.class_name === classNameSelected);
-      if (classItem) {
-        handleSelectedClass(classItem);
+      setSelectClassName((prev) => {
+        const newClassNames = prev.filter((name) => name !== "Tüm Sınıflar");
+        return [...newClassNames, className];
+      });
+      let filterStudent: Student[] = [];
+
+      const selectedClassItem = classes.find(
+        (classItem) => classItem.class_name === className
+      );
+
+      filterStudent = localStudents.filter(
+        (student) => student.class_id === selectedClassItem?.id
+      );
+
+      if (filterStudent.length > 0) {
+        setError(null);
+        localFilteredStudents.length !== localStudents.length
+          ? setLocalFilteredStudents((prev) => [...prev, ...filterStudent])
+          : setLocalFilteredStudents(filterStudent);
+      } else {
+        setError(`${className} sınıfında öğrenci bulunamadı.`);
       }
     }
-    setClassNameSelected(classNameSelected);
   };
 
+  useEffect(() => {
+    if (localStudents.length === 0) {
+      setLocalStudents(filteredStudents);
+    }
+
+    if (localFilteredStudents.length > 0) {
+      handleFilter(localFilteredStudents);
+    } else {
+      handleFilter(filteredStudents);
+    }
+  }, [
+    localFilteredStudents,
+    handleFilter,
+    filteredStudents,
+    localStudents,
+    selectClassName,
+  ]);
+
   return (
-    <Listbox value={classNameSelected} onChange={handleClassChange}>
-      <div className="relative mb-5 float-right ml-5">
-        <ListboxButton className="grid cursor-default grid-cols-1 rounded-md bg-white py-1.5 pl-3 pr-2 text-left text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-gray-600 text-base focus:border focus:border-4 focus:border-gray-900">
-          <span className="col-start-1 row-start-1 flex items-center gap-5 pr-6">
-            <span className="block truncate">{classNameSelected}</span>
-          </span>
-          <ChevronDownIcon
-            aria-hidden="true"
-            className="col-start-1 row-start-1 size-5 self-center justify-self-end text-gray-500 sm:size-4"
-          />
-        </ListboxButton>
+    <div className="relative ml-5 mb-5 flex justify-end">
+      <Menu as="div" className="inline-block text-left">
+        <div>
+          <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+            Öğrenci Sınıfı
+            <ChevronDownIcon
+              aria-hidden="true"
+              className="size-5 text-gray-500 self-center"
+            />
+          </MenuButton>
+        </div>
 
-        <ListboxOptions
+        <MenuItems
           transition
-          className="absolute z-10 mt-1 max-h-56 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none data-[closed]:data-[leave]:opacity-0 data-[leave]:transition data-[leave]:duration-100 data-[leave]:ease-in"
+          className="absolute right-0 z-10 w-32 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in h-52 overflow-x-hidden overflow-y-scroll"
         >
-          <ListboxOption
-            key="all"
-            value={"Tüm Sınıflar"}
-            className="group relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900 data-[focus]:bg-gray-600 data-[focus]:text-white data-[focus]:outline-none"
-          >
-            <div className="flex items-center mr-2">
-              <span className="ml-3 block truncate font-normal group-data-[selected]:font-semibold">
-                Tüm Sınıflar
-              </span>
-            </div>
-
-            <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-900 group-[&:not([data-selected])]:hidden group-data-[focus]:text-white">
-              <CheckIcon aria-hidden="true" className="size-5" />
-            </span>
-          </ListboxOption>
-          {classes.map((classItem) => (
-            <ListboxOption
-              key={classItem.id}
-              value={classItem.class_name}
-              className="group relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900 data-[focus]:bg-gray-600 data-[focus]:text-white data-[focus]:outline-none"
+          <div className="py-1">
+            <MenuItem
+              as="button"
+              key={"all"}
+              value={"Tüm Sınıflar"}
+              className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${
+                selectClassName.includes("Tüm Sınıflar")
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-900"
+              }`}
+              onClick={() => handleSelectClass("Tüm Sınıflar")}
+              disabled={selectClassName.includes("Tüm Sınıflar")}
             >
-              <div className="flex items-center">
-                <span className="ml-3 block truncate font-normal group-data-[selected]:font-semibold">
-                  {classItem.class_name}
-                </span>
-              </div>
-
-              <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-900 group-[&:not([data-selected])]:hidden group-data-[focus]:text-white">
-                <CheckIcon aria-hidden="true" className="size-5" />
-              </span>
-            </ListboxOption>
-          ))}
-        </ListboxOptions>
-      </div>
-    </Listbox>
+              Tüm Sınıflar
+            </MenuItem>
+            {classes.map((classItem) => (
+              <MenuItem
+                as="button"
+                key={classItem.id}
+                value={classItem.class_name}
+                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${
+                  selectClassName.includes(classItem.class_name)
+                    ? "text-gray-300 cursor-not-allowed"
+                    : "text-gray-900"
+                }`}
+                onClick={() => handleSelectClass(classItem.class_name)}
+                disabled={selectClassName.includes(classItem.class_name)}
+              >
+                {classItem.class_name}
+              </MenuItem>
+            ))}
+          </div>
+        </MenuItems>
+      </Menu>
+    </div>
   );
 };
 

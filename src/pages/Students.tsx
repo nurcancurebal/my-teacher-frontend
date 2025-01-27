@@ -123,6 +123,11 @@ const Students: React.FC = () => {
     <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 xl:px-0 md:px-24 px-12">
       <div className="overflow-x-auto xl:col-start-2 col-span-2 xl:p-0">
         <FilteredStudents setStudents={setStudents} setError={setError} />
+        {error && (
+          <p className="mt-2 text-center xl:text-lg md:text-base text-sm text-red-600 col-start-1 col-span-4">
+            {error}
+          </p>
+        )}
         <table className="border-collapse w-full mt-5 border border-slate-300">
           <thead>
             <tr>
@@ -228,11 +233,7 @@ const Students: React.FC = () => {
           </tbody>
         </table>
       </div>
-      {error && (
-        <p className="mt-2 text-center xl:text-lg md:text-base text-sm text-red-600 col-start-1 col-span-4">
-          {error}
-        </p>
-      )}
+
       <div className="xl:col-start-3 md:col-start-2 xl:p-0">
         <div className="flex justify-end ">
           <button

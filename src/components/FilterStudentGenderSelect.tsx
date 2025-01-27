@@ -15,39 +15,55 @@ interface Student {
 }
 
 interface FilterStudentGenderSelectProps {
-  students: Student[];
   filteredStudents: Student[];
   handleFilter: (filtered: Student[]) => void;
 }
 
 const FilterStudentGenderSelect: React.FC<FilterStudentGenderSelectProps> = ({
-  students,
   filteredStudents,
   handleFilter,
 }) => {
   const [genderFemale, setGenderFemale] = useState<boolean>(false);
   const [genderMale, setGenderMale] = useState<boolean>(false);
+  const [localStudents, setLocalStudents] = useState<Student[]>([]);
+  const [localFilteredStudents, setLocalFilteredStudents] = useState<Student[]>(
+    []
+  );
 
   const handleGenderChange = (gender: string) => {
+    let filtered: Student[] = filteredStudents;
+
     if (gender === "Kız") {
       setGenderFemale(!genderFemale);
+      genderMale
+        ? (filtered = localStudents)
+        : (filtered = localStudents.filter(
+            (student) => student.gender === "K"
+          ));
     } else if (gender === "Erkek") {
       setGenderMale(!genderMale);
+      genderFemale
+        ? (filtered = localStudents)
+        : (filtered = localStudents.filter(
+            (student) => student.gender === "E"
+          ));
     }
+
+    setLocalFilteredStudents(filtered);
   };
 
   useEffect(() => {
-    let filtered = filteredStudents;
-
-    if (genderFemale && !genderMale) {
-      filtered = filteredStudents.filter((student) => student.gender === "K");
-    } else if (!genderFemale && genderMale) {
-      filtered = filteredStudents.filter((student) => student.gender === "E");
-    } else {
-      filtered = students;
+    if (localFilteredStudents.length !== 0) {
+      handleFilter(localFilteredStudents);
     }
-    handleFilter(filtered);
-  }, [genderFemale, genderMale, students, filteredStudents, handleFilter]);
+  }, [localFilteredStudents, handleFilter]);
+
+  useEffect(() => {
+    handleFilter(filteredStudents);
+    if (localStudents.length === 0) {
+      setLocalStudents(filteredStudents);
+    }
+  }, [filteredStudents, handleFilter, localStudents]);
 
   return (
     <div className=" px-auto mx-auto">
