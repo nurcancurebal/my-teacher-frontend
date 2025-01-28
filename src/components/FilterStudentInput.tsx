@@ -36,9 +36,29 @@ const FilterStudentInput: React.FC<FilterStudentInputProps> = ({
   );
 
   useEffect(() => {
-    console.log("useEffect:", "filteredStudents", filteredStudents);
-    setLocalStudents(filteredStudents);
-  }, [filteredStudents]);
+    console.log("i-useEffect1:", "filteredStudents", filteredStudents);
+    if (localStudents.length === 0) {
+      setLocalStudents(filteredStudents);
+    }
+  }, [filteredStudents, localStudents]);
+
+  useEffect(() => {
+    console.log(
+      "i-useEffect2:",
+      "localStudents",
+      localStudents,
+      "localFilteredStudents",
+      localFilteredStudents
+    );
+    if (localFilteredStudents.length !== 0) {
+      console.log("i-useEffect2-1");
+      handleFilter(localFilteredStudents);
+    } else {
+      console.log("i-useEffect2-2");
+      handleFilter(localStudents);
+    }
+    /* handleFilter(localFilteredStudents); */
+  }, [localFilteredStudents, localStudents, handleFilter]);
 
   const searchInputName = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -54,7 +74,7 @@ const FilterStudentInput: React.FC<FilterStudentInputProps> = ({
     setSearchTermName(value);
 
     if (value !== "") {
-      console.log("1");
+      console.log("i-1");
       let filtered = localStudents.filter(
         (student) =>
           student.student_name.toLowerCase().includes(value.toLowerCase()) ||
@@ -62,11 +82,11 @@ const FilterStudentInput: React.FC<FilterStudentInputProps> = ({
       );
 
       if (filtered.length === 0 && value.includes(" ")) {
-        console.log("2");
+        console.log("i-2");
         const terms = value.toLowerCase().split(" ");
 
         if (terms.length >= 2) {
-          console.log("3");
+          console.log("i-3");
           const firstName = terms.slice(0, terms.length - 1).join(" ");
           const lastName = terms[terms.length - 1];
           filtered = localStudents.filter(
@@ -77,24 +97,39 @@ const FilterStudentInput: React.FC<FilterStudentInputProps> = ({
         }
       }
 
-      handleFilter(filtered);
-      setError(filtered.length === 0 ? "Bu isimde öğrenci bulunamadı." : null);
+      console.log("i-filtered:", filtered);
+      setLocalFilteredStudents(filtered);
+      if (filtered.length === 0) {
+        console.log("i-4");
+        setError(`"${value}" adı veya soyadı içeren öğrenci bulunamadı.`);
+        handleFilter([]);
+      } else {
+        console.log("i-5");
+        handleFilter(filtered);
+        setError(null);
+      }
     } else {
+      console.log("i-6");
       setError(null);
+      setLocalFilteredStudents(localStudents);
+      handleFilter(localStudents);
     }
   };
+
   const searchInputNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log("searchInputNumber:", "e.target.value", e.target.value);
     const value = e.target.value;
     setSearchTermNumber(value);
 
     if (isNaN(Number(value))) {
+      console.log("searchInputNumber:1-2");
       handleFilter(localStudents);
       setError("Öğrenci numarası sadece sayısal değerlerden oluşabilir.");
       return;
     }
 
     if (value !== "") {
+      console.log("searchInputNumber:1-3");
       let filtered = localStudents.filter((student) =>
         student.student_number.toString().includes(value)
       );
@@ -104,6 +139,7 @@ const FilterStudentInput: React.FC<FilterStudentInputProps> = ({
         filtered.length === 0 ? "Bu numaraya ait öğrenci bulunamadı." : null
       );
     } else {
+      console.log("searchInputNumber:1-4");
       handleFilter(localStudents);
       setError(null);
     }

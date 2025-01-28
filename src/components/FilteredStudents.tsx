@@ -60,6 +60,7 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
   const handleFilter = (filtered: Student[]) => {
     setFilteredStudents(filtered);
     setStudents(filtered);
+    console.log("anacomp", "filtered", filtered);
   };
 
   return (
@@ -154,6 +155,7 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
           <FilterStudentGenderSelect
             filteredStudents={filteredStudents}
             handleFilter={handleFilter}
+            setError={setError}
           />
         ) : null}
       </div>

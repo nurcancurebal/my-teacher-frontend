@@ -17,11 +17,13 @@ interface Student {
 interface FilterStudentGenderSelectProps {
   filteredStudents: Student[];
   handleFilter: (filtered: Student[]) => void;
+  setError: (error: string | null) => void;
 }
 
 const FilterStudentGenderSelect: React.FC<FilterStudentGenderSelectProps> = ({
   filteredStudents,
   handleFilter,
+  setError,
 }) => {
   const [genderFemale, setGenderFemale] = useState<boolean>(false);
   const [genderMale, setGenderMale] = useState<boolean>(false);
@@ -31,9 +33,11 @@ const FilterStudentGenderSelect: React.FC<FilterStudentGenderSelectProps> = ({
   );
 
   const handleGenderChange = (gender: string) => {
+    console.log("handleGenderChange:", "localStudents", localStudents);
     let filtered: Student[] = filteredStudents;
 
     if (gender === "Kız") {
+      console.log("handleGenderChange1");
       setGenderFemale(!genderFemale);
       genderMale
         ? (filtered = localStudents)
@@ -41,6 +45,7 @@ const FilterStudentGenderSelect: React.FC<FilterStudentGenderSelectProps> = ({
             (student) => student.gender === "K"
           ));
     } else if (gender === "Erkek") {
+      console.log("handleGenderChange2");
       setGenderMale(!genderMale);
       genderFemale
         ? (filtered = localStudents)
@@ -49,21 +54,47 @@ const FilterStudentGenderSelect: React.FC<FilterStudentGenderSelectProps> = ({
           ));
     }
 
-    setLocalFilteredStudents(filtered);
+    if (filtered.length === 0) {
+      console.log("handleGenderChange3");
+      handleFilter([]);
+      setError(`${gender} öğrenci bulunamadı.`);
+    } else {
+      console.log("handleGenderChange4");
+      setLocalFilteredStudents(filtered);
+    }
   };
 
   useEffect(() => {
-    if (localFilteredStudents.length !== 0) {
+    if (localFilteredStudents.length !== 0 && filteredStudents.length !== 0) {
+      console.log(
+        "g-useEffect:",
+        "localFilteredStudents",
+        localFilteredStudents,
+        "filteredStudents",
+        filteredStudents
+      );
       handleFilter(localFilteredStudents);
+    } else if (
+      localFilteredStudents.length !== 0 &&
+      filteredStudents.length === 0
+    ) {
+      console.log(
+        "g-useEffect:",
+        "localFilteredStudents",
+        localFilteredStudents,
+        "filteredStudents",
+        filteredStudents
+      );
+      handleFilter(filteredStudents);
     }
-  }, [localFilteredStudents, handleFilter]);
+  }, [localFilteredStudents, handleFilter, filteredStudents]);
 
   useEffect(() => {
-    handleFilter(filteredStudents);
     if (localStudents.length === 0) {
+      console.log("genderuseEffect:", "localStudents", localStudents);
       setLocalStudents(filteredStudents);
     }
-  }, [filteredStudents, handleFilter, localStudents]);
+  }, [filteredStudents, localStudents]);
 
   return (
     <div className=" px-auto mx-auto">

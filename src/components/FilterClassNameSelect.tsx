@@ -56,54 +56,118 @@ const FilterClassNameSelect: React.FC<FilterClassNameSelectProps> = ({
     fetchClasses();
   }, [fetchClasses]);
 
-  const handleSelectClass = (className: string) => {
-    if (className === "Tüm Sınıflar") {
-      setSelectClassName(["Tüm Sınıflar"]);
-      setLocalFilteredStudents(localStudents);
-      setError(null);
-    } else {
-      setSelectClassName((prev) => {
-        const newClassNames = prev.filter((name) => name !== "Tüm Sınıflar");
-        return [...newClassNames, className];
-      });
-      let filterStudent: Student[] = [];
-
-      const selectedClassItem = classes.find(
-        (classItem) => classItem.class_name === className
-      );
-
-      filterStudent = localStudents.filter(
-        (student) => student.class_id === selectedClassItem?.id
-      );
-
-      if (filterStudent.length > 0) {
-        setError(null);
-        localFilteredStudents.length !== localStudents.length
-          ? setLocalFilteredStudents((prev) => [...prev, ...filterStudent])
-          : setLocalFilteredStudents(filterStudent);
-      } else {
-        setError(`${className} sınıfında öğrenci bulunamadı.`);
-      }
-    }
-  };
-
   useEffect(() => {
     if (localStudents.length === 0) {
+      console.log("c-useEffect1:", "filteredStudents", filteredStudents);
       setLocalStudents(filteredStudents);
     }
+  }, [filteredStudents, localStudents]);
 
-    if (localFilteredStudents.length > 0) {
-      handleFilter(localFilteredStudents);
-    } else {
-      handleFilter(filteredStudents);
-    }
-  }, [
-    localFilteredStudents,
-    handleFilter,
-    filteredStudents,
-    localStudents,
-    selectClassName,
-  ]);
+  const handleSelectClass = useCallback(
+    (className: string) => {
+      if (className === "Tüm Sınıflar") {
+        console.log(
+          "handleSelectClass1:",
+          "localStudents",
+          localStudents,
+          "localFilteredStudents",
+          localFilteredStudents,
+          "selectClassName",
+          selectClassName
+        );
+        setSelectClassName(["Tüm Sınıflar"]);
+        setLocalFilteredStudents([]);
+        setError(null);
+        handleFilter(localStudents);
+      } else {
+        console.log(
+          "handleSelectClass2:",
+          "className",
+          className,
+          "localStudents",
+          localStudents,
+          "localFilteredStudents",
+          localFilteredStudents
+        );
+        setSelectClassName((prev) => {
+          const newClassNames = prev.filter((name) => name !== "Tüm Sınıflar");
+          return [...newClassNames, className];
+        });
+
+        const selectedClassItem = classes.find(
+          (classItem) => classItem.class_name === className
+        );
+
+        const filterStudent: Student[] = localStudents.filter(
+          (student) => student.class_id === selectedClassItem?.id
+        );
+
+        if (localFilteredStudents.length > 0) {
+          if (filterStudent.length > 0) {
+            console.log(
+              "handleSelectClass3:",
+              "filterStudent",
+              filterStudent,
+              "localFilteredStudents",
+              localFilteredStudents
+            );
+            setError(null);
+            if (localFilteredStudents.length !== localStudents.length) {
+              console.log("handleSelectClass3.1:", "localFilteredStudents");
+              setLocalFilteredStudents([
+                ...localFilteredStudents,
+                ...filterStudent,
+              ]);
+            } else {
+              console.log("handleSelectClass3.2:", "localFilteredStudents");
+              setLocalFilteredStudents(filterStudent);
+              handleFilter(filterStudent);
+            }
+            handleFilter([...localFilteredStudents, ...filterStudent]);
+          } else {
+            console.log(
+              "handleSelectClass4:",
+              "filterStudent",
+              filterStudent,
+              "localFilteredStudents",
+              localFilteredStudents
+            );
+            setError(`${className} sınıfında öğrenci bulunamadı.`);
+          }
+        } else {
+          console.log(
+            "handleSelectClass5:",
+            "filterStudent",
+            filterStudent,
+            "localFilteredStudents",
+            localFilteredStudents,
+            "localStudents",
+            localStudents
+          );
+
+          if (filterStudent.length > 0) {
+            console.log("handleSelectClass6:", "filterStudent", filterStudent);
+            setError(null);
+            setLocalFilteredStudents(filterStudent);
+            handleFilter(filterStudent);
+          } else {
+            console.log("handleSelectClass7:", "filterStudent", filterStudent);
+            setError(`${className} sınıfında öğrenci bulunamadı.`);
+            handleFilter([]);
+            setLocalFilteredStudents([]);
+          }
+        }
+      }
+    },
+    [
+      classes,
+      localStudents,
+      handleFilter,
+      setError,
+      localFilteredStudents,
+      selectClassName,
+    ]
+  );
 
   return (
     <div className="relative ml-5 mb-5 flex justify-end">
