@@ -57,6 +57,7 @@ const FilterStudentGenderSelect: React.FC<FilterStudentGenderSelectProps> = ({
     if (filtered.length === 0) {
       console.log("handleGenderChange3");
       handleFilter([]);
+      setLocalFilteredStudents([]);
       setError(`${gender} öğrenci bulunamadı.`);
     } else {
       console.log("handleGenderChange4");
@@ -67,30 +68,74 @@ const FilterStudentGenderSelect: React.FC<FilterStudentGenderSelectProps> = ({
   useEffect(() => {
     if (localFilteredStudents.length !== 0 && filteredStudents.length !== 0) {
       console.log(
-        "g-useEffect:",
+        "g-useEffect1:",
         "localFilteredStudents",
         localFilteredStudents,
         "filteredStudents",
         filteredStudents
       );
-      handleFilter(localFilteredStudents);
+      if (filteredStudents.length !== localStudents.length) {
+        console.log(
+          "g-useEffect1-1",
+          "genderFemale",
+          genderFemale,
+          "genderMale",
+          genderMale
+        );
+        if (localFilteredStudents.length === filteredStudents.length) {
+          return;
+        } else {
+          filterGenderChange();
+        }
+      } else {
+        console.log("g-useEffect1-2");
+        handleFilter(localFilteredStudents);
+      }
     } else if (
       localFilteredStudents.length !== 0 &&
       filteredStudents.length === 0
     ) {
       console.log(
-        "g-useEffect:",
+        "g-useEffect2:",
         "localFilteredStudents",
         localFilteredStudents,
         "filteredStudents",
         filteredStudents
       );
-      handleFilter(filteredStudents);
+      handleFilter([]);
+    } else {
+      return;
     }
-  }, [localFilteredStudents, handleFilter, filteredStudents]);
+  }, [localFilteredStudents, handleFilter, filteredStudents, localStudents]);
+
+  const filterGenderChange = () => {
+    if (genderFemale && !genderMale) {
+      const filtered = filteredStudents.filter(
+        (student) => student.gender === "K"
+      );
+
+      handleFilter(filtered);
+      setLocalFilteredStudents(filtered);
+    } else if (genderMale && !genderFemale) {
+      const filtered = filteredStudents.filter(
+        (student) => student.gender === "E"
+      );
+      handleFilter(filtered);
+      setLocalFilteredStudents(filtered);
+    } else {
+      handleFilter(localFilteredStudents);
+      setLocalStudents(localFilteredStudents);
+      return;
+    }
+  };
 
   useEffect(() => {
-    if (localStudents.length === 0) {
+    if (
+      localStudents.length === 0 ||
+      (localFilteredStudents &&
+        filteredStudents &&
+        localFilteredStudents.length !== filteredStudents.length)
+    ) {
       console.log("genderuseEffect:", "localStudents", localStudents);
       setLocalStudents(filteredStudents);
     }

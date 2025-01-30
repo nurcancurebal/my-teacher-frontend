@@ -4,7 +4,8 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
 import FilterStudentGenderSelect from "./FilterStudentGenderSelect";
 import FilterClassNameSelect from "./FilterClassNameSelect";
-import FilterStudentInput from "./FilterStudentInput";
+import FilterStudentNameLastname from "./FilterStudentNameLastname";
+import FilterStudentNumber from "./FilterStudentNumber";
 import instance from "../services/axiosInstance";
 
 interface Student {
@@ -135,12 +136,17 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
         </Menu>
       </div>
       <div>
-        {filterNumber || filterNameLastname ? (
-          <FilterStudentInput
+        {filterNameLastname ? (
+          <FilterStudentNameLastname
             filteredStudents={filteredStudents}
             handleFilter={handleFilter}
-            filterNumber={filterNumber}
-            filterNameLastname={filterNameLastname}
+            setError={setError}
+          />
+        ) : null}
+        {filterNumber ? (
+          <FilterStudentNumber
+            filteredStudents={filteredStudents}
+            handleFilter={handleFilter}
             setError={setError}
           />
         ) : null}

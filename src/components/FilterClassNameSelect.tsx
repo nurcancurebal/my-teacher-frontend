@@ -113,13 +113,25 @@ const FilterClassNameSelect: React.FC<FilterClassNameSelectProps> = ({
             );
             setError(null);
             if (localFilteredStudents.length !== localStudents.length) {
-              console.log("handleSelectClass3.1:", "localFilteredStudents");
+              console.log(
+                "handleSelectClass3.1:",
+                "localFilteredStudents",
+                localFilteredStudents,
+                "filterStudent",
+                filterStudent
+              );
               setLocalFilteredStudents([
                 ...localFilteredStudents,
                 ...filterStudent,
               ]);
             } else {
-              console.log("handleSelectClass3.2:", "localFilteredStudents");
+              console.log(
+                "handleSelectClass3.2:",
+                "localFilteredStudents",
+                localFilteredStudents,
+                "filterStudent",
+                filterStudent
+              );
               setLocalFilteredStudents(filterStudent);
               handleFilter(filterStudent);
             }
