@@ -1,57 +1,34 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-import instance from "../services/axiosInstance";
+import API from "../api";
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<string>("");
-  const navigate = useNavigate();
+
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const handleLogin = async (event: React.FormEvent) => {
-    event.preventDefault(); // Varsayılan form gönderim davranışını engeller
-    setLoading(true);
+    event.preventDefault();
     setError("");
     setMessage("");
+    setLoading(true);
 
     try {
-      const response = await instance.post("auth/login", { email, password });
+      const response = await API.auth.login({ email, password });
 
       setMessage("Giriş başarılı. Yönlendiriliyorsunuz...");
       localStorage.setItem("token", response.data.accessToken);
+
       setTimeout(() => navigate("/onizleme"), 3000);
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        const errorMessage = error.response.data.message;
-
-        switch (errorMessage) {
-          case "Email is incorrect":
-            setError("E-posta adresi hatalı.");
-            break;
-          case "Password is incorrect":
-            setError("Şifre hatalı.");
-            break;
-          case '"email" must be a valid email':
-            setError("Geçerli bir e-posta adresi giriniz.");
-            break;
-          case '"password" length must be at least 8 characters long':
-            setError("Şifre en az 8 karakter uzunluğunda olmalıdır.");
-            break;
-          case "The password must contain at least one letter and one number.":
-            setError("Şifre en az bir harf ve bir rakam içermelidir.");
-            break;
-          default:
-            setError(
-              "Giriş başarısız. Lütfen email ve şifrenizi kontrol edin."
-            );
-        }
-        return;
-      }
-      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+      console.error(error);
+      setError(error?.response?.data?.message);
     } finally {
       setLoading(false);
     }

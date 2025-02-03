@@ -55,13 +55,14 @@ const FilterStudentGenderSelect: React.FC<FilterStudentGenderSelectProps> = ({
     }
 
     if (filtered.length === 0) {
-      console.log("handleGenderChange3");
+      console.log("handleGenderChange3", "filtered", filtered);
       handleFilter([]);
       setLocalFilteredStudents([]);
       setError(`${gender} öğrenci bulunamadı.`);
     } else {
-      console.log("handleGenderChange4");
+      console.log("handleGenderChange4", "filtered", filtered);
       setLocalFilteredStudents(filtered);
+      handleFilter(filtered);
     }
   };
 
@@ -72,24 +73,28 @@ const FilterStudentGenderSelect: React.FC<FilterStudentGenderSelectProps> = ({
         "localFilteredStudents",
         localFilteredStudents,
         "filteredStudents",
-        filteredStudents
+        filteredStudents,
+        "localStudents",
+        localStudents
       );
       if (filteredStudents.length !== localStudents.length) {
         console.log(
           "g-useEffect1-1",
-          "genderFemale",
-          genderFemale,
-          "genderMale",
-          genderMale
+          "localFilteredStudents",
+          localFilteredStudents,
+          "filteredStudents",
+          filteredStudents
         );
-        if (localFilteredStudents.length === filteredStudents.length) {
-          return;
-        } else {
+        if (localFilteredStudents.length !== filteredStudents.length) {
+          console.log("g-useEffect1-1-1");
           filterGenderChange();
         }
+        /* if (localFilteredStudents.length === localStudents.length) {
+          console.log("g-useEffect1-1-2");
+          handleFilter(localStudents);
+        } */
       } else {
-        console.log("g-useEffect1-2");
-        handleFilter(localFilteredStudents);
+        console.log(" bu koşul ne zaman gerçekleşir not halinde yaz");
       }
     } else if (
       localFilteredStudents.length !== 0 &&
@@ -103,13 +108,15 @@ const FilterStudentGenderSelect: React.FC<FilterStudentGenderSelectProps> = ({
         filteredStudents
       );
       handleFilter([]);
-    } else {
-      return;
-    }
+    } //  else {
+    //  console.log("g-useEffect3"); buraya gerek var mı?
+    //  return;
+    //    }
   }, [localFilteredStudents, handleFilter, filteredStudents, localStudents]);
 
   const filterGenderChange = () => {
     if (genderFemale && !genderMale) {
+      console.log("filterGenderChange1", "genderFemale", genderFemale);
       const filtered = filteredStudents.filter(
         (student) => student.gender === "K"
       );
@@ -117,26 +124,34 @@ const FilterStudentGenderSelect: React.FC<FilterStudentGenderSelectProps> = ({
       handleFilter(filtered);
       setLocalFilteredStudents(filtered);
     } else if (genderMale && !genderFemale) {
+      console.log("filterGenderChange2", "genderMale", genderMale);
       const filtered = filteredStudents.filter(
         (student) => student.gender === "E"
       );
       handleFilter(filtered);
       setLocalFilteredStudents(filtered);
-    } else {
-      handleFilter(localFilteredStudents);
-      setLocalStudents(localFilteredStudents);
+    } /*  else {
+      console.log(
+        "filterGenderChange3",
+        "localFilteredStudents",
+        localFilteredStudents
+      );
+      // handleFilter(localFilteredStudents); bunu yapma hata veriyor erkek kız seçili iken sınıf eklediğimde
+      // setLocalStudents(localFilteredStudents); diğerlerinde yok ne işe yarıyor
       return;
-    }
+    } */
   };
 
   useEffect(() => {
-    if (
-      localStudents.length === 0 ||
-      (localFilteredStudents &&
-        filteredStudents &&
-        localFilteredStudents.length !== filteredStudents.length)
-    ) {
-      console.log("genderuseEffect:", "localStudents", localStudents);
+    console.log(
+      "g-useEffect1:",
+      "filteredStudents",
+      filteredStudents,
+      "localStudents",
+      localStudents
+    );
+    if (localStudents.length === 0) {
+      console.log("g-useEffect4:", "localStudents", localStudents);
       setLocalStudents(filteredStudents);
     }
   }, [filteredStudents, localStudents]);

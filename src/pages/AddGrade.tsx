@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import instance from "../services/axiosInstance";
+import axios from "../plugins/axios";
 
 interface Student {
   id: number;
@@ -32,7 +31,7 @@ const AddGrade: React.FC = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await instance.get(`student/${selectedClassId}`);
+        const response = await axios.get(`student/${selectedClassId}`);
         setStudents(response.data.data);
         setGrades(
           response.data.data.map((student: Student) => ({
@@ -71,7 +70,7 @@ const AddGrade: React.FC = () => {
 
     try {
       for (const grade of grades) {
-        await instance.post(`grade/${selectedClassId}/${grade.student_id}`, {
+        await axios.post(`grade/${selectedClassId}/${grade.student_id}`, {
           grade_type: gradeName,
           grade_value: grade.grade_value,
         });
@@ -81,7 +80,7 @@ const AddGrade: React.FC = () => {
       );
       setTimeout(() => navigate("/onizleme"), 3000);
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
+      if (error.response) {
         const errorMessage = error.response.data.message;
 
         switch (errorMessage) {
@@ -109,9 +108,7 @@ const AddGrade: React.FC = () => {
               "Notlar kaydedilirken bir hata oluştu. Lütfen tekrar deneyin."
             );
         }
-        return;
       }
-      setError("Notlar kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.");
     } finally {
       setLoading(false);
     }

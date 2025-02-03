@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-import instance from "../services/axiosInstance";
-import AddClassDialog from "../components/AddClassDialog";
-import AddStudentDialog from "../components/AddStudentDialog";
-import AddGradeDialog from "../components/AddGradeDialog";
-import AddTeacherNoteDialog from "../components/AddTeacherNoteDialog";
+import axios from "../plugins/axios";
+
+import AddClassDialog from "../components/class/AddClassDialog";
+import AddStudentDialog from "../components/student/AddStudentDialog";
+import AddGradeDialog from "../components/grade/AddGradeDialog";
+import AddTeacherNoteDialog from "../components/teacher-note/AddTeacherNoteDialog";
 
 const Dashboard: React.FC = () => {
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
@@ -48,7 +49,7 @@ const Dashboard: React.FC = () => {
 
   const fetchTotalClassesFunc = async () => {
     try {
-      const classes = await instance.get("/class/count");
+      const classes = await axios.get("/class/count");
       setTotalClasses(classes.data.data);
     } catch (error) {
       console.error(error);
@@ -57,7 +58,7 @@ const Dashboard: React.FC = () => {
 
   const fetchTotalStudentsFunc = async () => {
     try {
-      const count = await instance.get("/student/count");
+      const count = await axios.get("/student/count");
       setTotalStudents(count.data.data);
     } catch (error) {
       console.error(error);
@@ -66,7 +67,7 @@ const Dashboard: React.FC = () => {
 
   const fetchLastAddedGrade = async () => {
     try {
-      const response = await instance.get("/grade/last-added");
+      const response = await axios.get("/grade/last-added");
       setLastAddedGrade(response.data.data);
     } catch (error) {
       console.error(error);
@@ -75,7 +76,7 @@ const Dashboard: React.FC = () => {
 
   const fetchGenderCount = async () => {
     try {
-      const response = await instance.get("/student/gender-count");
+      const response = await axios.get("/student/gender-count");
 
       setFemaleCount(response.data.data.femaleCount);
       setMaleCount(response.data.data.maleCount);

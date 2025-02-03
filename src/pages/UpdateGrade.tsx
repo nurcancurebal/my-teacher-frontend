@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useLocation } from "react-router-dom";
 
-import instance from "../services/axiosInstance";
+import axios from "../plugins/axios";
 
 interface Student {
   id: number;
@@ -35,10 +34,8 @@ const UpdateGrade: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const studentResponse = await instance.get(
-          `student/${selectedClassId}`
-        );
-        const gradeResponse = await instance.get(`grade/${selectedClassId}`);
+        const studentResponse = await axios.get(`student/${selectedClassId}`);
+        const gradeResponse = await axios.get(`grade/${selectedClassId}`);
 
         setStudents(studentResponse.data.data);
         setGrades(gradeResponse.data.data);
@@ -80,7 +77,7 @@ const UpdateGrade: React.FC = () => {
     setMessage("");
     try {
       const updatePromises = grades.map((grade) =>
-        instance.patch(
+        axios.patch(
           `/grade/${selectedClassId}/${grade.student_id}/${grade.id}`,
           {
             grade_value: grade.grade_value,
@@ -90,7 +87,7 @@ const UpdateGrade: React.FC = () => {
       await Promise.all(updatePromises);
       setMessage("Notlar başarıyla güncellendi.");
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
+      if (error.response) {
         const errorMessage = error.response.data.message;
         switch (errorMessage) {
           case "Student not found in the specified class":
@@ -111,9 +108,7 @@ const UpdateGrade: React.FC = () => {
           default:
             setError("Bir hata oluştu. Lütfen tekrar deneyin.");
         }
-        return;
       }
-      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
     } finally {
       setLoading(false);
     }

@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 
-import instance from "../services/axiosInstance";
+import axios from "../../plugins/axios";
 
 interface Student {
   id: number;
@@ -42,10 +42,11 @@ const FilterClassNameSelect: React.FC<FilterClassNameSelectProps> = ({
   );
   const [localStudents, setLocalStudents] = useState<Student[]>([]);
   const [selectClassName, setSelectClassName] = useState<string[]>([]);
+  const [selectedClassItem, setSelectedClassItem] = useState<Class[]>([]);
 
   const fetchClasses = useCallback(async () => {
     try {
-      const response = await instance.get("/class");
+      const response = await axios.get("/class");
       setClasses(response.data.data);
     } catch (error) {
       setError("Sınıflar getirilirken bir hata oluştu.");
@@ -57,11 +58,72 @@ const FilterClassNameSelect: React.FC<FilterClassNameSelectProps> = ({
   }, [fetchClasses]);
 
   useEffect(() => {
+    console.log(
+      "c-useEffect1:",
+      "filteredStudents",
+      filteredStudents,
+      "localStudents",
+      localStudents,
+      "localFilteredStudents",
+      localFilteredStudents
+    );
     if (localStudents.length === 0) {
-      console.log("c-useEffect1:", "filteredStudents", filteredStudents);
+      console.log("c-useEffect1-1:", "filteredStudents", filteredStudents);
       setLocalStudents(filteredStudents);
+    } else {
+      if (
+        localFilteredStudents.length > 0 &&
+        filteredStudents.length !== localFilteredStudents.length
+      ) {
+        console.log(
+          "c-useEffect1-2:",
+          "filteredStudents",
+          filteredStudents,
+          "localStudents",
+          localStudents
+        );
+        filteredSelectClass();
+      }
     }
   }, [filteredStudents, localStudents]);
+
+  const filteredSelectClass = () => {
+    let filterStudent: Student[] = [];
+    console.log("filteredSelectClass1:", "localStudents", localStudents);
+
+    selectedClassItem.forEach((classItem) => {
+      filterStudent = [
+        ...filterStudent,
+        ...filteredStudents.filter(
+          (student) => student.class_id === classItem?.id
+        ),
+      ];
+    });
+
+    if (filterStudent.length > 0) {
+      console.log(
+        "filteredSelectClass1-1:",
+        "filterStudent",
+        filterStudent,
+        "localFilteredStudents",
+        localFilteredStudents
+      );
+      setError(null);
+
+      setLocalFilteredStudents(filterStudent);
+
+      handleFilter(filterStudent);
+    } else {
+      console.log(
+        "filteredSelectClass2:",
+        "filterStudent",
+        filterStudent,
+        "localFilteredStudents",
+        localFilteredStudents
+      );
+      setError(`Öğrenci bulunamadı.`);
+    }
+  };
 
   const handleSelectClass = useCallback(
     (className: string) => {
@@ -87,19 +149,25 @@ const FilterClassNameSelect: React.FC<FilterClassNameSelectProps> = ({
           "localStudents",
           localStudents,
           "localFilteredStudents",
-          localFilteredStudents
+          localFilteredStudents,
+          "filteredStudents",
+          filteredStudents
         );
         setSelectClassName((prev) => {
           const newClassNames = prev.filter((name) => name !== "Tüm Sınıflar");
           return [...newClassNames, className];
         });
 
-        const selectedClassItem = classes.find(
+        const selectedClass = classes.find(
           (classItem) => classItem.class_name === className
         );
 
+        if (selectedClass) {
+          setSelectedClassItem((prev: Class[]) => [...prev, selectedClass]);
+        }
+
         const filterStudent: Student[] = localStudents.filter(
-          (student) => student.class_id === selectedClassItem?.id
+          (student) => student.class_id === selectedClass?.id
         );
 
         if (localFilteredStudents.length > 0) {
@@ -112,6 +180,7 @@ const FilterClassNameSelect: React.FC<FilterClassNameSelectProps> = ({
               localFilteredStudents
             );
             setError(null);
+
             if (localFilteredStudents.length !== localStudents.length) {
               console.log(
                 "handleSelectClass3.1:",
@@ -124,6 +193,8 @@ const FilterClassNameSelect: React.FC<FilterClassNameSelectProps> = ({
                 ...localFilteredStudents,
                 ...filterStudent,
               ]);
+
+              handleFilter([...localFilteredStudents, ...filterStudent]);
             } else {
               console.log(
                 "handleSelectClass3.2:",
@@ -135,7 +206,6 @@ const FilterClassNameSelect: React.FC<FilterClassNameSelectProps> = ({
               setLocalFilteredStudents(filterStudent);
               handleFilter(filterStudent);
             }
-            handleFilter([...localFilteredStudents, ...filterStudent]);
           } else {
             console.log(
               "handleSelectClass4:",

@@ -1,27 +1,26 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import instance from "../services/axiosInstance";
+import API from "../api";
 
-interface LocationState {
-  email: string;
-}
+import { TQueryResetPassword } from "../types";
 
 const ResetPassword: React.FC = () => {
   const location = useLocation();
-  const { email } = location.state as LocationState;
+  const navigate = useNavigate();
+
+  const { email } = location.state as TQueryResetPassword;
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
 
   const [password, setPassword] = useState<string>("");
   const [newPasswordRepeat, setnewPasswordRepeat] = useState<string>("");
   const [otp, setOtp] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
-  const navigate = useNavigate();
 
   const handleResetPassword = async (event: React.FormEvent) => {
-    event.preventDefault(); // Varsayılan form gönderim davranışını engeller
+    event.preventDefault();
     setLoading(true);
     setError("");
     setMessage("");
@@ -33,7 +32,7 @@ const ResetPassword: React.FC = () => {
     }
 
     try {
-      await instance.post("auth/reset-password", { email, password, otp });
+      await API.auth.resetPassword({ email, password, otp });
       setMessage(
         "Şifreniz başarıyla değiştirildi. Giriş yapmak için yönlendiriliyorsunuz..."
       );
@@ -41,28 +40,8 @@ const ResetPassword: React.FC = () => {
         navigate("/");
       }, 3000);
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        const errorMessage = error.response.data.message;
-
-        switch (errorMessage) {
-          case "Otp code is invalid.":
-            setError("OTP kodu geçersiz. Lütfen kontrol edin.");
-            break;
-          case '"password" length must be at least 8 characters long':
-            setError("Şifre en az 8 karakter uzunluğunda olmalıdır.");
-            break;
-          case "The password must contain at least one letter and one number.":
-            setError("Şifre en az bir harf ve bir rakam içermelidir.");
-            break;
-          case '"otp" length must be 6 characters long':
-            setError("OTP kodu 6 karakter uzunluğunda olmalıdır.");
-            break;
-          default:
-            setError("Bir hata oluştu. Lütfen tekrar deneyin.");
-        }
-        return;
-      }
-      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+      console.error(error);
+      setError(error?.response?.data?.message);
     } finally {
       setLoading(false);
     }

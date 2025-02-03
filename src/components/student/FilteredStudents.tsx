@@ -3,10 +3,10 @@ import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
 import FilterStudentGenderSelect from "./FilterStudentGenderSelect";
-import FilterClassNameSelect from "./FilterClassNameSelect";
+import FilterClassNameSelect from "../class/FilterClassNameSelect";
 import FilterStudentNameLastname from "./FilterStudentNameLastname";
 import FilterStudentNumber from "./FilterStudentNumber";
-import instance from "../services/axiosInstance";
+import axios from "../../plugins/axios";
 
 interface Student {
   id: number;
@@ -37,7 +37,7 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
 
   const fetchStudents = useCallback(async () => {
     try {
-      const response = await instance.get("/student");
+      const response = await axios.get("/student");
       const studentsData = response.data.data;
 
       if (!studentsData || studentsData.length === 0) {

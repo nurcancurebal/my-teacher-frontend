@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import {
   Dialog,
   DialogBackdrop,
@@ -8,7 +7,7 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 
-import instance from "../services/axiosInstance";
+import axios from "../../plugins/axios";
 
 interface SelectGradeProps {
   open: boolean;
@@ -51,7 +50,7 @@ const SelectGrade: React.FC<SelectGradeProps> = ({ open, setOpen }) => {
 
   const getClasses = async () => {
     try {
-      const classes = await instance.get("class");
+      const classes = await axios.get("class");
       setClasses(classes.data.data);
     } catch (error) {
       setError("Bir hata oluştu. Lütfen tekrar deneyin.");
@@ -66,7 +65,7 @@ const SelectGrade: React.FC<SelectGradeProps> = ({ open, setOpen }) => {
       setShowStudentSelection(false);
 
       try {
-        const notesInClass = await instance.get(`grade/${selectedClassId}/`);
+        const notesInClass = await axios.get(`grade/${selectedClassId}/`);
 
         const uniqueGradeTypes = Array.from(
           new Set(
@@ -81,7 +80,7 @@ const SelectGrade: React.FC<SelectGradeProps> = ({ open, setOpen }) => {
         }
         setGradeType(uniqueGradeTypes);
       } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
+        if (error.response) {
           const errorMessage = error.response.data.message;
 
           switch (errorMessage) {
@@ -94,9 +93,7 @@ const SelectGrade: React.FC<SelectGradeProps> = ({ open, setOpen }) => {
             default:
               setError("Bir hata oluştu. Lütfen tekrar deneyin.");
           }
-          return;
         }
-        setError("Bir hata oluştu. Lütfen tekrar deneyin.");
       }
 
       return;

@@ -1,37 +1,26 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 
-import instance from "../services/axiosInstance";
+import axios from "../plugins/axios";
 
-interface User {
-  id: number;
-  firstname: string;
-  lastname: string;
-  username: string;
-  email: string;
-  created_at: Date;
-  last_updated: Date;
-}
+import { TUpdateProfileProps } from "../types";
 
-interface UpdateProfileProps {
-  userData: User | null;
-  onProfileUpdate: () => void;
-}
-
-const UpdateProfile: React.FC<UpdateProfileProps> = ({
+const UpdateProfile: React.FC<TUpdateProfileProps> = ({
   userData,
   onProfileUpdate,
 }) => {
   const [error, setError] = useState<string | null>(null);
-
-  const [firstname, setFirstname] = useState<string>(userData?.firstname || "");
-  const [lastname, setLastname] = useState<string>(userData?.lastname || "");
-  const [username, setUsername] = useState<string>(userData?.username || "");
-  const [email, setEmail] = useState<string>(userData?.email || "");
-  const [password, setPassword] = useState<string>("");
   const [message, setMessage] = useState<string | null>(null);
 
+  const [firstname, setFirstname] = useState<string>("");
+  const [lastname, setLastname] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
   useEffect(() => {
+    setMessage(null);
+    setError(null);
+
     if (userData) {
       setFirstname(userData.firstname);
       setLastname(userData.lastname);
@@ -41,10 +30,11 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({
   }, [userData]);
 
   const updateUser = async () => {
-    setError("");
-    setMessage("");
+    setError(null);
+    setMessage(null);
+
     try {
-      await instance.patch("user", {
+      await axios.patch("user", {
         firstname,
         lastname,
         username,
@@ -55,74 +45,11 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({
       setTimeout(() => {
         setMessage(null);
         setPassword("");
-        onProfileUpdate(); // Kullanıcı bilgilerini güncellemek için callback fonksiyonunu çağır
+        onProfileUpdate();
       }, 3000);
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        const errorMessage = error.response.data.message;
-
-        switch (errorMessage) {
-          case "User not found":
-            setError("Kullanıcı bulunamadı.");
-            break;
-          case '"firstname" is not allowed to be empty':
-            setError("İsim boş bırakılamaz.");
-            break;
-          case '"firstname" length must be at least 3 characters long':
-            setError("İsim en az 3 karakter uzunluğunda olmalıdır.");
-            break;
-          case '"firstname" length must be less than or equal to 30 characters long':
-            setError("İsim en fazla 30 karakter uzunluğunda olmalıdır.");
-            break;
-          case '"lastname" is not allowed to be empty':
-            setError("Soyisim boş bırakılamaz.");
-            break;
-          case '"lastname" length must be at least 3 characters long':
-            setError("Soyisim en az 3 karakter uzunluğunda olmalıdır.");
-            break;
-          case '"lastname" length must be less than or equal to 30 characters long':
-            setError("Soyisim en fazla 30 karakter uzunluğunda olmalıdır.");
-            break;
-          case '"username" is not allowed to be empty':
-            setError("Kullanıcı adı boş bırakılamaz.");
-            break;
-          case '"username" length must be at least 3 characters long':
-            setError("Kullanıcı adı en az 3 karakter uzunluğunda olmalıdır.");
-            break;
-          case '"username" length must be less than or equal to 30 characters long':
-            setError(
-              "Kullanıcı adı en fazla 30 karakter uzunluğunda olmalıdır."
-            );
-            break;
-          case '"email" is not allowed to be empty':
-            setError("E-posta boş bırakılamaz.");
-            break;
-          case '"email" must be a valid email':
-            setError("Geçerli bir e-posta adresi giriniz.");
-            break;
-          case "Email already exists":
-            setError("Bu e-posta adresi zaten kullanımda.");
-            break;
-          case '"password" is not allowed to be empty':
-            setError("Şifre boş bırakılamaz.");
-            break;
-          case '"password" length must be at least 8 characters long':
-            setError("Şifre en az 8 karakter uzunluğunda olmalıdır.");
-            break;
-          case "Password is incorrect":
-            setError("Şifre yanlış.");
-            break;
-          case "The password must contain at least one letter and one number.":
-            setError("Şifre en az bir harf ve bir rakam içermelidir.");
-            break;
-          default:
-            setError(
-              "Bir hata oluştu. Lütfen tekrar deneyin veya daha sonra tekrar deneyin."
-            );
-        }
-        return;
-      }
-      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+      console.error(error);
+      setError(error?.response?.data?.message);
     }
   };
 

@@ -31,31 +31,28 @@ const FilterStudentNameLastname: React.FC<FilterStudentNameLastnameProps> = ({
   );
 
   useEffect(() => {
-    console.log(
-      "i-useEffect1:",
-      "filteredStudents",
-      filteredStudents,
-      "localStudents",
-      localStudents
-    );
     if (localStudents.length === 0) {
+      console.log(
+        "n-useEffect1:",
+        "filteredStudents",
+        filteredStudents,
+        "localStudents",
+        localStudents
+      );
       setLocalStudents(filteredStudents);
     }
   }, [filteredStudents, localStudents]);
 
   useEffect(() => {
-    console.log(
-      "i-useEffect2:",
-      "localStudents",
-      localStudents,
-      "localFilteredStudents",
-      localFilteredStudents
-    );
     if (localFilteredStudents.length !== 0) {
-      console.log("i-useEffect2-1");
+      console.log(
+        "n-useEffect2-1",
+        "localFilteredStudents",
+        localFilteredStudents
+      );
       handleFilter(localFilteredStudents);
     } else {
-      console.log("i-useEffect2-2");
+      console.log("n-useEffect2-2", "localStudents", localStudents);
       handleFilter(localStudents);
     }
     /* handleFilter(localFilteredStudents); */
@@ -75,20 +72,19 @@ const FilterStudentNameLastname: React.FC<FilterStudentNameLastnameProps> = ({
     setSearchTerm(value);
 
     if (value !== "") {
-      console.log("i-1");
       let filtered = localStudents.filter(
         (student) =>
           student.student_name.toLowerCase().includes(value.toLowerCase()) ||
           student.student_lastname.toLowerCase().includes(value.toLowerCase())
       );
-      console.log("i-filtered:", filtered);
+      console.log("n-1:", "filtered", filtered);
 
       if (filtered.length === 0 && value.includes(" ")) {
-        console.log("i-2");
+        console.log("n-2");
         const terms = value.toLowerCase().split(" ");
 
         if (terms.length >= 2) {
-          console.log("i-3");
+          console.log("n-3");
           const firstName = terms.slice(0, terms.length - 1).join(" ");
           const lastName = terms[terms.length - 1];
           filtered = localStudents.filter(
@@ -101,16 +97,16 @@ const FilterStudentNameLastname: React.FC<FilterStudentNameLastnameProps> = ({
 
       setLocalFilteredStudents(filtered);
       if (filtered.length === 0) {
-        console.log("i-4");
+        console.log("n-4");
         setError(`"${value}" adı veya soyadı içeren öğrenci bulunamadı.`);
         handleFilter([]);
       } else {
-        console.log("i-5");
+        console.log("n-5", "filtered", filtered);
         handleFilter(filtered);
         setError(null);
       }
     } else {
-      console.log("i-6");
+      console.log("n-6", "localStudents", localStudents);
       setError(null);
       setLocalFilteredStudents(localStudents);
       handleFilter(localStudents);

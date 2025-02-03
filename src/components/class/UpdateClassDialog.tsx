@@ -5,9 +5,8 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import axios from "axios";
 
-import instance from "../services/axiosInstance";
+import axios from "../../plugins/axios";
 
 interface UpdateClassDialogProps {
   open: boolean;
@@ -51,7 +50,7 @@ const UpdateClassDialog: React.FC<UpdateClassDialogProps> = ({
     }
 
     try {
-      await instance.patch(`class/${id}`, updateFields);
+      await axios.patch(`class/${id}`, updateFields);
       setMessage("Sınıf bilgileri başarıyla güncellendi.");
       setTimeout(() => {
         setMessage(null);
@@ -59,7 +58,7 @@ const UpdateClassDialog: React.FC<UpdateClassDialogProps> = ({
         onUpdate(); // Sınıf adı güncellendikten sonra geri çağırma fonksiyonunu çağır
       }, 3000);
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
+      if (error.response) {
         const errorMessage = error.response.data.message;
 
         switch (errorMessage) {
@@ -81,9 +80,7 @@ const UpdateClassDialog: React.FC<UpdateClassDialogProps> = ({
           default:
             setError("Bir hata oluştu. Lütfen tekrar deneyin.");
         }
-        return;
       }
-      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
     }
   };
 

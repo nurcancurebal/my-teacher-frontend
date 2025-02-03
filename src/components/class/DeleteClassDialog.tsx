@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 
-import instance from "../services/axiosInstance";
+import axios from "../../plugins/axios";
 
 interface DeleteClassDialogProps {
   open: boolean;
@@ -31,7 +31,7 @@ const DeleteClassDialog: React.FC<DeleteClassDialogProps> = ({
     setMessage(null);
 
     try {
-      await instance.delete(`class/${id}`);
+      await axios.delete(`class/${id}`);
       setMessage("Sınıf başarıyla silindi.");
       setTimeout(() => {
         setMessage(null);

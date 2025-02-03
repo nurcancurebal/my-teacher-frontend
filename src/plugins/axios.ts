@@ -1,5 +1,6 @@
-import axios, { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
+
+import axios, { AxiosError } from "axios";
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
@@ -10,11 +11,10 @@ const instance = axios.create({
 instance.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
 
-  const isTokenValid = token && token !== "undefined" && token !== "";
-
-  if (isTokenValid) {
+  if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
 
@@ -23,7 +23,7 @@ instance.interceptors.response.use(
     return response;
   },
   (error: AxiosError) => {
-    if (axios.isAxiosError(error) && error.response) {
+    if (error.response) {
       if (error.response.status === 401) {
         localStorage.removeItem("token");
         const navigate = useNavigate();

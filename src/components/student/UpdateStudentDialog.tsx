@@ -6,9 +6,8 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import Datepicker from "react-tailwindcss-datepicker";
-import axios from "axios";
 
-import instance from "../services/axiosInstance";
+import axios from "../../plugins/axios";
 
 interface Student {
   id: number;
@@ -70,7 +69,7 @@ const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        const classes = await instance.get("class");
+        const classes = await axios.get("class");
         setClasses(classes.data.data);
       } catch (error) {
         setError("Sınıflar getirilirken bir hata oluştu.");
@@ -127,7 +126,7 @@ const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
     }
 
     try {
-      await instance.patch(`student/${student.id}`, updateFields);
+      await axios.patch(`student/${student.id}`, updateFields);
       setMessage("Öğrenci başarıyla güncellendi.");
 
       setTimeout(() => {
@@ -137,7 +136,7 @@ const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
         onUpdate(); // Güncelleme sonrası callback fonksiyonunu çağır
       }, 3000);
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
+      if (error.response) {
         const errorMessage = error.response.data.message;
         switch (errorMessage) {
           case "'tc' must be a number":
@@ -189,9 +188,7 @@ const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
           default:
             setError("Bir hata oluştu. Lütfen tekrar deneyin.");
         }
-        return;
       }
-      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
     }
   };
 

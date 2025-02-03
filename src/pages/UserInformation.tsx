@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-interface User {
+interface TUser {
   id: number;
   firstname: string;
   lastname: string;
@@ -12,7 +12,7 @@ interface User {
 }
 
 interface UserInformaitionProps {
-  userData: User | null;
+  userData: TUser | null;
 }
 
 const UserInformaition: React.FC<UserInformaitionProps> = ({ userData }) => {

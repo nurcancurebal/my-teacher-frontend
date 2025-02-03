@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 
-import instance from "../services/axiosInstance";
-import UpdateClassDialog from "../components/UpdateClassDialog";
-import DeleteClassDialog from "../components/DeleteClassDialog";
-import AddClassDialog from "../components/AddClassDialog";
+import axios from "../plugins/axios";
+import UpdateClassDialog from "../components/class/UpdateClassDialog";
+import DeleteClassDialog from "../components/class/DeleteClassDialog";
+import AddClassDialog from "../components/class/AddClassDialog";
 
 interface Class {
   id: number;
@@ -36,7 +36,7 @@ const Classes: React.FC = () => {
 
   const fetchClasses = async () => {
     try {
-      const response = await instance.get("class");
+      const response = await axios.get("class");
       const classesData = response.data.data;
 
       if (!classesData || classesData.length === 0) {
@@ -52,9 +52,7 @@ const Classes: React.FC = () => {
   const fetchStudentCounts = useCallback(async () => {
     try {
       const countPromises = classes.map(async (classItem) => {
-        const response = await instance.get(
-          `student/${classItem.id}/class-count`
-        );
+        const response = await axios.get(`student/${classItem.id}/class-count`);
         return { classId: classItem.id, count: response.data.data };
       });
       const counts = await Promise.all(countPromises);

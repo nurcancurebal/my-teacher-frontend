@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import {
   Dialog,
   DialogBackdrop,
@@ -8,7 +7,7 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 
-import instance from "../services/axiosInstance";
+import axios from "../../plugins/axios";
 
 interface SelectClassProps {
   open: boolean;
@@ -47,7 +46,7 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
 
   const fetchClasses = async () => {
     try {
-      const response = await instance.get("class");
+      const response = await axios.get("class");
       const classes = response.data.data;
       if (classes.length > 0) {
         setClasses(classes);
@@ -65,7 +64,7 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
 
     if (showStudentSelection && selectedClassId !== null) {
       try {
-        const result = await instance.get(`student/${selectedClassId}`);
+        const result = await axios.get(`student/${selectedClassId}`);
         const students = result.data.data;
         if (students.length === 0) {
           setError("Bu sınıfta öğrenci bulunamadı.");
@@ -89,7 +88,7 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
         .toLowerCase()
         .replace(/^[a-z]/, (c: string) => c.toUpperCase());
 
-      await instance.post(`grade/${selectedClassId}/`, {
+      await axios.post(`grade/${selectedClassId}/`, {
         grade_type: formattedGradeName,
       });
       setMessage("Not eklemek için yönlendiriliyorsunuz.");
@@ -100,7 +99,7 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
         setGradeName("");
       }, 3000);
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
+      if (error.response) {
         const errorMessage = error.response.data.message;
 
         switch (errorMessage) {
@@ -122,9 +121,7 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
           default:
             setError("Bir hata oluştu. Lütfen tekrar deneyin.");
         }
-        return;
       }
-      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
     }
   };
 

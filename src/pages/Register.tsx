@@ -1,27 +1,30 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
-import instance from "../services/axiosInstance";
+import API from "../api";
 
 const Register: React.FC = () => {
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
+
   const [firstname, setFirstname] = useState<string>("");
   const [lastname, setLastname] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
-  const navigate = useNavigate();
 
   const handleRegister = async (event: React.FormEvent) => {
     event.preventDefault();
+
     setLoading(true);
     setError("");
     setMessage("");
+
     try {
-      const response = await instance.post("auth/register", {
+      const response = await API.auth.register({
         firstname,
         lastname,
         username,
@@ -30,52 +33,13 @@ const Register: React.FC = () => {
       });
       setMessage("Kayıt başarılı. Yönlendiriliyorsunuz...");
       localStorage.setItem("token", response.data.accessToken);
+
       setTimeout(() => {
         navigate("/onizleme");
       }, 3000);
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        const errorMessage = error.response.data.message;
-
-        switch (errorMessage) {
-          case '"firstname" length must be at least 3 characters long':
-            setError("İsim en az 3 karakter uzunluğunda olmalıdır.");
-            break;
-          case "Email is already used":
-            setError("Bu e-posta adresi zaten kullanılıyor.");
-            break;
-          case '"firstname" length must be less than or equal to 30 characters long':
-            setError("İsim en fazla 30 karakter uzunluğunda olmalıdır.");
-            break;
-          case '"lastname" length must be at least 3 characters long':
-            setError("Soyisim en az 3 karakter uzunluğunda olmalıdır.");
-            break;
-          case '"lastname" length must be less than or equal to 30 characters long':
-            setError("Soyisim en fazla 30 karakter uzunluğunda olmalıdır.");
-            break;
-          case '"username" length must be at least 3 characters long':
-            setError("Kullanıcı adı en az 3 karakter uzunluğunda olmalıdır.");
-            break;
-          case '"username" length must be less than or equal to 30 characters long':
-            setError(
-              "Kullanıcı adı en fazla 30 karakter uzunluğunda olmalıdır."
-            );
-            break;
-          case '"email" must be a valid email':
-            setError("Geçerli bir e-posta adresi giriniz.");
-            break;
-          case '"password" length must be at least 8 characters long':
-            setError("Şifre en az 8 karakter uzunluğunda olmalıdır.");
-            break;
-          case "The password must contain at least one letter and one number.":
-            setError("Şifre en az bir harf ve bir rakam içermelidir.");
-            break;
-          default:
-            setError("Bir hata oluştu. Lütfen tekrar deneyin.");
-        }
-        return;
-      }
-      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+      console.error(error);
+      setError(error?.response?.data?.message);
     } finally {
       setLoading(false);
     }

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import Datepicker from "react-tailwindcss-datepicker";
 import {
   Dialog,
@@ -8,7 +7,7 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 
-import instance from "../services/axiosInstance";
+import axios from "../../plugins/axios";
 
 interface AddStudentProps {
   open: boolean;
@@ -55,7 +54,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
 
   const fetchClasses = async () => {
     try {
-      const response = await instance.get("class");
+      const response = await axios.get("class");
       const classes = response.data.data;
       if (classes.length > 0) {
         setClasses(classes);
@@ -94,7 +93,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
     }
 
     try {
-      await instance.post(`student/${selectedClassId}`, {
+      await axios.post(`student/${selectedClassId}`, {
         tc: studentTc,
         student_name: studentName,
         student_lastname: studentLastname,
@@ -108,8 +107,9 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
         onAdd();
       }, 3000);
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
+      if (error.response) {
         const errorMessage = error.response.data.message;
+
         switch (errorMessage) {
           case "'tc' must be a number":
             setError("TC kimlik numarası sayı olmalıdır.");
@@ -160,9 +160,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
           default:
             setError("Bir hata oluştu. Lütfen tekrar deneyin.");
         }
-        return;
       }
-      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
     }
   };
 

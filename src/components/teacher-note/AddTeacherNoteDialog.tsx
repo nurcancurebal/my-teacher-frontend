@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 
-import instance from "../services/axiosInstance";
+import axios from "../../plugins/axios";
 
 interface SelectTeacherNoteProps {
   open: boolean;
@@ -53,7 +53,7 @@ const SelectTeacherNote: React.FC<SelectTeacherNoteProps> = ({
     if (open) {
       const fetchClasses = async () => {
         try {
-          const response = await instance.get("class");
+          const response = await axios.get("class");
           const classes = response.data.data;
           if (classes.length > 0) {
             setClasses(classes);
@@ -85,7 +85,7 @@ const SelectTeacherNote: React.FC<SelectTeacherNoteProps> = ({
 
     if (showStudentSelection && selectedClassId !== null) {
       try {
-        const response = await instance.get(`student/${selectedClassId}`);
+        const response = await axios.get(`student/${selectedClassId}`);
         const students = response.data.data;
         if (students.length === 0) {
           setError("Bu sınıfta öğrenci bulunamadı.");

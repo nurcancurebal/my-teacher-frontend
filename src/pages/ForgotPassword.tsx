@@ -1,51 +1,34 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-import instance from "../services/axiosInstance";
+import API from "../api";
 
 const ForgotPassword: React.FC = () => {
-  const [email, setEmail] = useState<string>("");
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const navigate = useNavigate();
+
+  const [email, setEmail] = useState<string>("");
 
   const handleForgotPassword = async (event: React.FormEvent) => {
-    event.preventDefault(); // Varsayılan form gönderim davranışını engeller
+    event.preventDefault();
     setLoading(true);
     setMessage("");
     setError("");
 
     try {
-      await instance.post("auth/forgot-password", { email });
+      await API.auth.forgotPassword({ email });
       setMessage(
         "OTP kodu email adresinize gönderildi. Şifrenizi sıfırlamak için yönlendiriliyorsunuz..."
       );
       setTimeout(() => {
-        navigate("/sifremi-sifirla", { state: { email } }); // Başarılı girişten 5 saniye sonra yönlendirme
+        navigate("/sifremi-sifirla", { state: { email } });
       }, 3000);
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        const errorMessage = error.response.data.message;
-
-        switch (errorMessage) {
-          case '"email" must be a valid email':
-            setError("Geçerli bir e-posta adresi giriniz.");
-            break;
-          case "Email is incorrect":
-            setError("E-posta adresi hatalı.");
-            break;
-          case "Failed to send OTP":
-            setError("OTP kodu gönderilemedi. Lütfen tekrar deneyin.");
-            break;
-
-          default:
-            setError("Bir hata oluştu. Lütfen tekrar deneyin.");
-        }
-        return;
-      }
-      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+      console.error(error);
+      setError(error?.response?.data?.message);
     } finally {
       setLoading(false);
     }

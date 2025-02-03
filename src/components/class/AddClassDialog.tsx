@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import {
   Dialog,
   DialogBackdrop,
@@ -7,7 +6,7 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 
-import instance from "../services/axiosInstance";
+import axios from "../../plugins/axios";
 
 interface AddClassProps {
   open: boolean;
@@ -26,7 +25,7 @@ const AddClass: React.FC<AddClassProps> = ({ open, setOpen, onAdd }) => {
     setMessage("");
 
     try {
-      await instance.post("class", { class_name: className, explanation });
+      await axios.post("class", { class_name: className, explanation });
 
       setMessage("Sınıfınız başarıyla eklendi.");
       setTimeout(() => {
@@ -36,34 +35,30 @@ const AddClass: React.FC<AddClassProps> = ({ open, setOpen, onAdd }) => {
         onAdd();
       }, 3000);
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        const errorMessage = error.response.data.message;
+      const errorMessage = error.response.data.message;
 
-        switch (errorMessage) {
-          case "Class name is already used":
-            setError("Sınıf adı zaten kullanılmış.");
-            break;
-          case '"class_name" length must be at least 2 characters long':
-            setError("Sınıf adı en az 2 karakter olmalıdır.");
-            break;
-          case '"class_name" length must be less than or equal to 3 characters long':
-            setError("Sınıf adı en fazla 3 karakter olmalıdır.");
-            break;
-          case '"class_name" is required':
-            setError("Sınıf adı boş bırakılamaz.");
-            break;
-          case '"explanation" is required':
-            setError("Açıklama gereklidir.");
-            break;
-          case '"explanation" is not allowed to be empty':
-            setError("Açıklama boş bırakılamaz.");
-            break;
-          default:
-            setError("Bir hata oluştu. Lütfen tekrar deneyin.");
-        }
-        return;
+      switch (errorMessage) {
+        case "Class name is already used":
+          setError("Sınıf adı zaten kullanılmış.");
+          break;
+        case '"class_name" length must be at least 2 characters long':
+          setError("Sınıf adı en az 2 karakter olmalıdır.");
+          break;
+        case '"class_name" length must be less than or equal to 3 characters long':
+          setError("Sınıf adı en fazla 3 karakter olmalıdır.");
+          break;
+        case '"class_name" is required':
+          setError("Sınıf adı boş bırakılamaz.");
+          break;
+        case '"explanation" is required':
+          setError("Açıklama gereklidir.");
+          break;
+        case '"explanation" is not allowed to be empty':
+          setError("Açıklama boş bırakılamaz.");
+          break;
+        default:
+          setError("Bir hata oluştu. Lütfen tekrar deneyin.");
       }
-      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
     }
   };
 

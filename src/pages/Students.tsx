@@ -1,12 +1,13 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import instance from "../services/axiosInstance";
-import DetailStudentDialog from "../components/DetailStudentDialog";
-import UpdateStudentDialog from "../components/UpdateStudentDialog";
-import DeleteStudentDialog from "../components/DeleteStudentDialog";
-import AddStudentDialog from "../components/AddStudentDialog";
-import FilteredStudents from "../components/FilteredStudents";
+import axios from "../plugins/axios";
+
+import DetailStudentDialog from "../components/student/DetailStudentDialog";
+import UpdateStudentDialog from "../components/student/UpdateStudentDialog";
+import DeleteStudentDialog from "../components/student/DeleteStudentDialog";
+import AddStudentDialog from "../components/student/AddStudentDialog";
+import FilteredStudents from "../components/student/FilteredStudents";
 
 interface Student {
   id: number;
@@ -47,7 +48,7 @@ const Students: React.FC = () => {
 
   const fetchStudents = useCallback(async () => {
     try {
-      const response = await instance.get("/student");
+      const response = await axios.get("/student");
       const studentsData = response.data.data;
 
       if (!studentsData || studentsData.length === 0) {
@@ -64,7 +65,7 @@ const Students: React.FC = () => {
 
   const fetchClasses = async () => {
     try {
-      const response = await instance.get("/class");
+      const response = await axios.get("/class");
       const classesData = response.data.data;
 
       if (!classesData || classesData.length === 0) {

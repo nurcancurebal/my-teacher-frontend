@@ -1,5 +1,6 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+
 import {
   Disclosure,
   DisclosureButton,
@@ -11,23 +12,12 @@ import {
 } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
-interface User {
-  id: number;
-  firstname: string;
-  lastname: string;
-  username: string;
-  email: string;
-  created_at: Date;
-  last_updated: Date;
-}
+import { TNavbarProps } from "../types";
 
-interface NavbarProps {
-  userData: User | null;
-}
-
-const Navbar: React.FC<NavbarProps> = ({ userData }) => {
+const Navbar: React.FC<TNavbarProps> = ({ userData }) => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
 
   const navigation = [
@@ -52,6 +42,7 @@ const Navbar: React.FC<NavbarProps> = ({ userData }) => {
       current: location.pathname === "/notlar",
     },
   ];
+
   const userNavigation = [
     {
       name: "Profili Güncelle",
@@ -83,9 +74,9 @@ const Navbar: React.FC<NavbarProps> = ({ userData }) => {
                 <div className="hidden md:block">
                   <div className="ml-10 flex items-baseline space-x-4">
                     {navigation.map((item) => (
-                      <a
+                      <Link
                         key={item.name}
-                        href={item.href}
+                        to={item.href}
                         aria-current={item.current ? "page" : undefined}
                         className={classNames(
                           item.current
@@ -95,7 +86,7 @@ const Navbar: React.FC<NavbarProps> = ({ userData }) => {
                         )}
                       >
                         {item.name}
-                      </a>
+                      </Link>
                     ))}
                   </div>
                 </div>
@@ -114,7 +105,7 @@ const Navbar: React.FC<NavbarProps> = ({ userData }) => {
                             onMouseEnter={() => setIsDropdownOpen(true)}
                             onMouseLeave={() => setIsDropdownOpen(false)}
                           >
-                            {userData.username}
+                            {userData?.firstname} {userData?.lastname}
                           </button>
                         )}
                         {isDropdownOpen && (
@@ -153,12 +144,12 @@ const Navbar: React.FC<NavbarProps> = ({ userData }) => {
                     >
                       {userNavigation.map((item) => (
                         <MenuItem key={item.name}>
-                          <a
-                            href={item.href}
+                          <Link
+                            to={item.href}
                             className="block px-4 py-2 text-lg text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none"
                           >
                             {item.name}
-                          </a>
+                          </Link>
                         </MenuItem>
                       ))}
                     </MenuItems>
@@ -225,7 +216,7 @@ const Navbar: React.FC<NavbarProps> = ({ userData }) => {
                 </div>
                 <div className="ml-3">
                   <div className="text-base/5 font-medium text-white text-left">
-                    {userData?.username}
+                    {userData?.firstname} {userData?.lastname}
                   </div>
                   <div className="text-sm font-medium text-gray-400">
                     {userData?.email}
