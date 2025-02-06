@@ -59,6 +59,7 @@ const Dashboard: React.FC = () => {
   const fetchTotalStudentsFunc = async () => {
     try {
       const count = await axios.get("/student/count");
+      console.log("fetchTotalStudentsFunc", count.data.data);
       setTotalStudents(count.data.data);
     } catch (error) {
       console.error(error);
@@ -68,6 +69,7 @@ const Dashboard: React.FC = () => {
   const fetchLastAddedGrade = async () => {
     try {
       const response = await axios.get("/grade/last-added");
+      console.log("fetchLastAddedGrade", response.data.data);
       setLastAddedGrade(response.data.data);
     } catch (error) {
       console.error(error);
@@ -77,6 +79,8 @@ const Dashboard: React.FC = () => {
   const fetchGenderCount = async () => {
     try {
       const response = await axios.get("/student/gender-count");
+
+      console.log("fetchGenderCount", response.data.data);
 
       setFemaleCount(response.data.data.femaleCount);
       setMaleCount(response.data.data.maleCount);

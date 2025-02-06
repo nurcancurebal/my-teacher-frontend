@@ -76,3 +76,33 @@ export type TResetPasswordResponse = {
   message: string;
   error: boolean;
 };
+
+export type TAddClassParams = {
+  class_name: string;
+  explanation: string;
+};
+export type TUpdateClassParams = {
+  class_name: string;
+  explanation: string;
+};
+
+export type TClass = {
+  id?: number;
+  class_name: string;
+  explanation: string;
+  teacher_id: number;
+  created_at?: Date;
+  last_updated?: Date;
+};
+
+export type TStudent = {
+  id?: number;
+  class_id: number;
+  teacher_id: number;
+  id_number: bigint;
+  student_name: string;
+  student_lastname: string;
+  student_number: number;
+  gender: string;
+  birthdate: Date;
+};
