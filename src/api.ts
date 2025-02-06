@@ -1,3 +1,4 @@
+import { data } from "react-router-dom";
 import axios from "./plugins/axios";
 
 import {
@@ -14,6 +15,10 @@ import {
   TAddClassParams,
   TUpdateClassParams,
   TStudent,
+  TGrade,
+  TGradeTypeExists,
+  TAddGradeParams,
+  TUpdateGradeParams,
 } from "./types";
 
 export default {
@@ -60,10 +65,12 @@ export default {
   },
   student: {
     add: async (data: TStudent): Promise<TStudent> => {
-      return await axios.post(`student/${data.class_id}`, { data });
+      const { class_id, ...bodyData } = data;
+      return await axios.post(`student/${class_id}`, { bodyData });
     },
     update: async (data: TStudent): Promise<number> => {
-      return await axios.put(`student/${data.id}`, { data });
+      const { id, ...bodyData } = data;
+      return await axios.put(`student/${id}`, { bodyData });
     },
     delete: async (id: number): Promise<boolean> => {
       return await axios.delete(`student/${id}`);
@@ -87,5 +94,24 @@ export default {
       return await axios.get(`student/${classId}/class-count`);
     },
   },
-  grade: {},
+  grade: {
+    findLatestGrade: async () => {
+      return await axios.get("grade/last-added");
+    },
+    classFindAll: async (classId: number): Promise<TGrade[]> => {
+      return await axios.get(`grade/${classId}`);
+    },
+    gradeTypeExists: async (data: TGradeTypeExists): Promise<boolean> => {
+      return await axios.post(`grade/${data.class_id}`, data.grade_type);
+    },
+    add: async (data: TAddGradeParams): Promise<TGrade> => {
+      const { class_id, student_id, ...bodyData } = data;
+
+      return await axios.post(`grade/${class_id}/${student_id}`, bodyData);
+    },
+    update: async (data: TUpdateGradeParams): Promise<number> => {
+      const { class_id, student_id, id, ...bodyData } = data;
+      return await axios.put(`grade/${class_id}/${student_id}/${id}`, bodyData);
+    },
+  },
 };

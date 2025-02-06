@@ -5,13 +5,11 @@ import axios from "../plugins/axios";
 import AddClassDialog from "../components/class/AddClassDialog";
 import AddStudentDialog from "../components/student/AddStudentDialog";
 import AddGradeDialog from "../components/grade/AddGradeDialog";
-import AddTeacherNoteDialog from "../components/teacher-note/AddTeacherNoteDialog";
 
 const Dashboard: React.FC = () => {
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
   const [isAddStudentOpen, setIsAddStudentOpen] = useState(false);
   const [isSelectClassOpen, setIsSelectClassOpen] = useState(false);
-  const [isSelectTeacherNoteOpen, setIsSelectTeacherNoteOpen] = useState(false);
   const [totalClasses, setTotalClasses] = useState<number | null>(0);
   const [totalStudents, setTotalStudents] = useState<number | null>(0);
   const [lastAddedGrade, setLastAddedGrade] = useState<string | null>(null);
@@ -143,12 +141,6 @@ const Dashboard: React.FC = () => {
           >
             Not Ekle <span className="text-xl">+</span>
           </button>
-          <button
-            className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-md text-center min-w-48"
-            onClick={() => setIsSelectTeacherNoteOpen(true)}
-          >
-            Kişisel Not Ekle <span className="text-xl">+</span>
-          </button>
         </div>
       </div>
 
@@ -163,10 +155,6 @@ const Dashboard: React.FC = () => {
         onAdd={async () => await fetchTotalStudentsFunc()}
       />
       <AddGradeDialog open={isSelectClassOpen} setOpen={setIsSelectClassOpen} />
-      <AddTeacherNoteDialog
-        open={isSelectTeacherNoteOpen}
-        setOpen={setIsSelectTeacherNoteOpen}
-      />
     </div>
   );
 };

@@ -22,6 +22,6 @@
     "types": ["node", "react"]
   },
   "include": [
-    "oldsrc"
+    "src"
   ]
 }

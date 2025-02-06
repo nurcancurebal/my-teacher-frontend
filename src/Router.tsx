@@ -13,7 +13,6 @@ import Classes from "./pages/Classes";
 import UserInformaition from "./pages/UserInformation";
 import AddGrade from "./pages/AddGrade";
 import UpdateGrade from "./pages/UpdateGrade";
-import AddTeacherNote from "./pages/AddTeacherNote";
 
 import { TRouterProps } from "./types";
 
@@ -32,7 +31,6 @@ const Router: React.FC<TRouterProps> = ({ userData, onProfileUpdate }) => {
           element={<UserInformaition userData={userData} />}
         />
         <Route path="/not-ekle" element={<AddGrade />} />
-        <Route path="/ogretmen-notu-ekle" element={<AddTeacherNote />} />
         <Route path="/not-guncelle" element={<UpdateGrade />} />
         <Route path="/ogrencilerim" element={<Students />} />
         <Route

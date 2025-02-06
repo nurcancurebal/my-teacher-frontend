@@ -106,3 +106,34 @@ export type TStudent = {
   gender: string;
   birthdate: Date;
 };
+
+export type TGrade = {
+  id?: number;
+  teacher_id: number;
+  student_id: number;
+  class_id: number;
+  grade_type: string;
+  grade_value: number | null;
+  created_at?: Date;
+  last_updated?: Date;
+};
+
+export type TGradeTypeExists = {
+  grade_type: string;
+  class_id: number;
+};
+
+export type TAddGradeParams = {
+  class_id: number;
+  student_id: number;
+  grade_type: string;
+  grade_value: number;
+};
+
+export type TUpdateGradeParams = {
+  grade_type: string;
+  grade_value: number;
+  class_id: number;
+  student_id: number;
+  id: number;
+};
