@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
-import axios from "../plugins/axios";
+import API from "../api";
 
-import AddClassDialog from "../components/class/AddClassDialog";
-import AddStudentDialog from "../components/student/AddStudentDialog";
-import AddGradeDialog from "../components/grade/AddGradeDialog";
+import AddClassDialog from "../components/class/AddDialog";
+import AddStudentDialog from "../components/student/AddDialog";
+import AddGradeDialog from "../components/grade/AddDialog";
 
-const Dashboard: React.FC = () => {
+function Dashboard() {
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
   const [isAddStudentOpen, setIsAddStudentOpen] = useState(false);
   const [isSelectClassOpen, setIsSelectClassOpen] = useState(false);
@@ -47,7 +47,7 @@ const Dashboard: React.FC = () => {
 
   const fetchTotalClassesFunc = async () => {
     try {
-      const classes = await axios.get("/class/count");
+      const classes = await API.class.count();
       setTotalClasses(classes.data.data);
     } catch (error) {
       console.error(error);
@@ -56,7 +56,7 @@ const Dashboard: React.FC = () => {
 
   const fetchTotalStudentsFunc = async () => {
     try {
-      const count = await axios.get("/student/count");
+      const count = await API.student.count();
       console.log("fetchTotalStudentsFunc", count.data.data);
       setTotalStudents(count.data.data);
     } catch (error) {
@@ -66,7 +66,7 @@ const Dashboard: React.FC = () => {
 
   const fetchLastAddedGrade = async () => {
     try {
-      const response = await axios.get("/grade/last-added");
+      const response = await API.grade.findLatestGrade();
       console.log("fetchLastAddedGrade", response.data.data);
       setLastAddedGrade(response.data.data);
     } catch (error) {
@@ -76,7 +76,7 @@ const Dashboard: React.FC = () => {
 
   const fetchGenderCount = async () => {
     try {
-      const response = await axios.get("/student/gender-count");
+      const response = await API.student.genderCount();
 
       console.log("fetchGenderCount", response.data.data);
 

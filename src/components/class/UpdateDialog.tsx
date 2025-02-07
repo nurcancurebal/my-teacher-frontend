@@ -6,18 +6,12 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 
-import axios from "../../plugins/axios";
+import API from "../../api";
 
-interface UpdateClassDialogProps {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  id: number;
-  className: string;
-  explanation: string;
-  onUpdate: () => void; // Geri çağırma fonksiyonu
-}
+import { TUpdateClassDialogProps } from "../../types";
+import { AxiosError, isAxiosError } from "axios";
 
-const UpdateClassDialog: React.FC<UpdateClassDialogProps> = ({
+const UpdateClassDialog: React.FC<TUpdateClassDialogProps> = ({
   open,
   setOpen,
   id,
@@ -34,52 +28,20 @@ const UpdateClassDialog: React.FC<UpdateClassDialogProps> = ({
     setError(null);
     setMessage(null);
 
-    const updateFields: { class_name?: string; explanation?: string } = {};
-
-    if (newClassName !== className) {
-      updateFields.class_name = newClassName;
-    }
-
-    if (newExplanation !== explanation) {
-      updateFields.explanation = newExplanation;
-    }
-
-    if (Object.keys(updateFields).length === 0) {
-      setError("Değişiklik yapılmadı.");
-      return;
-    }
-
     try {
-      await axios.patch(`class/${id}`, updateFields);
+      await API.class.update(id, { class_name: newClassName, explanation: newExplanation });
       setMessage("Sınıf bilgileri başarıyla güncellendi.");
       setTimeout(() => {
         setMessage(null);
         setOpen(false);
         onUpdate(); // Sınıf adı güncellendikten sonra geri çağırma fonksiyonunu çağır
       }, 3000);
-    } catch (error) {
-      if (error.response) {
-        const errorMessage = error.response.data.message;
-
-        switch (errorMessage) {
-          case "Class name is already used":
-            setError("Sınıf adı zaten kullanılmış.");
-            break;
-          case '"class_name" length must be at least 2 characters long':
-            setError("Sınıf adı en az 2 karakter olmalıdır.");
-            break;
-          case '"class_name" length must be less than or equal to 3 characters long':
-            setError("Sınıf adı en fazla 3 karakter olmalıdır.");
-            break;
-          case "Invalid class id":
-            setError("Geçersiz sınıf.");
-            break;
-          case "The teacher does not have such a class":
-            setError("Böyle bir sınıfınız yok.");
-            break;
-          default:
-            setError("Bir hata oluştu. Lütfen tekrar deneyin.");
-        }
+    } catch (error: AxiosError | Error | any) {
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        setError(errorMessage || "Bir hata oluştu. Lütfen tekrar deneyin.");
+      } else {
+        console.error(error);
       }
     }
   };

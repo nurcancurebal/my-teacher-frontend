@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-
+import { useTranslation } from 'react-i18next';
 import {
   Disclosure,
   DisclosureButton,
@@ -12,9 +12,11 @@ import {
 } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
-import { TNavbarProps } from "../types";
+import { TUserDataProps } from "../types";
 
-const Navbar: React.FC<TNavbarProps> = ({ userData }) => {
+const Navbar: React.FC<TUserDataProps> = ({ userData }) => {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -22,9 +24,9 @@ const Navbar: React.FC<TNavbarProps> = ({ userData }) => {
 
   const navigation = [
     {
-      name: "Önizleme",
-      href: "/onizleme",
-      current: location.pathname === "/onizleme",
+      name: t('DASHBOARD'),
+      href: "/",
+      current: location.pathname === "/",
     },
     {
       name: "Sınıflarım",
@@ -49,7 +51,7 @@ const Navbar: React.FC<TNavbarProps> = ({ userData }) => {
       href: "/profili-guncelle",
       current: location.pathname === "/profili-guncelle",
     },
-    { name: "Çıkış", href: "/" },
+    { name: t("LOGOUT"), href: "/login" },
   ];
 
   function classNames(...classes: string[]) {
@@ -67,7 +69,7 @@ const Navbar: React.FC<TNavbarProps> = ({ userData }) => {
                 <button
                   style={{ textShadow: "3px 2px 1px #54376d" }}
                   className="text-3xl font-sans font-bold text-white"
-                  onClick={() => navigate("/onizleme")}
+                  onClick={() => navigate("/")}
                 >
                   My Teacher
                 </button>

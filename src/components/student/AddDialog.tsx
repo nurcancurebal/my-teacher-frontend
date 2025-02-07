@@ -7,37 +7,20 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 
-import axios from "../../plugins/axios";
+import API from "../../api";
 
-interface AddStudentProps {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  onAdd: () => void;
-}
+import { TAddProps, TClassItem, TDateValueType } from "../../types";
 
-interface ClassItem {
-  id: number;
-  teacher_id: number;
-  class_name: string;
-  created_at: Date;
-  last_updated: Date;
-}
-
-interface DateValueType {
-  startDate: Date | null;
-  endDate: Date | null;
-}
-
-const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
-  const [classes, setClasses] = useState<ClassItem[]>([]);
+const AddStudent: React.FC<TAddProps> = ({ open, setOpen, onAdd }) => {
+  const [classes, setClasses] = useState<TClassItem[]>([]);
   const [studentName, setStudentName] = useState<string>("");
   const [studentLastname, setStudentLastName] = useState<string>("");
-  const [studentNumber, setStudentNumber] = useState<string>("");
+  const [studentNumber, setStudentNumber] = useState<number>();
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
-  const [studentTc, setstudentTc] = useState<string>("");
-  const [date, setDate] = useState<DateValueType>({
+  const [idNumber, setIdNumber] = useState<bigint>();
+  const [date, setDate] = useState<TDateValueType>({
     startDate: null,
     endDate: null,
   });
@@ -54,7 +37,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
 
   const fetchClasses = async () => {
     try {
-      const response = await axios.get("class");
+      const response = await API.class.allList();
       const classes = response.data.data;
       if (classes.length > 0) {
         setClasses(classes);
@@ -67,10 +50,10 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
   };
 
   const resetForm = () => {
-    setstudentTc("");
+    setIdNumber(undefined);
     setStudentName("");
     setStudentLastName("");
-    setStudentNumber("");
+    setStudentNumber(undefined);
     setGender("");
     setDate({ startDate: null, endDate: null });
     setMessage("");
@@ -93,11 +76,12 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
     }
 
     try {
-      await axios.post(`student/${selectedClassId}`, {
-        tc: studentTc,
+      await API.student.add({
+        class_id: selectedClassId,
+        id_number: idNumber ?? BigInt(0),
         student_name: studentName,
         student_lastname: studentLastname,
-        student_number: studentNumber,
+        student_number: studentNumber ?? 0,
         gender,
         birthdate: date.startDate,
       });
@@ -214,11 +198,10 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
                     <button
                       key={index}
                       type="button"
-                      className={`mx-auto m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-gray-100 focus:bg-gray-200 active:bg-gray-100 ${
-                        selectedClassId === classItem.id
-                          ? "bg-gray-200"
-                          : "bg-white"
-                      }`}
+                      className={`mx-auto m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-gray-100 focus:bg-gray-200 active:bg-gray-100 ${selectedClassId === classItem.id
+                        ? "bg-gray-200"
+                        : "bg-white"
+                        }`}
                       onClick={() => setSelectedClassId(classItem.id)}
                     >
                       {classItem.class_name}
@@ -241,8 +224,8 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
                     name="studentTc"
                     type="text"
                     required
-                    value={studentTc}
-                    onChange={(e) => setstudentTc(e.target.value)}
+                    value={idNumber?.toString() || ""}
+                    onChange={(e) => setIdNumber(BigInt(e.target.value))}
                     onKeyDown={handleKeyAddStudent}
                     className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3 disabled:opacity-75"
                     disabled={isDisabled}
@@ -305,7 +288,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
                     type="text"
                     required
                     value={studentNumber}
-                    onChange={(e) => setStudentNumber(e.target.value)}
+                    onChange={(e) => setStudentNumber(Number(e.target.value))}
                     onKeyDown={handleKeyAddStudent}
                     className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3 disabled:opacity-75"
                     disabled={isDisabled}
@@ -320,9 +303,8 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
                   <div className="grid grid-cols-2">
                     <button
                       type="button"
-                      className={`my-5 mx-auto inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 disabled:opacity-75 disabled:hover:bg-white ${
-                        gender === "K" ? "bg-slate-200" : "bg-white"
-                      }`}
+                      className={`my-5 mx-auto inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 disabled:opacity-75 disabled:hover:bg-white ${gender === "K" ? "bg-slate-200" : "bg-white"
+                        }`}
                       onClick={() => setGender("K")}
                       disabled={isDisabled}
                     >
@@ -330,9 +312,8 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
                     </button>
                     <button
                       type="button"
-                      className={`my-5 mx-auto inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 disabled:opacity-75 disabled:hover:bg-white ${
-                        gender === "E" ? "bg-slate-200" : "bg-white"
-                      }`}
+                      className={`my-5 mx-auto inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 disabled:opacity-75 disabled:hover:bg-white ${gender === "E" ? "bg-slate-200" : "bg-white"
+                        }`}
                       onClick={() => setGender("E")}
                       disabled={isDisabled}
                     >
@@ -358,7 +339,7 @@ const AddStudent: React.FC<AddStudentProps> = ({ open, setOpen, onAdd }) => {
                     placeholder="Doğum Tarihi Seçiniz"
                     displayFormat="DD.MM.YYYY"
                     inputClassName="text-base  disabled:opacity-75"
-                    onChange={(newDate: DateValueType | null) => {
+                    onChange={(newDate: TDateValueType | null) => {
                       if (newDate) {
                         setDate(newDate);
                       }

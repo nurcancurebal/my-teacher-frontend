@@ -1,25 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import axios from "../plugins/axios";
+import API from "../api";
 
-interface Student {
-  id: number;
-  class_id: number;
-  teacher_id: number;
-  student_name: string;
-  student_lastname: string;
-  student_number: number;
-}
-
-interface Grade {
-  student_id: number;
-  grade_value: number | null;
-}
+import { TStudent, TGradeValue } from "../types";
 
 const AddGrade: React.FC = () => {
-  const [students, setStudents] = useState<Student[]>([]);
-  const [grades, setGrades] = useState<Grade[]>([]);
+  const [students, setStudents] = useState<TStudent[]>([]);
+  const [grades, setGrades] = useState<TGradeValue[]>([]);
   const location = useLocation();
   const { selectedClassId, formattedGradeName: gradeName } =
     location.state || {};
@@ -31,10 +19,10 @@ const AddGrade: React.FC = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await axios.get(`student/${selectedClassId}`);
+        const response = await API.student.getListByClass(selectedClassId);
         setStudents(response.data.data);
         setGrades(
-          response.data.data.map((student: Student) => ({
+          response.data.data.map((student: TStudent) => ({
             student_id: student.id,
             grade_value: null,
           }))
@@ -70,9 +58,11 @@ const AddGrade: React.FC = () => {
 
     try {
       for (const grade of grades) {
-        await axios.post(`grade/${selectedClassId}/${grade.student_id}`, {
+        await API.grade.add({
           grade_type: gradeName,
           grade_value: grade.grade_value,
+          class_id: selectedClassId,
+          student_id: grade.student_id,
         });
       }
       setMessage(
@@ -161,7 +151,7 @@ const AddGrade: React.FC = () => {
                           ?.grade_value ?? ""
                       }
                       onChange={(e) =>
-                        handleGradeChange(student.id, e.target.value)
+                        student.id !== undefined && handleGradeChange(student.id, e.target.value)
                       }
                       className="block w-full rounded-md border-0 py-1.5 pl-7 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 xl:text-lg md:text-base text-sm mt-3"
                       onKeyDown={keyDownAddGrade}

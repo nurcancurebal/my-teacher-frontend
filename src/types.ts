@@ -4,8 +4,8 @@ export type TUser = {
   lastname: string;
   username: string;
   email: string;
-  created_at: Date;
-  last_updated: Date;
+  created_at?: Date;
+  last_updated?: Date;
 };
 
 export type TRouterProps = {
@@ -23,7 +23,7 @@ export type TContentProps = {
   onProfileUpdate: () => void;
 };
 
-export type TNavbarProps = {
+export type TUserDataProps = {
   userData: TUser | null;
 };
 
@@ -90,7 +90,7 @@ export type TClass = {
   id?: number;
   class_name: string;
   explanation: string;
-  teacher_id: number;
+  teacher_id?: number;
   created_at?: Date;
   last_updated?: Date;
 };
@@ -98,18 +98,18 @@ export type TClass = {
 export type TStudent = {
   id?: number;
   class_id: number;
-  teacher_id: number;
+  teacher_id?: number;
   id_number: bigint;
   student_name: string;
   student_lastname: string;
   student_number: number;
   gender: string;
-  birthdate: Date;
+  birthdate: Date | null;
 };
 
 export type TGrade = {
   id?: number;
-  teacher_id: number;
+  teacher_id?: number;
   student_id: number;
   class_id: number;
   grade_type: string;
@@ -127,13 +127,92 @@ export type TAddGradeParams = {
   class_id: number;
   student_id: number;
   grade_type: string;
-  grade_value: number;
+  grade_value: number | null;
 };
 
 export type TUpdateGradeParams = {
   grade_type: string;
-  grade_value: number;
+  grade_value: number | null;
   class_id: number;
   student_id: number;
   id: number;
+};
+
+export type TViewDetailDialogProps = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  student: TStudent;
+};
+
+export type TUpdateStudentDialogProps = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  student: TStudent;
+  onUpdate: () => void;
+};
+
+export type TDateValueType = {
+  startDate: Date | null;
+  endDate: Date | null;
+};
+
+export type TFilteredStudentsProps = {
+  setStudents: React.Dispatch<React.SetStateAction<TStudent[]>>;
+  setError: React.Dispatch<React.SetStateAction<string | null>>;
+};
+
+export type TFilterStudentProps = {
+  filteredStudents: TStudent[];
+  handleFilter: (filtered: TStudent[]) => void;
+  setError: (error: string | null) => void;
+};
+
+export type TAddProps = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  onAdd: () => void;
+};
+
+export type TClassItem = {
+  id: number;
+  teacher_id: number;
+  class_name: string;
+  created_at: Date;
+  last_updated: Date;
+};
+
+export type TDeleteStudentDialogProps = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  id: number;
+  studentName: string;
+  studentLastName: string;
+  onDelete: () => void;
+};
+
+export type TDeleteClassDialogProps = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  id: number;
+  className: string;
+  onDelete: () => void;
+};
+
+export type TUpdateClassDialogProps = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  id: number;
+  className: string;
+  explanation: string;
+  onUpdate: () => void;
+};
+
+export type TSelectProps = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+};
+
+export type TGradeValue = {
+  student_id: number;
+  grade_value: number | null;
 };

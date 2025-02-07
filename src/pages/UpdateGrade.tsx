@@ -1,32 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-import axios from "../plugins/axios";
+import API from "../api";
 
-interface Student {
-  id: number;
-  class_id: number;
-  teacher_id: number;
-  student_name: string;
-  student_lastname: string;
-  student_number: number;
-}
-
-interface Grade {
-  id: number;
-  student_id: number;
-  class_id: number;
-  grade_type: string;
-  grade_value: number | null;
-  created_at: Date;
-  last_updated: Date;
-}
+import { TGrade, TStudent } from "../types";
 
 const UpdateGrade: React.FC = () => {
   const location = useLocation();
   const { selectedClassId, gradeName } = location.state || {};
-  const [students, setStudents] = useState<Student[]>([]);
-  const [grades, setGrades] = useState<Grade[]>([]);
+  const [students, setStudents] = useState<TStudent[]>([]);
+  const [grades, setGrades] = useState<TGrade[]>([]);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,8 +17,8 @@ const UpdateGrade: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const studentResponse = await axios.get(`student/${selectedClassId}`);
-        const gradeResponse = await axios.get(`grade/${selectedClassId}`);
+        const studentResponse = await API.student.getListByClass(selectedClassId);
+        const gradeResponse = await API.grade.classFindAll(selectedClassId);
 
         setStudents(studentResponse.data.data);
         setGrades(gradeResponse.data.data);
@@ -77,12 +60,13 @@ const UpdateGrade: React.FC = () => {
     setMessage("");
     try {
       const updatePromises = grades.map((grade) =>
-        axios.patch(
-          `/grade/${selectedClassId}/${grade.student_id}/${grade.id}`,
-          {
-            grade_value: grade.grade_value,
-          }
-        )
+        API.grade.update({
+          id: grade.id!,
+          student_id: grade.student_id,
+          class_id: selectedClassId,
+          grade_type: gradeName,
+          grade_value: grade.grade_value
+        })
       );
       await Promise.all(updatePromises);
       setMessage("Notlar başarıyla güncellendi.");
@@ -151,9 +135,9 @@ const UpdateGrade: React.FC = () => {
                     <input
                       type="text"
                       className="block w-full rounded-md border-0 py-1.5 pl-7 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 xl:text-lg md:text-base text-sm mt-3"
-                      defaultValue={getGradeValue(student.id)}
+                      defaultValue={student.id !== undefined ? getGradeValue(student.id) : "-"}
                       onChange={(e) =>
-                        handleGradeChange(student.id, e.target.value)
+                        student.id !== undefined && handleGradeChange(student.id, e.target.value)
                       }
                     />
                   </td>

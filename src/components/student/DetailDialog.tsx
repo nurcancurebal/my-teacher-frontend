@@ -6,25 +6,9 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 
-interface Student {
-  id: number;
-  class_id: number;
-  teacher_id: number;
-  tc: bigint;
-  student_name: string;
-  student_lastname: string;
-  student_number: number;
-  gender: string;
-  birthdate: Date;
-}
+import { TViewDetailDialogProps } from "../../types";
 
-interface ViewDetailDialogProps {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  student: Student;
-}
-
-const ViewDetailDialog: React.FC<ViewDetailDialogProps> = ({
+const ViewDetailDialog: React.FC<TViewDetailDialogProps> = ({
   open,
   setOpen,
   student,
@@ -58,7 +42,7 @@ const ViewDetailDialog: React.FC<ViewDetailDialogProps> = ({
 
               <div className="sm:mx-0 mx-4 pb-5">
                 <span className="text-lg font-medium">TC Kimlik Numarası:</span>
-                <span className="text-base ml-3">{student.tc.toString()}</span>
+                <span className="text-base ml-3">{student.id_number.toString()}</span>
               </div>
 
               <div className="sm:mx-0 mx-4 pb-5">

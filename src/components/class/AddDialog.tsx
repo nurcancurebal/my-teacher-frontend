@@ -6,15 +6,11 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 
-import axios from "../../plugins/axios";
+import API from "../../api";
 
-interface AddClassProps {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  onAdd: () => void;
-}
+import { TAddProps } from "../../types";
 
-const AddClass: React.FC<AddClassProps> = ({ open, setOpen, onAdd }) => {
+const AddClass: React.FC<TAddProps> = ({ open, setOpen, onAdd }) => {
   const [className, setClassName] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -25,7 +21,7 @@ const AddClass: React.FC<AddClassProps> = ({ open, setOpen, onAdd }) => {
     setMessage("");
 
     try {
-      await axios.post("class", { class_name: className, explanation });
+      await API.class.add({ class_name: className, explanation });
 
       setMessage("Sınıfınız başarıyla eklendi.");
       setTimeout(() => {

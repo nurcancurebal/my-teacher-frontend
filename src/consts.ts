@@ -1,6 +1,6 @@
 export const WHITE_NONTOKEN_PATH_NAMES = [
-  "/",
-  "/kayit-ol",
-  "/parolami-unuttum",
-  "/sifremi-sifirla",
+  "/login",
+  "/register",
+  "/forget-password",
+  "/reset-password",
 ];

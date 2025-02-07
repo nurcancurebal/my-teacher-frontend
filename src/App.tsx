@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Headers from "./components/Headers";
@@ -12,21 +12,29 @@ import { WHITE_NONTOKEN_PATH_NAMES } from "./consts";
 
 import API from "./api";
 
-const App: React.FC = () => {
+function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [loadFetchUser, setLoadFetchUser] = React.useState<boolean>(false);
   const [user, setUser] = React.useState<TUser | null>(null);
 
-  const location = useLocation();
 
   useEffect(() => {
     if (WHITE_NONTOKEN_PATH_NAMES.includes(location.pathname)) {
       setUser(null);
-      localStorage.removeItem("token");
+      localStorage.removeItem("access_token");
       setLoadFetchUser(true);
     } else {
+      const token = localStorage.getItem("access_token");
+
+      if (!token) {
+        navigate("/login");
+      }
+
       fetchAuthUser();
     }
-  }, [location]);
+  }, [location, navigate]);
 
   async function fetchAuthUser() {
     try {
@@ -47,7 +55,7 @@ const App: React.FC = () => {
   );
 };
 
-const Content: React.FC<TContentProps> = ({ userData, onProfileUpdate }) => {
+function Content({ userData, onProfileUpdate }: TContentProps) {
   return (
     <>
       {userData ? <Navbar userData={userData} /> : <Headers />}

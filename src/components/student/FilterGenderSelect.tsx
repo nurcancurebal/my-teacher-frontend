@@ -2,39 +2,23 @@ import React, { useEffect, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
-interface Student {
-  id: number;
-  class_id: number;
-  teacher_id: number;
-  tc: bigint;
-  student_name: string;
-  student_lastname: string;
-  student_number: number;
-  gender: string;
-  birthdate: Date;
-}
+import { TStudent, TFilterStudentProps } from "../../types";
 
-interface FilterStudentGenderSelectProps {
-  filteredStudents: Student[];
-  handleFilter: (filtered: Student[]) => void;
-  setError: (error: string | null) => void;
-}
-
-const FilterStudentGenderSelect: React.FC<FilterStudentGenderSelectProps> = ({
+const FilterStudentGenderSelect: React.FC<TFilterStudentProps> = ({
   filteredStudents,
   handleFilter,
   setError,
 }) => {
   const [genderFemale, setGenderFemale] = useState<boolean>(false);
   const [genderMale, setGenderMale] = useState<boolean>(false);
-  const [localStudents, setLocalStudents] = useState<Student[]>([]);
-  const [localFilteredStudents, setLocalFilteredStudents] = useState<Student[]>(
+  const [localStudents, setLocalStudents] = useState<TStudent[]>([]);
+  const [localFilteredStudents, setLocalFilteredStudents] = useState<TStudent[]>(
     []
   );
 
   const handleGenderChange = (gender: string) => {
     console.log("handleGenderChange:", "localStudents", localStudents);
-    let filtered: Student[] = filteredStudents;
+    let filtered: TStudent[] = filteredStudents;
 
     if (gender === "Kız") {
       console.log("handleGenderChange1");
@@ -42,16 +26,16 @@ const FilterStudentGenderSelect: React.FC<FilterStudentGenderSelectProps> = ({
       genderMale
         ? (filtered = localStudents)
         : (filtered = localStudents.filter(
-            (student) => student.gender === "K"
-          ));
+          (student) => student.gender === "K"
+        ));
     } else if (gender === "Erkek") {
       console.log("handleGenderChange2");
       setGenderMale(!genderMale);
       genderFemale
         ? (filtered = localStudents)
         : (filtered = localStudents.filter(
-            (student) => student.gender === "E"
-          ));
+          (student) => student.gender === "E"
+        ));
     }
 
     if (filtered.length === 0) {
@@ -177,11 +161,10 @@ const FilterStudentGenderSelect: React.FC<FilterStudentGenderSelectProps> = ({
             <div className="py-1">
               <MenuItem
                 as="button"
-                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${
-                  genderFemale
-                    ? "text-gray-300 cursor-not-allowed"
-                    : "text-gray-900"
-                }`}
+                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${genderFemale
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-900"
+                  }`}
                 onClick={() => handleGenderChange("Kız")}
                 disabled={genderFemale}
               >
@@ -189,11 +172,10 @@ const FilterStudentGenderSelect: React.FC<FilterStudentGenderSelectProps> = ({
               </MenuItem>
               <MenuItem
                 as="button"
-                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${
-                  genderMale
-                    ? "text-gray-300 cursor-not-allowed"
-                    : "text-gray-900"
-                }`}
+                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${genderMale
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-900"
+                  }`}
                 onClick={() => handleGenderChange("Erkek")}
                 disabled={genderMale}
               >

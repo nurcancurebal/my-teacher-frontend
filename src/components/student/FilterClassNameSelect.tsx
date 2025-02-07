@@ -2,51 +2,26 @@ import React, { useState, useCallback, useEffect } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 
-import axios from "../../plugins/axios";
+import API from "../../api";
 
-interface Student {
-  id: number;
-  class_id: number;
-  teacher_id: number;
-  tc: bigint;
-  student_name: string;
-  student_lastname: string;
-  student_number: number;
-  gender: string;
-  birthdate: Date;
-}
+import { TClass, TStudent, TFilterStudentProps } from "../../types";
 
-interface Class {
-  id: number;
-  teacher_id: number;
-  class_name: string;
-  explanation: string;
-  created_at: Date;
-  last_updated: Date;
-}
-
-interface FilterClassNameSelectProps {
-  filteredStudents: Student[];
-  handleFilter: (filtered: Student[]) => void;
-  setError: React.Dispatch<React.SetStateAction<string | null>>;
-}
-
-const FilterClassNameSelect: React.FC<FilterClassNameSelectProps> = ({
+const FilterClassNameSelect: React.FC<TFilterStudentProps> = ({
   filteredStudents,
   handleFilter,
   setError,
 }) => {
-  const [classes, setClasses] = useState<Class[]>([]);
-  const [localFilteredStudents, setLocalFilteredStudents] = useState<Student[]>(
+  const [classes, setClasses] = useState<TClass[]>([]);
+  const [localFilteredStudents, setLocalFilteredStudents] = useState<TStudent[]>(
     []
   );
-  const [localStudents, setLocalStudents] = useState<Student[]>([]);
+  const [localStudents, setLocalStudents] = useState<TStudent[]>([]);
   const [selectClassName, setSelectClassName] = useState<string[]>([]);
-  const [selectedClassItem, setSelectedClassItem] = useState<Class[]>([]);
+  const [selectedClassItem, setSelectedClassItem] = useState<TClass[]>([]);
 
   const fetchClasses = useCallback(async () => {
     try {
-      const response = await axios.get("/class");
+      const response = await API.class.allList();
       setClasses(response.data.data);
     } catch (error) {
       setError("Sınıflar getirilirken bir hata oluştu.");
@@ -88,7 +63,7 @@ const FilterClassNameSelect: React.FC<FilterClassNameSelectProps> = ({
   }, [filteredStudents, localStudents]);
 
   const filteredSelectClass = () => {
-    let filterStudent: Student[] = [];
+    let filterStudent: TStudent[] = [];
     console.log("filteredSelectClass1:", "localStudents", localStudents);
 
     selectedClassItem.forEach((classItem) => {
@@ -163,10 +138,10 @@ const FilterClassNameSelect: React.FC<FilterClassNameSelectProps> = ({
         );
 
         if (selectedClass) {
-          setSelectedClassItem((prev: Class[]) => [...prev, selectedClass]);
+          setSelectedClassItem((prev: TClass[]) => [...prev, selectedClass]);
         }
 
-        const filterStudent: Student[] = localStudents.filter(
+        const filterStudent: TStudent[] = localStudents.filter(
           (student) => student.class_id === selectedClass?.id
         );
 
@@ -273,11 +248,10 @@ const FilterClassNameSelect: React.FC<FilterClassNameSelectProps> = ({
               as="button"
               key={"all"}
               value={"Tüm Sınıflar"}
-              className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${
-                selectClassName.includes("Tüm Sınıflar")
-                  ? "text-gray-300 cursor-not-allowed"
-                  : "text-gray-900"
-              }`}
+              className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${selectClassName.includes("Tüm Sınıflar")
+                ? "text-gray-300 cursor-not-allowed"
+                : "text-gray-900"
+                }`}
               onClick={() => handleSelectClass("Tüm Sınıflar")}
               disabled={selectClassName.includes("Tüm Sınıflar")}
             >
@@ -288,11 +262,10 @@ const FilterClassNameSelect: React.FC<FilterClassNameSelectProps> = ({
                 as="button"
                 key={classItem.id}
                 value={classItem.class_name}
-                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${
-                  selectClassName.includes(classItem.class_name)
-                    ? "text-gray-300 cursor-not-allowed"
-                    : "text-gray-900"
-                }`}
+                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${selectClassName.includes(classItem.class_name)
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-900"
+                  }`}
                 onClick={() => handleSelectClass(classItem.class_name)}
                 disabled={selectClassName.includes(classItem.class_name)}
               >

@@ -1,29 +1,10 @@
 import React, { useState } from "react";
 
-interface Student {
-  id: number;
-  class_id: number;
-  teacher_id: number;
-  tc: bigint;
-  student_name: string;
-  student_lastname: string;
-  student_number: number;
-  gender: string;
-  birthdate: Date;
-}
-
-interface Class {
-  id: number;
-  teacher_id: number;
-  class_name: string;
-  explanation: string;
-  created_at: Date;
-  last_updated: Date;
-}
+import { TClass, TStudent } from "../types";
 
 const Grade: React.FC = () => {
-  const [students, setStudents] = useState<Student[]>([]);
-  const [classes, setClasses] = useState<Class[]>([]);
+  const [students, setStudents] = useState<TStudent[]>([]);
+  const [classes, setClasses] = useState<TClass[]>([]);
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,18 +16,16 @@ const Grade: React.FC = () => {
             <button
               key={index}
               type="button"
-              className={`mx-auto m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${
-                selectedClassId === classItem.id ? "bg-slate-200" : "bg-white"
-              }`}
+              className={`mx-auto m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${selectedClassId === classItem.id ? "bg-slate-200" : "bg-white"
+                }`}
             >
               {classItem.class_name}
             </button>
           ))}
           <button
             type="button"
-            className={`mx-auto m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${
-              selectedClassId === null ? "bg-slate-200" : "bg-white"
-            }`}
+            className={`mx-auto m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${selectedClassId === null ? "bg-slate-200" : "bg-white"
+              }`}
           >
             Tüm Sınıflar
           </button>

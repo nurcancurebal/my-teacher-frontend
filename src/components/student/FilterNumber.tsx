@@ -1,32 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 
-interface Student {
-  id: number;
-  class_id: number;
-  teacher_id: number;
-  tc: bigint;
-  student_name: string;
-  student_lastname: string;
-  student_number: number;
-  gender: string;
-  birthdate: Date;
-}
 
-interface FilterStudentNumberProps {
-  filteredStudents: Student[];
-  handleFilter: (filtered: Student[]) => void;
-  setError: (error: string | null) => void;
-}
+import { TFilterStudentProps, TStudent } from "../../types";
 
-const FilterStudentNumber: React.FC<FilterStudentNumberProps> = ({
+const FilterStudentNumber: React.FC<TFilterStudentProps> = ({
   filteredStudents,
   handleFilter,
   setError,
 }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [localStudents, setLocalStudents] = useState<Student[]>([]);
-  const [localFilteredStudents, setLocalFilteredStudents] = useState<Student[]>(
+  const [localStudents, setLocalStudents] = useState<TStudent[]>([]);
+  const [localFilteredStudents, setLocalFilteredStudents] = useState<TStudent[]>(
     []
   );
 

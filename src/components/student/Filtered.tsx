@@ -2,34 +2,20 @@ import React, { useCallback, useEffect, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
-import FilterStudentGenderSelect from "./FilterStudentGenderSelect";
-import FilterClassNameSelect from "../class/FilterClassNameSelect";
-import FilterStudentNameLastname from "./FilterStudentNameLastname";
-import FilterStudentNumber from "./FilterStudentNumber";
-import axios from "../../plugins/axios";
+import FilterGenderSelect from "./FilterGenderSelect";
+import FilterClassNameSelect from "./FilterClassNameSelect";
+import FilterNameLastname from "./FilterNameLastname";
+import FilterNumber from "./FilterNumber";
 
-interface Student {
-  id: number;
-  class_id: number;
-  teacher_id: number;
-  tc: bigint;
-  student_name: string;
-  student_lastname: string;
-  student_number: number;
-  gender: string;
-  birthdate: Date;
-}
+import API from "../../api";
 
-interface FilteredStudentsProps {
-  setStudents: React.Dispatch<React.SetStateAction<Student[]>>;
-  setError: React.Dispatch<React.SetStateAction<string | null>>;
-}
+import { TStudent, TFilteredStudentsProps } from "../../types";
 
-const FilteredStudents: React.FC<FilteredStudentsProps> = ({
+const FilteredStudents: React.FC<TFilteredStudentsProps> = ({
   setStudents,
   setError,
 }) => {
-  const [filteredStudents, setFilteredStudents] = useState<Student[]>([]);
+  const [filteredStudents, setFilteredStudents] = useState<TStudent[]>([]);
   const [filterNumber, setFilterNumber] = useState<boolean>(false);
   const [filterNameLastname, setFilterNameLastname] = useState<boolean>(false);
   const [filterGender, setFilterGender] = useState<boolean>(false);
@@ -37,7 +23,7 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
 
   const fetchStudents = useCallback(async () => {
     try {
-      const response = await axios.get("/student");
+      const response = await API.student.allList();
       const studentsData = response.data.data;
 
       if (!studentsData || studentsData.length === 0) {
@@ -58,7 +44,7 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
     fetchStudents();
   }, [fetchStudents]);
 
-  const handleFilter = (filtered: Student[]) => {
+  const handleFilter = (filtered: TStudent[]) => {
     setFilteredStudents(filtered);
     setStudents(filtered);
     console.log("anacomp", "filtered", filtered);
@@ -85,11 +71,10 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
             <div className="py-1">
               <MenuItem
                 as="button"
-                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${
-                  filterNumber
-                    ? "text-gray-300 cursor-not-allowed"
-                    : "text-gray-900"
-                }`}
+                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${filterNumber
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-900"
+                  }`}
                 onClick={() => setFilterNumber(!filterNumber)}
                 disabled={filterNumber}
               >
@@ -97,11 +82,10 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
               </MenuItem>
               <MenuItem
                 as="button"
-                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${
-                  filterNameLastname
-                    ? "text-gray-300 cursor-not-allowed"
-                    : "text-gray-900"
-                }`}
+                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${filterNameLastname
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-900"
+                  }`}
                 onClick={() => setFilterNameLastname(!filterNameLastname)}
                 disabled={filterNameLastname}
               >
@@ -109,11 +93,10 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
               </MenuItem>
               <MenuItem
                 as="button"
-                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${
-                  filterGender
-                    ? "text-gray-300 cursor-not-allowed"
-                    : "text-gray-900"
-                }`}
+                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${filterGender
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-900"
+                  }`}
                 onClick={() => setFilterGender(!filterGender)}
                 disabled={filterGender}
               >
@@ -121,11 +104,10 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
               </MenuItem>
               <MenuItem
                 as="button"
-                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${
-                  filterClassName
-                    ? "text-gray-300 cursor-not-allowed"
-                    : "text-gray-900"
-                }`}
+                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${filterClassName
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-900"
+                  }`}
                 onClick={() => setFilterClassName(!filterClassName)}
                 disabled={filterClassName}
               >
@@ -137,14 +119,14 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
       </div>
       <div>
         {filterNameLastname ? (
-          <FilterStudentNameLastname
+          <FilterNameLastname
             filteredStudents={filteredStudents}
             handleFilter={handleFilter}
             setError={setError}
           />
         ) : null}
         {filterNumber ? (
-          <FilterStudentNumber
+          <FilterNumber
             filteredStudents={filteredStudents}
             handleFilter={handleFilter}
             setError={setError}
@@ -158,7 +140,7 @@ const FilteredStudents: React.FC<FilteredStudentsProps> = ({
           />
         ) : null}
         {filterGender ? (
-          <FilterStudentGenderSelect
+          <FilterGenderSelect
             filteredStudents={filteredStudents}
             handleFilter={handleFilter}
             setError={setError}

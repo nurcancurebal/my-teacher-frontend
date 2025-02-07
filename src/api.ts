@@ -1,4 +1,3 @@
-import { data } from "react-router-dom";
 import axios from "./plugins/axios";
 
 import {
@@ -24,9 +23,11 @@ import {
 export default {
   auth: {
     getUser: async (): Promise<{ data: { data: TUser } }> => {
-      return await axios.get("user");
+      return await axios.get("auth");
     },
-    login: async (data: TLoginParams): Promise<{ data: TLoginResponse }> => {
+    login: async (
+      data: TLoginParams
+    ): Promise<{ data: { data: TLoginResponse } }> => {
       return await axios.post("auth/login", data);
     },
     register: async (
@@ -44,7 +45,11 @@ export default {
     ): Promise<{ data: TResetPasswordResponse }> => {
       return await axios.post("auth/reset-password", data);
     },
-    profileUpdate: async () => {},
+  },
+  user: {
+    profileUpdate: async (data: TUser): Promise<number[]> => {
+      return await axios.put("user", data);
+    },
   },
   class: {
     add: async (data: TAddClassParams): Promise<{ data: TClass }> => {

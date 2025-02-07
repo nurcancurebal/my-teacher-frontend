@@ -1,31 +1,25 @@
 import React, { useEffect, useState, useCallback } from "react";
 
-import axios from "../plugins/axios";
-import UpdateClassDialog from "../components/class/UpdateClassDialog";
-import DeleteClassDialog from "../components/class/DeleteClassDialog";
-import AddClassDialog from "../components/class/AddClassDialog";
+import UpdateDialog from "../components/class/UpdateDialog";
+import DeleteDialog from "../components/class/DeleteDialog";
+import AddDialog from "../components/class/AddDialog";
 
-interface Class {
-  id: number;
-  teacher_id: number;
-  class_name: string;
-  explanation: string;
-  created_at: Date;
-  last_updated: Date;
-}
+import API from "../api";
+
+import { TClass } from "../types";
 
 const Classes: React.FC = () => {
-  const [classes, setClasses] = useState<Class[]>([]);
+  const [classes, setClasses] = useState<TClass[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [studentCount, setStudentCount] = useState<{ [key: number]: number }>(
     {}
   );
   const [updateDialogOpen, setUpdateDialogOpen] = useState<boolean>(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
-  const [selectedUpdateClass, setSelectedUpdateClass] = useState<Class | null>(
+  const [selectedUpdateClass, setSelectedUpdateClass] = useState<TClass | null>(
     null
   );
-  const [selectedDeleteClass, setSelectedDeleteClass] = useState<Class | null>(
+  const [selectedDeleteClass, setSelectedDeleteClass] = useState<TClass | null>(
     null
   );
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
@@ -36,7 +30,7 @@ const Classes: React.FC = () => {
 
   const fetchClasses = async () => {
     try {
-      const response = await axios.get("class");
+      const response = await API.class.allList();
       const classesData = response.data.data;
 
       if (!classesData || classesData.length === 0) {
@@ -52,12 +46,17 @@ const Classes: React.FC = () => {
   const fetchStudentCounts = useCallback(async () => {
     try {
       const countPromises = classes.map(async (classItem) => {
-        const response = await axios.get(`student/${classItem.id}/class-count`);
-        return { classId: classItem.id, count: response.data.data };
+        if (classItem.id !== undefined) {
+          const response = await API.student.countByClass(classItem.id);
+          return { classId: classItem.id, count: response.data.data };
+        }
+        return { classId: 0, count: 0 };
       });
       const counts = await Promise.all(countPromises);
       const countsMap = counts.reduce((acc, { classId, count }) => {
-        acc[classId] = count;
+        if (classId !== undefined) {
+          acc[classId] = count;
+        }
         return acc;
       }, {} as { [key: number]: number });
       setStudentCount(countsMap);
@@ -72,12 +71,12 @@ const Classes: React.FC = () => {
     }
   }, [classes, fetchStudentCounts]);
 
-  const handleUpdateClick = (classItem: Class) => {
+  const handleUpdateClick = (classItem: TClass) => {
     setSelectedUpdateClass(classItem);
     setUpdateDialogOpen(true);
   };
 
-  const handleDeleteClick = (classItem: Class) => {
+  const handleDeleteClick = (classItem: TClass) => {
     setSelectedDeleteClass(classItem);
     setDeleteDialogOpen(true);
   };
@@ -93,7 +92,7 @@ const Classes: React.FC = () => {
   };
 
   const handleClassUpdate = async () => {
-    await fetchClasses(); // Sınıf listesini yeniden yükle
+    await fetchClasses();
   };
 
   return (
@@ -134,13 +133,13 @@ const Classes: React.FC = () => {
                   {classItem.explanation}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {studentCount[classItem.id] || 0}
+                  {classItem.id !== undefined ? studentCount[classItem.id] || 0 : 0}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {new Date(classItem.created_at).toLocaleDateString()}
+                  {classItem.created_at ? new Date(classItem.created_at).toLocaleDateString() : "N/A"}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {new Date(classItem.last_updated).toLocaleDateString()}
+                  {classItem.last_updated ? new Date(classItem.last_updated).toLocaleDateString() : "N/A"}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4">
                   <button
@@ -206,28 +205,28 @@ const Classes: React.FC = () => {
         </div>
       </div>
 
-      {selectedUpdateClass && (
-        <UpdateClassDialog
+      {selectedUpdateClass && selectedUpdateClass.id !== undefined && (
+        <UpdateDialog
           open={updateDialogOpen}
           setOpen={handleUpdateDialogClose}
           id={selectedUpdateClass.id}
           className={selectedUpdateClass.class_name}
           explanation={selectedUpdateClass.explanation}
-          onUpdate={handleClassUpdate} // Geri çağırma fonksiyonunu geç
+          onUpdate={handleClassUpdate}
         />
       )}
 
-      {selectedDeleteClass && (
-        <DeleteClassDialog
+      {selectedDeleteClass && selectedDeleteClass.id !== undefined && (
+        <DeleteDialog
           open={deleteDialogOpen}
           setOpen={handleDeleteDialogClose}
           id={selectedDeleteClass.id}
           className={selectedDeleteClass.class_name}
-          onDelete={handleClassUpdate} // Geri çağırma fonksiyonunu geç
+          onDelete={handleClassUpdate}
         />
       )}
 
-      <AddClassDialog
+      <AddDialog
         open={isAddClassOpen}
         setOpen={setIsAddClassOpen}
         onAdd={handleClassUpdate}

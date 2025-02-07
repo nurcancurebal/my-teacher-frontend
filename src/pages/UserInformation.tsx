@@ -1,21 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-interface TUser {
-  id: number;
-  firstname: string;
-  lastname: string;
-  username: string;
-  email: string;
-  created_at: Date;
-  last_updated: Date;
-}
+import { TUserDataProps } from "../types";
 
-interface UserInformaitionProps {
-  userData: TUser | null;
-}
-
-const UserInformaition: React.FC<UserInformaitionProps> = ({ userData }) => {
+const UserInformaition: React.FC<TUserDataProps> = ({ userData }) => {
   const navigate = useNavigate();
 
   return (

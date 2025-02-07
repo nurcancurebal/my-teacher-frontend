@@ -2,14 +2,14 @@ import { useNavigate } from "react-router-dom";
 
 import axios, { AxiosError } from "axios";
 
-const baseURL = process.env.REACT_APP_BASE_URL;
+const baseURL = import.meta.env.VITE_API_BASE_URL as string;
 
 const instance = axios.create({
   baseURL,
 });
 
 instance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("access_token");
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -25,11 +25,8 @@ instance.interceptors.response.use(
   (error: AxiosError) => {
     if (error.response) {
       if (error.response.status === 401) {
-        localStorage.removeItem("token");
         const navigate = useNavigate();
-        if (window.location.pathname !== "/") {
-          navigate("/");
-        }
+        navigate("/login");
       }
     }
     return Promise.reject(error);

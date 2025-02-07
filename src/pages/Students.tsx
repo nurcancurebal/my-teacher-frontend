@@ -1,45 +1,26 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import axios from "../plugins/axios";
+import API from "../api";
 
-import DetailStudentDialog from "../components/student/DetailStudentDialog";
-import UpdateStudentDialog from "../components/student/UpdateStudentDialog";
-import DeleteStudentDialog from "../components/student/DeleteStudentDialog";
-import AddStudentDialog from "../components/student/AddStudentDialog";
-import FilteredStudents from "../components/student/FilteredStudents";
+import DetailDialog from "../components/student/DetailDialog";
+import UpdateDialog from "../components/student/UpdateDialog";
+import DeleteDialog from "../components/student/DeleteDialog";
+import AddDialog from "../components/student/AddDialog";
+import Filtered from "../components/student/Filtered";
 
-interface Student {
-  id: number;
-  class_id: number;
-  teacher_id: number;
-  tc: bigint;
-  student_name: string;
-  student_lastname: string;
-  student_number: number;
-  gender: string;
-  birthdate: Date;
-}
-
-interface Class {
-  id: number;
-  teacher_id: number;
-  class_name: string;
-  explanation: string;
-  created_at: Date;
-  last_updated: Date;
-}
+import { TStudent, TClass } from "../types";
 
 const Students: React.FC = () => {
-  const [students, setStudents] = useState<Student[]>([]);
-  const [classes, setClasses] = useState<Class[]>([]);
+  const [students, setStudents] = useState<TStudent[]>([]);
+  const [classes, setClasses] = useState<TClass[]>([]);
   const [selectedDetailStudent, setSelectedDetailStudent] =
-    useState<Student | null>(null);
+    useState<TStudent | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState<boolean>(false);
   const [selectedUpdateStudent, setSelectedUpdateStudent] =
-    useState<Student | null>(null);
+    useState<TStudent | null>(null);
   const [selectedDeleteStudent, setSelectedDeleteStudent] =
-    useState<Student | null>(null);
+    useState<TStudent | null>(null);
   const [updateDialogOpen, setUpdateDialogOpen] = useState<boolean>(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
   const [addDialogOpen, setAddDialogOpen] = useState<boolean>(false);
@@ -48,7 +29,7 @@ const Students: React.FC = () => {
 
   const fetchStudents = useCallback(async () => {
     try {
-      const response = await axios.get("/student");
+      const response = await API.student.allList();
       const studentsData = response.data.data;
 
       if (!studentsData || studentsData.length === 0) {
@@ -65,7 +46,7 @@ const Students: React.FC = () => {
 
   const fetchClasses = async () => {
     try {
-      const response = await axios.get("/class");
+      const response = await API.class.allList();
       const classesData = response.data.data;
 
       if (!classesData || classesData.length === 0) {
@@ -84,7 +65,7 @@ const Students: React.FC = () => {
     fetchClasses();
   }, []);
 
-  const handleDetailClick = (student: Student) => {
+  const handleDetailClick = (student: TStudent) => {
     setDetailDialogOpen(true);
     setSelectedDetailStudent(student);
   };
@@ -94,7 +75,7 @@ const Students: React.FC = () => {
     setSelectedDetailStudent(null);
   };
 
-  const handleUpdateClick = (student: Student) => {
+  const handleUpdateClick = (student: TStudent) => {
     setUpdateDialogOpen(true);
     setSelectedUpdateStudent(student);
   };
@@ -104,7 +85,7 @@ const Students: React.FC = () => {
     setSelectedUpdateStudent(null);
   };
 
-  const handleDeleteClick = async (student: Student) => {
+  const handleDeleteClick = async (student: TStudent) => {
     setSelectedDeleteStudent(student);
     setDeleteDialogOpen(true);
   };
@@ -123,7 +104,7 @@ const Students: React.FC = () => {
   return (
     <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 xl:px-0 md:px-24 px-12">
       <div className="overflow-x-auto xl:col-start-2 col-span-2 xl:p-0">
-        <FilteredStudents setStudents={setStudents} setError={setError} />
+        <Filtered setStudents={setStudents} setError={setError} />
         {error && (
           <p className="mt-2 text-center xl:text-lg md:text-base text-sm text-red-600 col-start-1 col-span-4">
             {error}
@@ -248,7 +229,7 @@ const Students: React.FC = () => {
       </div>
 
       {selectedDetailStudent && (
-        <DetailStudentDialog
+        <DetailDialog
           open={detailDialogOpen}
           setOpen={handleDetailDialogClose}
           student={selectedDetailStudent}
@@ -256,30 +237,30 @@ const Students: React.FC = () => {
       )}
 
       {selectedUpdateStudent && (
-        <UpdateStudentDialog
+        <UpdateDialog
           open={updateDialogOpen}
           setOpen={handleUpdateDialogClose}
           student={selectedUpdateStudent}
-          onUpdate={async () => await fetchStudents()} // Geri çağırma fonksiyonunu geç
+          onUpdate={async () => await fetchStudents()}
         />
       )}
 
       {selectedDeleteStudent && (
-        <DeleteStudentDialog
+        <DeleteDialog
           open={deleteDialogOpen}
           setOpen={handleDeleteDialogClose}
-          id={selectedDeleteStudent.id}
+          id={selectedDeleteStudent?.id ?? 0}
           studentName={selectedDeleteStudent.student_name}
           studentLastName={selectedDeleteStudent.student_lastname}
-          onDelete={async () => await fetchStudents()} // Geri çağırma fonksiyonunu geç
+          onDelete={async () => await fetchStudents()}
         />
       )}
 
       {addDialogOpen && (
-        <AddStudentDialog
+        <AddDialog
           open={addDialogOpen}
           setOpen={() => setAddDialogOpen(false)}
-          onAdd={async () => await fetchStudents()} // Geri çağırma fonksiyonunu geç
+          onAdd={async () => await fetchStudents()}
         />
       )}
     </div>

@@ -7,48 +7,17 @@ import {
 } from "@headlessui/react";
 import Datepicker from "react-tailwindcss-datepicker";
 
-import axios from "../../plugins/axios";
+import API from "../../api";
 
-interface Student {
-  id: number;
-  class_id: number;
-  teacher_id: number;
-  tc: bigint;
-  student_name: string;
-  student_lastname: string;
-  student_number: number;
-  gender: string;
-  birthdate: Date;
-}
+import { TUpdateStudentDialogProps, TDateValueType, TClass } from "../../types";
 
-interface Class {
-  id: number;
-  teacher_id: number;
-  class_name: string;
-  explanation: string;
-  created_at: Date;
-  last_update: Date;
-}
-
-interface UpdateStudentDialogProps {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  student: Student;
-  onUpdate: () => void; // Güncelleme sonrası çağrılacak callback fonksiyonu
-}
-
-interface DateValueType {
-  startDate: Date | null;
-  endDate: Date | null;
-}
-
-const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
+const UpdateStudentDialog: React.FC<TUpdateStudentDialogProps> = ({
   open,
   setOpen,
   student,
   onUpdate,
 }) => {
-  const [studentTc, setstudentTc] = useState<string>(student.tc.toString());
+  const [idNumber, setIdNumber] = useState<bigint>(student.id_number);
   const [studentName, setStudentName] = useState<string>(student.student_name);
   const [studentLastname, setStudentLastName] = useState<string>(
     student.student_lastname
@@ -57,19 +26,19 @@ const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
     student.student_number
   );
   const [gender, setGender] = useState<string>(student.gender);
-  const [date, setDate] = useState<DateValueType>({
+  const [date, setDate] = useState<TDateValueType>({
     startDate: student.birthdate,
     endDate: student.birthdate,
   });
   const [classId, setClassId] = useState<number>(student.class_id);
-  const [classes, setClasses] = useState<Class[]>([]);
+  const [classes, setClasses] = useState<TClass[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        const classes = await axios.get("class");
+        const classes = await API.class.allList();
         setClasses(classes.data.data);
       } catch (error) {
         setError("Sınıflar getirilirken bir hata oluştu.");
@@ -82,58 +51,16 @@ const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
     setError(null);
     setMessage(null);
 
-    const updateFields: {
-      tc?: string;
-      class_id?: number;
-      student_name?: string;
-      student_lastname?: string;
-      student_number?: number;
-      gender?: string;
-      birthdate?: Date;
-    } = {};
-
-    if (studentTc !== student.tc.toString()) {
-      updateFields.tc = studentTc;
-    }
-
-    if (studentName !== student.student_name) {
-      updateFields.student_name = studentName;
-    }
-
-    if (studentLastname !== student.student_lastname) {
-      updateFields.student_lastname = studentLastname;
-    }
-
-    if (studentNumber !== student.student_number) {
-      updateFields.student_number = studentNumber;
-    }
-
-    if (gender !== student.gender) {
-      updateFields.gender = gender;
-    }
-
-    if (date.startDate && date.startDate !== student.birthdate) {
-      updateFields.birthdate = date.startDate;
-    }
-
-    if (classId !== student.class_id) {
-      updateFields.class_id = classId;
-    }
-
-    if (Object.keys(updateFields).length === 0) {
-      setError("Değişiklik yapılmadı.");
-      return;
-    }
 
     try {
-      await axios.patch(`student/${student.id}`, updateFields);
+      await API.student.update({ id: student.id, class_id: classId, id_number: idNumber, student_name: studentName, student_lastname: studentLastname, student_number: studentNumber, gender, birthdate: date.startDate });
       setMessage("Öğrenci başarıyla güncellendi.");
 
       setTimeout(() => {
         setOpen(false);
         setMessage(null);
         setError(null);
-        onUpdate(); // Güncelleme sonrası callback fonksiyonunu çağır
+        onUpdate();
       }, 3000);
     } catch (error) {
       if (error.response) {
@@ -236,10 +163,9 @@ const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
                     <button
                       key={index}
                       type="button"
-                      className={`mx-auto m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-gray-100 focus:bg-gray-200 active:bg-gray-100 ${
-                        classId === classItem.id ? "bg-gray-200" : "bg-white"
-                      }`}
-                      onClick={() => setClassId(classItem.id)}
+                      className={`mx-auto m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-gray-100 focus:bg-gray-200 active:bg-gray-100 ${classId === classItem.id ? "bg-gray-200" : "bg-white"
+                        }`}
+                      onClick={() => classItem.id !== undefined && setClassId(classItem.id)}
                     >
                       {classItem.class_name}
                     </button>
@@ -261,8 +187,8 @@ const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
                     name="studentTc"
                     type="text"
                     required
-                    value={studentTc}
-                    onChange={(e) => setstudentTc(e.target.value)}
+                    value={idNumber.toString()}
+                    onChange={(e) => setIdNumber(BigInt(e.target.value))}
                     onKeyDown={enterKeyHandler}
                     className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3"
                   />
@@ -344,9 +270,8 @@ const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
                     </button>
                     <button
                       type="button"
-                      className={`m-5 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${
-                        gender === "E" ? "bg-slate-200" : "bg-white"
-                      }`}
+                      className={`m-5 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${gender === "E" ? "bg-slate-200" : "bg-white"
+                        }`}
                       onClick={() => setGender("E")}
                     >
                       Erkek
@@ -371,7 +296,7 @@ const UpdateStudentDialog: React.FC<UpdateStudentDialogProps> = ({
                     placeholder="Doğum Tarihi Seçiniz"
                     displayFormat="DD.MM.YYYY"
                     inputClassName="text-base"
-                    onChange={(newDate: DateValueType | null) => {
+                    onChange={(newDate: TDateValueType | null) => {
                       if (newDate) {
                         setDate(newDate);
                       }

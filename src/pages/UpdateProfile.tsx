@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import axios from "../plugins/axios";
+import API from "../api";
 
 import { TUpdateProfileProps } from "../types";
 
@@ -33,13 +33,18 @@ const UpdateProfile: React.FC<TUpdateProfileProps> = ({
     setError(null);
     setMessage(null);
 
+    if (!userData) {
+      setError("User data is not available.");
+      return;
+    }
+
     try {
-      await axios.patch("user", {
+      await API.user.profileUpdate({
+        id: userData.id,
         firstname,
         lastname,
         username,
         email,
-        password,
       });
       setMessage("Kullanıcı bilgileri başarıyla güncellendi.");
       setTimeout(() => {

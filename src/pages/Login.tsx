@@ -1,34 +1,41 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
+import { isAxiosError } from "axios";
 
 import API from "../api";
 
-const Login: React.FC = () => {
+function Login() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
-    setError("");
-    setMessage("");
     setLoading(true);
 
     try {
       const response = await API.auth.login({ email, password });
 
-      setMessage("Giriş başarılı. Yönlendiriliyorsunuz...");
-      localStorage.setItem("token", response.data.accessToken);
+      localStorage.setItem("access_token", response.data.data.accessToken);
 
-      setTimeout(() => navigate("/onizleme"), 3000);
-    } catch (error) {
+      toast.success("Giriş başarılı. Yönlendiriliyorsunuz...");
+
+      setTimeout(() => navigate("/"), 3000);
+    } catch (error: unknown) {
       console.error(error);
-      setError(error?.response?.data?.message);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
     } finally {
       setLoading(false);
     }
@@ -39,7 +46,7 @@ const Login: React.FC = () => {
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
-            Hesabınıza giriş yapın
+            {t('LOGIN_TO_YOUR_ACCOUNT')}
           </h2>
         </div>
 
@@ -100,14 +107,6 @@ const Login: React.FC = () => {
                 {loading ? "Giriş yapılıyor..." : "Giriş yap"}
               </button>
             </div>
-            {message && (
-              <p className="mt-2 text-center text-base text-green-600">
-                {message}
-              </p>
-            )}
-            {error && (
-              <p className="mt-2 text-center text-base text-red-600">{error}</p>
-            )}
           </form>
 
           <p className="mt-10 text-center text-base text-gray-500">

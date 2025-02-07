@@ -7,23 +7,12 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 
-import axios from "../../plugins/axios";
+import API from "../../api";
 
-interface SelectClassProps {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-}
+import { TSelectProps, TClassItem } from "../../types";
 
-interface ClassItem {
-  id: number;
-  teacher_id: number;
-  class_name: string;
-  created_at: Date;
-  last_updated: Date;
-}
-
-const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
-  const [classes, setClasses] = useState<ClassItem[]>([]);
+const AddStudent: React.FC<TSelectProps> = ({ open, setOpen }) => {
+  const [classes, setClasses] = useState<TClassItem[]>([]);
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [showStudentSelection, setShowStudentSelection] =
@@ -46,7 +35,7 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
 
   const fetchClasses = async () => {
     try {
-      const response = await axios.get("class");
+      const response = await API.class.allList();
       const classes = response.data.data;
       if (classes.length > 0) {
         setClasses(classes);
@@ -64,7 +53,7 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
 
     if (showStudentSelection && selectedClassId !== null) {
       try {
-        const result = await axios.get(`student/${selectedClassId}`);
+        const result = await API.student.getListByClass(selectedClassId);
         const students = result.data.data;
         if (students.length === 0) {
           setError("Bu sınıfta öğrenci bulunamadı.");
@@ -88,9 +77,12 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
         .toLowerCase()
         .replace(/^[a-z]/, (c: string) => c.toUpperCase());
 
-      await axios.post(`grade/${selectedClassId}/`, {
-        grade_type: formattedGradeName,
-      });
+      if (selectedClassId !== null) {
+        await API.grade.gradeTypeExists({ class_id: selectedClassId, grade_type: formattedGradeName });
+      } else {
+        setError("Sınıf seçimi yapılmadı.");
+        return;
+      }
       setMessage("Not eklemek için yönlendiriliyorsunuz.");
       setTimeout(() => {
         navigate("/not-ekle", {
@@ -180,11 +172,10 @@ const AddStudent: React.FC<SelectClassProps> = ({ open, setOpen }) => {
                     <button
                       key={index}
                       type="button"
-                      className={`mx-auto m-4 inline-flex w-24 py-2 justify-center rounded-md text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 focus:bg-gray-200 active:bg-gray-100 transition-all ${
-                        selectedClassId === classItem.id
-                          ? "bg-gray-200"
-                          : "bg-white"
-                      }`}
+                      className={`mx-auto m-4 inline-flex w-24 py-2 justify-center rounded-md text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 focus:bg-gray-200 active:bg-gray-100 transition-all ${selectedClassId === classItem.id
+                        ? "bg-gray-200"
+                        : "bg-white"
+                        }`}
                       onClick={() => {
                         setSelectedClassId(classItem.id);
                         setError("");
