@@ -1,5 +1,10 @@
-import React, { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
+import { isAxiosError } from "axios";
 
 import API from "../api";
 
@@ -11,7 +16,11 @@ import Filtered from "../components/student/Filtered";
 
 import { TStudent, TClass } from "../types";
 
-const Students: React.FC = () => {
+function Students() {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
+
   const [students, setStudents] = useState<TStudent[]>([]);
   const [classes, setClasses] = useState<TClass[]>([]);
   const [selectedDetailStudent, setSelectedDetailStudent] =
@@ -25,7 +34,6 @@ const Students: React.FC = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
   const [addDialogOpen, setAddDialogOpen] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   const fetchStudents = useCallback(async () => {
     try {
@@ -39,8 +47,14 @@ const Students: React.FC = () => {
       }
 
       setStudents(studentsData);
-    } catch (error) {
-      setError("Öğrenciler getirilirken bir hata oluştu.");
+    } catch (error: unknown) {
+      console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
     }
   }, []);
 
@@ -56,8 +70,14 @@ const Students: React.FC = () => {
       }
 
       setClasses(classesData);
-    } catch (error) {
-      setError("Sınıflar getirilirken bir hata oluştu.");
+    } catch (error: unknown) {
+      console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
     }
   };
 

@@ -7,19 +7,27 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
+import { isAxiosError } from "axios";
+
 import API from "../../api";
 
-import { TSelectProps, TClassItem } from "../../types";
+import { TSelectProps, TClass } from "../../types";
 
-const AddStudent: React.FC<TSelectProps> = ({ open, setOpen }) => {
-  const [classes, setClasses] = useState<TClassItem[]>([]);
+function AddStudent({ open, setOpen }: TSelectProps) {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const [classes, setClasses] = useState<TClass[]>([]);
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [showStudentSelection, setShowStudentSelection] =
     useState<boolean>(true);
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
   const [gradeName, setGradeName] = useState<string>("");
-  const navigate = useNavigate();
+
   const isDisabled = classes.length === 0;
 
   useEffect(() => {
@@ -42,8 +50,14 @@ const AddStudent: React.FC<TSelectProps> = ({ open, setOpen }) => {
       } else {
         setError("Sınıf bulunamadı. Lütfen önce sınıf ekleyin.");
       }
-    } catch (error) {
-      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+    } catch (error: unknown) {
+      console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
     }
   };
 
@@ -60,8 +74,14 @@ const AddStudent: React.FC<TSelectProps> = ({ open, setOpen }) => {
           return;
         }
         setShowStudentSelection(false);
-      } catch (error) {
-        setError("Öğrenci bulunamadı. Lütfen tekrar deneyin.");
+      } catch (error: unknown) {
+        console.error(error);
+        if (isAxiosError(error) && error.response) {
+          const errorMessage = error.response?.data?.message;
+          toast.error(errorMessage || t('UNKNOWN_ERROR'));
+        } else {
+          toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+        }
       }
       return;
     }
@@ -85,34 +105,18 @@ const AddStudent: React.FC<TSelectProps> = ({ open, setOpen }) => {
       }
       setMessage("Not eklemek için yönlendiriliyorsunuz.");
       setTimeout(() => {
-        navigate("/not-ekle", {
+        navigate("/add-grade", {
           state: { selectedClassId, formattedGradeName },
         });
         setGradeName("");
       }, 3000);
-    } catch (error) {
-      if (error.response) {
-        const errorMessage = error.response.data.message;
-
-        switch (errorMessage) {
-          case '"grade_type" is not allowed to be empty':
-            setError("Not adı boş bırakılamaz.");
-            break;
-          case '"grade_type" length must be at least 3 characters long':
-            setError("Not adı en az 3 karakter olmalıdır.");
-            break;
-          case '"grade_type" length must be less than or equal to 30 characters long':
-            setError("Not adı en fazla 30 karakter olmalıdır.");
-            break;
-          case "This grade has been entered in this class before":
-            setError("Bu türde not sınıf için zaten var.");
-            break;
-          case "There are no students in the classroom":
-            setError("Bu sınıfta öğrenci yok.");
-            break;
-          default:
-            setError("Bir hata oluştu. Lütfen tekrar deneyin.");
-        }
+    } catch (error: unknown) {
+      console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
       }
     }
   };
@@ -177,7 +181,9 @@ const AddStudent: React.FC<TSelectProps> = ({ open, setOpen }) => {
                         : "bg-white"
                         }`}
                       onClick={() => {
-                        setSelectedClassId(classItem.id);
+                        if (classItem.id !== undefined) {
+                          setSelectedClassId(classItem.id);
+                        }
                         setError("");
                       }}
                     >

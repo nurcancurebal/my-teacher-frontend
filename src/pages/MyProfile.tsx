@@ -1,9 +1,8 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import { TUserDataProps } from "../types";
 
-const UserInformaition: React.FC<TUserDataProps> = ({ userData }) => {
+function UserInformaition({ userData }: TUserDataProps) {
   const navigate = useNavigate();
 
   return (
@@ -38,7 +37,7 @@ const UserInformaition: React.FC<TUserDataProps> = ({ userData }) => {
           </span>
           <span className="text-lg text-gray-600 ml-3">
             {userData
-              ? new Date(userData.created_at).toLocaleDateString()
+              ? new Date(userData.created_at ?? "").toLocaleDateString()
               : "N/A"}
           </span>
         </div>
@@ -48,14 +47,14 @@ const UserInformaition: React.FC<TUserDataProps> = ({ userData }) => {
           </span>
           <span className="text-lg text-gray-600 ml-3">
             {userData
-              ? new Date(userData.last_updated).toLocaleDateString()
+              ? new Date(userData.last_updated ?? "").toLocaleDateString()
               : "N/A"}
           </span>
         </div>
         <div className="flex justify-end">
           <button
             className="flex w-24 justify-center rounded-md bg-green-600 px-3 py-1.5 text-lg font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
-            onClick={() => navigate("/profili-guncelle")}
+            onClick={() => navigate("/update-user")}
           >
             Güncelle
           </button>

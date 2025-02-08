@@ -1,6 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
+import { isAxiosError } from "axios";
 
 import FilterGenderSelect from "./FilterGenderSelect";
 import FilterClassNameSelect from "./FilterClassNameSelect";
@@ -11,10 +16,12 @@ import API from "../../api";
 
 import { TStudent, TFilteredStudentsProps } from "../../types";
 
-const FilteredStudents: React.FC<TFilteredStudentsProps> = ({
+function FilteredStudents({
   setStudents,
   setError,
-}) => {
+}: TFilteredStudentsProps) {
+  const { t } = useTranslation();
+
   const [filteredStudents, setFilteredStudents] = useState<TStudent[]>([]);
   const [filterNumber, setFilterNumber] = useState<boolean>(false);
   const [filterNameLastname, setFilterNameLastname] = useState<boolean>(false);
@@ -35,8 +42,14 @@ const FilteredStudents: React.FC<TFilteredStudentsProps> = ({
       setStudents(studentsData);
       setFilteredStudents(studentsData);
       setError(null);
-    } catch (error) {
-      setError("Öğrenciler getirilirken bir hata oluştu.");
+    } catch (error: unknown) {
+      console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
     }
   }, [setError, setStudents]);
 

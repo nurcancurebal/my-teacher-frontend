@@ -25,7 +25,7 @@ function Login() {
 
       localStorage.setItem("access_token", response.data.data.accessToken);
 
-      toast.success("Giriş başarılı. Yönlendiriliyorsunuz...");
+      toast.success(response.data.message);
 
       setTimeout(() => navigate("/"), 3000);
     } catch (error: unknown) {
@@ -80,7 +80,7 @@ function Login() {
                   Şifre
                 </label>
                 <button
-                  onClick={() => navigate("/parolami-unuttum")}
+                  onClick={() => navigate("/forgot-password")}
                   type="button"
                   className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
                 >
@@ -112,7 +112,7 @@ function Login() {
           <p className="mt-10 text-center text-base text-gray-500">
             Üye değil misiniz?{" "}
             <button
-              onClick={() => navigate("/kayit-ol")}
+              onClick={() => navigate("/register")}
               className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
             >
               Şimdi kaydolun

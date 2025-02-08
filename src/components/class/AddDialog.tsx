@@ -5,55 +5,38 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import { useTranslation } from 'react-i18next';
+import { toast } from "react-toastify";
+
+import { isAxiosError } from "axios";
 
 import API from "../../api";
 
 import { TAddProps } from "../../types";
 
-const AddClass: React.FC<TAddProps> = ({ open, setOpen, onAdd }) => {
+function AddClass({ open, setOpen, onAdd }: TAddProps) {
+  const { t } = useTranslation();
+
   const [className, setClassName] = useState("");
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
   const [explanation, setExplanation] = useState("");
 
   const addClass = async () => {
-    setError("");
-    setMessage("");
 
     try {
       await API.class.add({ class_name: className, explanation });
 
-      setMessage("Sınıfınız başarıyla eklendi.");
       setTimeout(() => {
         setClassName("");
         setExplanation("");
-        setMessage("");
         onAdd();
       }, 3000);
-    } catch (error) {
-      const errorMessage = error.response.data.message;
-
-      switch (errorMessage) {
-        case "Class name is already used":
-          setError("Sınıf adı zaten kullanılmış.");
-          break;
-        case '"class_name" length must be at least 2 characters long':
-          setError("Sınıf adı en az 2 karakter olmalıdır.");
-          break;
-        case '"class_name" length must be less than or equal to 3 characters long':
-          setError("Sınıf adı en fazla 3 karakter olmalıdır.");
-          break;
-        case '"class_name" is required':
-          setError("Sınıf adı boş bırakılamaz.");
-          break;
-        case '"explanation" is required':
-          setError("Açıklama gereklidir.");
-          break;
-        case '"explanation" is not allowed to be empty':
-          setError("Açıklama boş bırakılamaz.");
-          break;
-        default:
-          setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+    } catch (error: unknown) {
+      console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
       }
     }
   };
@@ -68,8 +51,6 @@ const AddClass: React.FC<TAddProps> = ({ open, setOpen, onAdd }) => {
     setOpen(false);
     setClassName("");
     setExplanation("");
-    setError("");
-    setMessage("");
   };
 
   return (
@@ -129,10 +110,6 @@ const AddClass: React.FC<TAddProps> = ({ open, setOpen, onAdd }) => {
                       onChange={(e) => setExplanation(e.target.value)}
                     />
                   </div>
-                  {error && <p className="text-base text-red-600">{error}</p>}
-                  {message && (
-                    <p className="text-base text-green-600">{message}</p>
-                  )}
                 </div>
               </div>
             </div>

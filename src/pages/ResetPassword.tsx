@@ -1,15 +1,21 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
+import { isAxiosError } from "axios";
+
 import API from "../api";
 
-import { TQueryResetPassword } from "../types";
+import { TQueryPasswordParams } from "../types";
 
-const ResetPassword: React.FC = () => {
+function ResetPassword() {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { email } = location.state as TQueryResetPassword;
+  const { email } = location.state as TQueryPasswordParams;
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -37,11 +43,16 @@ const ResetPassword: React.FC = () => {
         "Şifreniz başarıyla değiştirildi. Giriş yapmak için yönlendiriliyorsunuz..."
       );
       setTimeout(() => {
-        navigate("/");
+        navigate("/login");
       }, 3000);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
-      setError(error?.response?.data?.message);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
     } finally {
       setLoading(false);
     }
@@ -158,7 +169,7 @@ const ResetPassword: React.FC = () => {
           <p className="mt-10 text-center text-base text-gray-500">
             Üye değil misiniz?{" "}
             <button
-              onClick={() => navigate("/kayit-ol")}
+              onClick={() => navigate("/register")}
               className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
             >
               Şimdi kaydolun
@@ -167,7 +178,7 @@ const ResetPassword: React.FC = () => {
           <p className="mt-4 text-center text-base text-gray-500">
             Zaten bir hesabınız var mı?{" "}
             <button
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/login")}
               className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
             >
               Giriş yapın

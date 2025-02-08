@@ -1,16 +1,23 @@
-import React, { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
+
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
+import { isAxiosError } from "axios";
 
 import API from "../../api";
 
 import { TClass, TStudent, TFilterStudentProps } from "../../types";
 
-const FilterClassNameSelect: React.FC<TFilterStudentProps> = ({
+function FilterClassNameSelect({
   filteredStudents,
   handleFilter,
   setError,
-}) => {
+}: TFilterStudentProps) {
+  const { t } = useTranslation();
+
   const [classes, setClasses] = useState<TClass[]>([]);
   const [localFilteredStudents, setLocalFilteredStudents] = useState<TStudent[]>(
     []
@@ -23,8 +30,14 @@ const FilterClassNameSelect: React.FC<TFilterStudentProps> = ({
     try {
       const response = await API.class.allList();
       setClasses(response.data.data);
-    } catch (error) {
-      setError("Sınıflar getirilirken bir hata oluştu.");
+    } catch (error: unknown) {
+      console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
     }
   }, [setError]);
 

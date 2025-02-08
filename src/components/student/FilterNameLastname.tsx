@@ -5,11 +5,11 @@ import { TStudent } from "../../types";
 
 import { TFilterStudentProps } from "../../types";
 
-const FilterStudentNameLastname: React.FC<TFilterStudentProps> = ({
+function FilterStudentNameLastname({
   filteredStudents,
   handleFilter,
   setError,
-}) => {
+}: TFilterStudentProps) {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [localStudents, setLocalStudents] = useState<TStudent[]>([]);
   const [localFilteredStudents, setLocalFilteredStudents] = useState<TStudent[]>(

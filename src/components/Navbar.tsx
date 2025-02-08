@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import {
@@ -14,13 +13,11 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 import { TUserDataProps } from "../types";
 
-const Navbar: React.FC<TUserDataProps> = ({ userData }) => {
+function Navbar({ userData }: TUserDataProps) {
   const { t } = useTranslation();
 
   const navigate = useNavigate();
   const location = useLocation();
-
-  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
 
   const navigation = [
     {
@@ -29,27 +26,27 @@ const Navbar: React.FC<TUserDataProps> = ({ userData }) => {
       current: location.pathname === "/",
     },
     {
-      name: "Sınıflarım",
-      href: "/siniflarim",
-      current: location.pathname === "/siniflarim",
+      name: t("CLASSES"),
+      href: "/classes",
+      current: location.pathname === "/classes",
     },
     {
-      name: "Öğrencilerim",
-      href: "/ogrencilerim",
-      current: location.pathname === "/ogrencilerim",
+      name: t("STUDENTS"),
+      href: "/students",
+      current: location.pathname === "/students",
     },
     {
-      name: "Notlar",
-      href: "/notlar",
-      current: location.pathname === "/notlar",
+      name: t("GRADES"),
+      href: "/grades",
+      current: location.pathname === "/grades",
     },
   ];
 
   const userNavigation = [
     {
-      name: "Profili Güncelle",
-      href: "/profili-guncelle",
-      current: location.pathname === "/profili-guncelle",
+      name: t("UPDATE_PROFILE"),
+      href: "/update-profile",
+      current: location.pathname === "/update-profile",
     },
     { name: t("LOGOUT"), href: "/login" },
   ];
@@ -68,7 +65,7 @@ const Navbar: React.FC<TUserDataProps> = ({ userData }) => {
                 <div className="shrink-0" />
                 <button
                   style={{ textShadow: "3px 2px 1px #54376d" }}
-                  className="text-3xl font-sans font-bold text-white"
+                  className="text-3xl font-sans font-bold text-white cursor-pointer"
                   onClick={() => navigate("/")}
                 >
                   My Teacher
@@ -96,32 +93,20 @@ const Navbar: React.FC<TUserDataProps> = ({ userData }) => {
 
               <div className="hidden md:block">
                 <div className="ml-4 flex items-center md:ml-6">
-                  {/* Profile dropdown */}
                   <Menu as="div" className="relative ml-3">
                     <div className="flex items-center">
                       <div className="relative inline-block text-left">
                         {userData && (
                           <button
-                            className="text-white text-lg mr-2"
-                            onClick={() => navigate("/kullanici-bilgilerim")}
-                            onMouseEnter={() => setIsDropdownOpen(true)}
-                            onMouseLeave={() => setIsDropdownOpen(false)}
+                            className="text-white text-lg mr-2 cursor-pointer"
+                            onClick={() => navigate("/my-profile")}
                           >
                             {userData?.firstname} {userData?.lastname}
                           </button>
                         )}
-                        {isDropdownOpen && (
-                          <div
-                            className="absolute z-10 w-32 right-0 origin-top-right text-white"
-                            onMouseEnter={() => setIsDropdownOpen(true)}
-                            onMouseLeave={() => setIsDropdownOpen(false)}
-                          >
-                            Kullanıcı Bilgileri
-                          </div>
-                        )}
                       </div>
 
-                      <MenuButton className="relative flex max-w-xs items-center rounded-full hover:bg-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 p-1">
+                      <MenuButton className="relative flex max-w-xs items-center rounded-full hover:bg-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 p-1 cursor-pointer">
                         <span className="absolute -inset-1.5" />
                         <span className="sr-only">Open user menu</span>
                         <svg
@@ -198,7 +183,7 @@ const Navbar: React.FC<TUserDataProps> = ({ userData }) => {
             <div className="border-t border-gray-700 pb-3 pt-4">
               <button
                 className="flex items-center px-5"
-                onClick={() => navigate("/kullanici-bilgilerim")}
+                onClick={() => navigate("/my-profile")}
               >
                 <div className="shrink-0">
                   <svg

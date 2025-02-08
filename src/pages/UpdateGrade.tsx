@@ -1,13 +1,19 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
+import { isAxiosError } from "axios";
 import API from "../api";
 
 import { TGrade, TStudent } from "../types";
 
-const UpdateGrade: React.FC = () => {
+function UpdateGrade() {
+  const { t } = useTranslation();
   const location = useLocation();
+
   const { selectedClassId, gradeName } = location.state || {};
+
   const [students, setStudents] = useState<TStudent[]>([]);
   const [grades, setGrades] = useState<TGrade[]>([]);
   const [error, setError] = useState("");
@@ -22,8 +28,14 @@ const UpdateGrade: React.FC = () => {
 
         setStudents(studentResponse.data.data);
         setGrades(gradeResponse.data.data);
-      } catch (error) {
-        setError("Veriler alınırken bir hata oluştu. Lütfen tekrar deneyin.");
+      } catch (error: unknown) {
+        console.error(error);
+        if (isAxiosError(error) && error.response) {
+          const errorMessage = error.response?.data?.message;
+          toast.error(errorMessage || t('UNKNOWN_ERROR'));
+        } else {
+          toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+        }
       }
     };
 
@@ -70,28 +82,13 @@ const UpdateGrade: React.FC = () => {
       );
       await Promise.all(updatePromises);
       setMessage("Notlar başarıyla güncellendi.");
-    } catch (error) {
-      if (error.response) {
-        const errorMessage = error.response.data.message;
-        switch (errorMessage) {
-          case "Student not found in the specified class":
-            setError("Öğrenci belirtilen sınıfta bulunamadı.");
-            break;
-          case "Not authorized to grade this student":
-            setError("Bu öğrenciye not verme yetkiniz yok.");
-            break;
-          case "Invalid grade_id":
-            setError("Geçersiz not.");
-            break;
-          case "Invalid student_id":
-            setError("Geçersiz öğrenci.");
-            break;
-          case "Invalid class_id":
-            setError("Geçersiz öğrenci.");
-            break;
-          default:
-            setError("Bir hata oluştu. Lütfen tekrar deneyin.");
-        }
+    } catch (error: unknown) {
+      console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
       }
     } finally {
       setLoading(false);

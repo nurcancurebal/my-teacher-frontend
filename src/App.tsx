@@ -1,5 +1,9 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
+import { isAxiosError } from "axios";
 
 import Navbar from "./components/Navbar";
 import Headers from "./components/Headers";
@@ -13,12 +17,30 @@ import { WHITE_NONTOKEN_PATH_NAMES } from "./consts";
 import API from "./api";
 
 function App() {
+  const { i18n, t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
   const [loadFetchUser, setLoadFetchUser] = React.useState<boolean>(false);
   const [user, setUser] = React.useState<TUser | null>(null);
 
+  const fetchAuthUser = async () => {
+    try {
+      const response = await API.auth.getUser();
+      const userLanguage = response.data.data.language;
+      i18n.changeLanguage(userLanguage);
+      setUser(response.data.data);
+      setLoadFetchUser(true);
+    } catch (error: unknown) {
+      console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
+    }
+  };
 
   useEffect(() => {
     if (WHITE_NONTOKEN_PATH_NAMES.includes(location.pathname)) {
@@ -34,17 +56,7 @@ function App() {
 
       fetchAuthUser();
     }
-  }, [location, navigate]);
-
-  async function fetchAuthUser() {
-    try {
-      const response = await API.auth.getUser();
-      setUser(response.data.data);
-      setLoadFetchUser(true);
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  }, [location]);
 
   return (
     <div>

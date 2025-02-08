@@ -1,9 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
+import { isAxiosError } from "axios";
+
 import API from "../api";
 
-const ForgotPassword: React.FC = () => {
+function ForgotPassword() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -24,11 +30,16 @@ const ForgotPassword: React.FC = () => {
         "OTP kodu email adresinize gönderildi. Şifrenizi sıfırlamak için yönlendiriliyorsunuz..."
       );
       setTimeout(() => {
-        navigate("/sifremi-sifirla", { state: { email } });
+        navigate("/reset-password", { state: { email } });
       }, 3000);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
-      setError(error?.response?.data?.message);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
     } finally {
       setLoading(false);
     }
@@ -88,7 +99,7 @@ const ForgotPassword: React.FC = () => {
           <p className="mt-10 text-center text-base text-gray-500">
             Üye değil misiniz?{" "}
             <button
-              onClick={() => navigate("/kayit-ol")}
+              onClick={() => navigate("/register")}
               className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
             >
               Şimdi kaydolun
@@ -97,7 +108,7 @@ const ForgotPassword: React.FC = () => {
           <p className="mt-4 text-center text-base text-gray-500">
             Zaten bir hesabınız var mı?{" "}
             <button
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/login")}
               className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
             >
               Giriş yapın

@@ -1,22 +1,28 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
+import { isAxiosError } from "axios";
 
 import API from "../../api";
 
 import { TDeleteClassDialogProps } from "../../types";
 
-const DeleteClassDialog: React.FC<TDeleteClassDialogProps> = ({
+function DeleteClassDialog({
   open,
   setOpen,
   id,
   className,
   onDelete,
-}) => {
+}: TDeleteClassDialogProps) {
+  const { t } = useTranslation();
+
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -32,8 +38,14 @@ const DeleteClassDialog: React.FC<TDeleteClassDialogProps> = ({
         setOpen(false);
         onDelete();
       }, 3000);
-    } catch (error) {
-      setError("Sınıf silinirken bir hata oluştu.");
+    } catch (error: unknown) {
+      console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
     }
   };
 

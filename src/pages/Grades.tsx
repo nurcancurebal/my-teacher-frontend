@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { TClass, TStudent } from "../types";
 
-const Grade: React.FC = () => {
+function Grade() {
   const [students, setStudents] = useState<TStudent[]>([]);
   const [classes, setClasses] = useState<TClass[]>([]);
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);

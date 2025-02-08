@@ -7,16 +7,23 @@ import {
 } from "@headlessui/react";
 import Datepicker from "react-tailwindcss-datepicker";
 
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
+import { isAxiosError } from "axios";
+
 import API from "../../api";
 
 import { TUpdateStudentDialogProps, TDateValueType, TClass } from "../../types";
 
-const UpdateStudentDialog: React.FC<TUpdateStudentDialogProps> = ({
+function UpdateStudentDialog({
   open,
   setOpen,
   student,
   onUpdate,
-}) => {
+}: TUpdateStudentDialogProps) {
+  const { t } = useTranslation();
+
   const [idNumber, setIdNumber] = useState<bigint>(student.id_number);
   const [studentName, setStudentName] = useState<string>(student.student_name);
   const [studentLastname, setStudentLastName] = useState<string>(
@@ -40,8 +47,14 @@ const UpdateStudentDialog: React.FC<TUpdateStudentDialogProps> = ({
       try {
         const classes = await API.class.allList();
         setClasses(classes.data.data);
-      } catch (error) {
-        setError("Sınıflar getirilirken bir hata oluştu.");
+      } catch (error: unknown) {
+        console.error(error);
+        if (isAxiosError(error) && error.response) {
+          const errorMessage = error.response?.data?.message;
+          toast.error(errorMessage || t('UNKNOWN_ERROR'));
+        } else {
+          toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+        }
       }
     };
     fetchClasses();
@@ -62,59 +75,13 @@ const UpdateStudentDialog: React.FC<TUpdateStudentDialogProps> = ({
         setError(null);
         onUpdate();
       }, 3000);
-    } catch (error) {
-      if (error.response) {
-        const errorMessage = error.response.data.message;
-        switch (errorMessage) {
-          case "'tc' must be a number":
-            setError("TC kimlik numarası sayı olmalıdır.");
-            break;
-          case "'tc' must be exactly 11 digits long":
-            setError("TC kimlik numarası 11 haneli olmalıdır.");
-            break;
-
-          case "TR ID number has already been used":
-            setError("TC kimlik numarası zaten kullanılmış.");
-            break;
-          case "Student number is required":
-            setError("Öğrenci numarası zorunludur.");
-            break;
-          case '"student_name" is not allowed to be empty':
-            setError("Öğrenci adı boş bırakılamaz.");
-            break;
-          case '"student_name" length must be at least 3 characters long':
-            setError("Öğrenci adı en az 3 karakter olmalıdır.");
-            break;
-          case '"student_name" length must be less than or equal to 30 characters long':
-            setError("Öğrenci adı en fazla 30 karakter olmalıdır.");
-            break;
-          case '"student_lastname" is not allowed to be empty':
-            setError("Öğrenci soyadı boş bırakılamaz.");
-            break;
-          case '"student_lastname" length must be at least 3 characters long':
-            setError("Öğrenci soyadı en az 3 karakter olmalıdır.");
-            break;
-          case '"student_lastname" length must be less than or equal to 30 characters long':
-            setError("Öğrenci soyadı en fazla 30 karakter olmalıdır.");
-            break;
-          case '"student_number" must be a number':
-            setError("Öğrenci numarası sayı olmalıdır.");
-            break;
-          case "'student_number' must be between 2 and 15 characters long":
-            setError("Öğrenci numarası 2 ile 15 karakter arasında olmalıdır.");
-            break;
-          case "Student number is already used":
-            setError("Öğrenci numarası zaten kullanılmış.");
-            break;
-          case '"student_number" is required':
-            setError("Öğrenci numarası zorunludur.");
-            break;
-          case "'gender' must be one of [K, E]":
-            setError("Cinsiyet Kız veya Erkek olarak seçilmelidir.");
-            break;
-          default:
-            setError("Bir hata oluştu. Lütfen tekrar deneyin.");
-        }
+    } catch (error: unknown) {
+      console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
       }
     }
   };

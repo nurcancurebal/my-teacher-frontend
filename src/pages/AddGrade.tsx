@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
+import { isAxiosError } from "axios";
+
 import API from "../api";
 
 import { TStudent, TGradeValue } from "../types";
 
-const AddGrade: React.FC = () => {
+function AddGrade() {
+  const { t } = useTranslation();
+
   const [students, setStudents] = useState<TStudent[]>([]);
   const [grades, setGrades] = useState<TGradeValue[]>([]);
   const location = useLocation();
@@ -22,15 +29,21 @@ const AddGrade: React.FC = () => {
         const response = await API.student.getListByClass(selectedClassId);
         setStudents(response.data.data);
         setGrades(
-          response.data.data.map((student: TStudent) => ({
-            student_id: student.id,
-            grade_value: null,
-          }))
+          response.data.data
+            .filter((student: TStudent) => student.id !== undefined)
+            .map((student: TStudent) => ({
+              student_id: student.id as number,
+              grade_value: null,
+            }))
         );
-      } catch (error) {
-        setError(
-          "Öğrenciler getirilirken bir hata oluştu. Lütfen tekrar deneyin."
-        );
+      } catch (error: unknown) {
+        console.error(error);
+        if (isAxiosError(error) && error.response) {
+          const errorMessage = error.response?.data?.message;
+          toast.error(errorMessage || t('UNKNOWN_ERROR'));
+        } else {
+          toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+        }
       }
     };
 
@@ -68,36 +81,14 @@ const AddGrade: React.FC = () => {
       setMessage(
         "Notlar başarıyla kaydedildi. Ana sayfaya yönlendiriliyorsunuz."
       );
-      setTimeout(() => navigate("/onizleme"), 3000);
-    } catch (error) {
-      if (error.response) {
-        const errorMessage = error.response.data.message;
-
-        switch (errorMessage) {
-          case "Invalid class_id":
-            setError("Geçersiz sınıf.");
-            break;
-          case "Invalid student_id":
-            setError("Geçersiz öğrenci.");
-            break;
-          case "This student is not in this class":
-            setError("Bu öğrenci bu sınıfta değil.");
-            break;
-          case "Student not found in the specified class":
-            setError("Öğrenci belirtilen sınıfta bulunamadı.");
-            break;
-          case "Not authorized to grade this student":
-            setError("Bu öğrenci sizin sınıfınızda değil.");
-            break;
-          case "Grade of this type already exists for this student":
-            setError("Bu türde bir not zaten bu öğrenci için girilmiş.");
-            break;
-          default:
-            console.error(errorMessage);
-            setError(
-              "Notlar kaydedilirken bir hata oluştu. Lütfen tekrar deneyin."
-            );
-        }
+      setTimeout(() => navigate("/"), 3000);
+    } catch (error: unknown) {
+      console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
       }
     } finally {
       setLoading(false);

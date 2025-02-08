@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
 import { TStudent, TFilterStudentProps } from "../../types";
 
-const FilterStudentGenderSelect: React.FC<TFilterStudentProps> = ({
+function FilterStudentGenderSelect({
   filteredStudents,
   handleFilter,
   setError,
-}) => {
+}: TFilterStudentProps) {
   const [genderFemale, setGenderFemale] = useState<boolean>(false);
   const [genderMale, setGenderMale] = useState<boolean>(false);
   const [localStudents, setLocalStudents] = useState<TStudent[]>([]);
@@ -23,19 +23,19 @@ const FilterStudentGenderSelect: React.FC<TFilterStudentProps> = ({
     if (gender === "Kız") {
       console.log("handleGenderChange1");
       setGenderFemale(!genderFemale);
-      genderMale
-        ? (filtered = localStudents)
-        : (filtered = localStudents.filter(
-          (student) => student.gender === "K"
-        ));
+      if (genderMale) {
+        filtered = localStudents;
+      } else {
+        filtered = localStudents.filter((student) => student.gender === "K");
+      }
     } else if (gender === "Erkek") {
       console.log("handleGenderChange2");
       setGenderMale(!genderMale);
-      genderFemale
-        ? (filtered = localStudents)
-        : (filtered = localStudents.filter(
-          (student) => student.gender === "E"
-        ));
+      if (genderFemale) {
+        filtered = localStudents;
+      } else {
+        filtered = localStudents.filter((student) => student.gender === "E");
+      }
     }
 
     if (filtered.length === 0) {

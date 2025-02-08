@@ -1,4 +1,9 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
+
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
+import { isAxiosError } from "axios";
 
 import UpdateDialog from "../components/class/UpdateDialog";
 import DeleteDialog from "../components/class/DeleteDialog";
@@ -8,7 +13,9 @@ import API from "../api";
 
 import { TClass } from "../types";
 
-const Classes: React.FC = () => {
+function Classes() {
+  const { t } = useTranslation();
+
   const [classes, setClasses] = useState<TClass[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [studentCount, setStudentCount] = useState<{ [key: number]: number }>(
@@ -38,8 +45,14 @@ const Classes: React.FC = () => {
         return;
       }
       setClasses(classesData);
-    } catch (error) {
-      setError("Sınıflar getirilirken bir hata oluştu.");
+    } catch (error: unknown) {
+      console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
     }
   };
 
@@ -60,8 +73,14 @@ const Classes: React.FC = () => {
         return acc;
       }, {} as { [key: number]: number });
       setStudentCount(countsMap);
-    } catch (error) {
-      setError("Öğrenci sayısı getirilirken bir hata oluştu.");
+    } catch (error: unknown) {
+      console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
     }
   }, [classes]);
 

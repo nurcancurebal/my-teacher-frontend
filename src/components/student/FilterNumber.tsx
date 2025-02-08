@@ -4,16 +4,13 @@ import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 
 import { TFilterStudentProps, TStudent } from "../../types";
 
-const FilterStudentNumber: React.FC<TFilterStudentProps> = ({
+function FilterStudentNumber({
   filteredStudents,
   handleFilter,
   setError,
-}) => {
+}: TFilterStudentProps) {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [localStudents, setLocalStudents] = useState<TStudent[]>([]);
-  const [localFilteredStudents, setLocalFilteredStudents] = useState<TStudent[]>(
-    []
-  );
 
   useEffect(() => {
     console.log("i-useEffect1:", "filteredStudents", filteredStudents);
@@ -21,24 +18,6 @@ const FilterStudentNumber: React.FC<TFilterStudentProps> = ({
       setLocalStudents(filteredStudents);
     }
   }, [filteredStudents, localStudents]);
-
-  useEffect(() => {
-    console.log(
-      "i-useEffect2:",
-      "localStudents",
-      localStudents,
-      "localFilteredStudents",
-      localFilteredStudents
-    );
-    if (localFilteredStudents.length !== 0) {
-      console.log("i-useEffect2-1");
-      handleFilter(localFilteredStudents);
-    } else {
-      console.log("i-useEffect2-2");
-      handleFilter(localStudents);
-    }
-    /* handleFilter(localFilteredStudents); */
-  }, [localFilteredStudents, localStudents, handleFilter]);
 
   const searchInputNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log("searchInputNumber:", "e.target.value", e.target.value);
@@ -54,7 +33,7 @@ const FilterStudentNumber: React.FC<TFilterStudentProps> = ({
 
     if (value !== "") {
       console.log("searchInputNumber:1-3");
-      let filtered = localStudents.filter((student) =>
+      const filtered = localStudents.filter((student) =>
         student.student_number.toString().includes(value)
       );
 

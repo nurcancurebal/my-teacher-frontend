@@ -1,69 +1,53 @@
-export type TUser = {
-  id: string;
-  firstname: string;
-  lastname: string;
-  username: string;
-  email: string;
-  created_at?: Date;
-  last_updated?: Date;
+export type TResponseOtherParams = {
+  error: boolean;
+  message: string;
 };
 
-export type TRouterProps = {
-  userData: TUser | null;
-  onProfileUpdate: () => void;
+export type TGetTokens = {
+  accessToken: string;
+  refreshToken: string;
 };
 
-export type TUpdateProfileProps = {
-  userData: TUser | null;
-  onProfileUpdate: () => void;
-};
-
-export type TContentProps = {
-  userData: TUser | null;
-  onProfileUpdate: () => void;
-};
-
-export type TUserDataProps = {
-  userData: TUser | null;
-};
-
-export type TQueryResetPassword = {
-  email: string;
-};
+export type TTokenResponse = {
+  data: TGetTokens;
+} & TResponseOtherParams;
 
 export type TLoginParams = {
   email: string;
   password: string;
 };
 
-export type TRegisterParams = {
+export type TGetSessionResponse = {
+  data: TUser;
+} & TResponseOtherParams;
+
+export type TUser = {
+  id?: string;
   firstname: string;
   lastname: string;
   username: string;
   email: string;
-  password: string;
+  language?: string;
+  created_at?: Date;
+  last_updated?: Date;
+  password?: string;
 };
 
-export type TRegisterResponse = {
-  data: TUser;
-  error: boolean;
-  accessToken: string;
-  message: string;
-};
+export type TPasswordResponse = {
+  data: null;
+} & TResponseOtherParams;
 
-export type TLoginResponse = {
-  data: TUser;
-  error: boolean;
-  accessToken: string;
-};
-
-export type TForgotPasswordParams = {
+export type TQueryPasswordParams = {
   email: string;
 };
-export type TForgotPasswordResponse = {
-  message: string;
-  error: boolean;
-};
+
+export type TNumberResponse = {
+  data: number;
+} & TResponseOtherParams;
+
+export type TBooleanResponse = {
+  data: boolean;
+} & TResponseOtherParams;
 
 export type TResetPasswordParams = {
   email: string;
@@ -71,19 +55,40 @@ export type TResetPasswordParams = {
   otp: string;
 };
 
-export type TResetPasswordResponse = {
-  updated: string;
-  message: string;
-  error: boolean;
+export type TAllListStudentResponse = {
+  data: TStudent[];
+} & TResponseOtherParams;
+
+export type TDateResponse = {
+  data: Date;
+} & TResponseOtherParams;
+
+export type TGradeListResponse = {
+  data: TGrade[];
+} & TResponseOtherParams;
+
+export type TContentProps = {
+  userData: TUser | null;
+  onProfileUpdate: () => void;
 };
 
-export type TAddClassParams = {
-  class_name: string;
-  explanation: string;
-};
-export type TUpdateClassParams = {
-  class_name: string;
-  explanation: string;
+export type TAllListClassResponse = {
+  data: TClass[];
+} & TResponseOtherParams;
+
+export type TGenderCountResponse = {
+  data: {
+    maleCount: number;
+    femaleCount: number;
+  };
+} & TResponseOtherParams;
+
+export type TUpdateResponse = {
+  data: Promise<number[]>;
+} & TResponseOtherParams;
+
+export type TUserDataProps = {
+  userData: TUser | null;
 };
 
 export type TClass = {
@@ -94,6 +99,10 @@ export type TClass = {
   created_at?: Date;
   last_updated?: Date;
 };
+
+export type TClassAddResponse = {
+  data: TClass;
+} & TResponseOtherParams;
 
 export type TStudent = {
   id?: number;
@@ -121,21 +130,6 @@ export type TGrade = {
 export type TGradeTypeExists = {
   grade_type: string;
   class_id: number;
-};
-
-export type TAddGradeParams = {
-  class_id: number;
-  student_id: number;
-  grade_type: string;
-  grade_value: number | null;
-};
-
-export type TUpdateGradeParams = {
-  grade_type: string;
-  grade_value: number | null;
-  class_id: number;
-  student_id: number;
-  id: number;
 };
 
 export type TViewDetailDialogProps = {
@@ -171,14 +165,6 @@ export type TAddProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
   onAdd: () => void;
-};
-
-export type TClassItem = {
-  id: number;
-  teacher_id: number;
-  class_name: string;
-  created_at: Date;
-  last_updated: Date;
 };
 
 export type TDeleteStudentDialogProps = {

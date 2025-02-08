@@ -7,12 +7,19 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
+import { isAxiosError } from "axios";
+
 import API from "../../api";
 
-import { TAddProps, TClassItem, TDateValueType } from "../../types";
+import { TAddProps, TClass, TDateValueType } from "../../types";
 
-const AddStudent: React.FC<TAddProps> = ({ open, setOpen, onAdd }) => {
-  const [classes, setClasses] = useState<TClassItem[]>([]);
+function AddStudent({ open, setOpen, onAdd }: TAddProps) {
+  const { t } = useTranslation();
+
+  const [classes, setClasses] = useState<TClass[]>([]);
   const [studentName, setStudentName] = useState<string>("");
   const [studentLastname, setStudentLastName] = useState<string>("");
   const [studentNumber, setStudentNumber] = useState<number>();
@@ -33,7 +40,7 @@ const AddStudent: React.FC<TAddProps> = ({ open, setOpen, onAdd }) => {
       fetchClasses();
       resetForm();
     }
-  }, [open]); // `open` prop'u değiştiğinde `useEffect` çalışır
+  }, [open]);
 
   const fetchClasses = async () => {
     try {
@@ -44,8 +51,14 @@ const AddStudent: React.FC<TAddProps> = ({ open, setOpen, onAdd }) => {
       } else {
         setError("Sınıf bulunamadı. Lütfen önce sınıf ekleyin.");
       }
-    } catch (error) {
-      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+    } catch (error: unknown) {
+      console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
     }
   };
 
@@ -90,60 +103,13 @@ const AddStudent: React.FC<TAddProps> = ({ open, setOpen, onAdd }) => {
         resetForm();
         onAdd();
       }, 3000);
-    } catch (error) {
-      if (error.response) {
-        const errorMessage = error.response.data.message;
-
-        switch (errorMessage) {
-          case "'tc' must be a number":
-            setError("TC kimlik numarası sayı olmalıdır.");
-            break;
-          case "'tc' must be exactly 11 digits long":
-            setError("TC kimlik numarası 11 haneli olmalıdır.");
-            break;
-
-          case "TR ID number has already been used":
-            setError("TC kimlik numarası zaten kullanılmış.");
-            break;
-          case "Student number is required":
-            setError("Öğrenci numarası zorunludur.");
-            break;
-          case '"student_name" is not allowed to be empty':
-            setError("Öğrenci adı boş bırakılamaz.");
-            break;
-          case '"student_name" length must be at least 3 characters long':
-            setError("Öğrenci adı en az 3 karakter olmalıdır.");
-            break;
-          case '"student_name" length must be less than or equal to 30 characters long':
-            setError("Öğrenci adı en fazla 30 karakter olmalıdır.");
-            break;
-          case '"student_lastname" is not allowed to be empty':
-            setError("Öğrenci soyadı boş bırakılamaz.");
-            break;
-          case '"student_lastname" length must be at least 3 characters long':
-            setError("Öğrenci soyadı en az 3 karakter olmalıdır.");
-            break;
-          case '"student_lastname" length must be less than or equal to 30 characters long':
-            setError("Öğrenci soyadı en fazla 30 karakter olmalıdır.");
-            break;
-          case '"student_number" must be a number':
-            setError("Öğrenci numarası sayı olmalıdır.");
-            break;
-          case "'student_number' must be between 2 and 15 characters long":
-            setError("Öğrenci numarası 2 ile 15 karakter arasında olmalıdır.");
-            break;
-          case "Student number is already used":
-            setError("Öğrenci numarası zaten kullanılmış.");
-            break;
-          case '"student_number" is required':
-            setError("Öğrenci numarası zorunludur.");
-            break;
-          case "'gender' must be one of [K, E]":
-            setError("Cinsiyet Kız veya Erkek olarak seçilmelidir.");
-            break;
-          default:
-            setError("Bir hata oluştu. Lütfen tekrar deneyin.");
-        }
+    } catch (error: unknown) {
+      console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
       }
     }
   };
@@ -202,7 +168,7 @@ const AddStudent: React.FC<TAddProps> = ({ open, setOpen, onAdd }) => {
                         ? "bg-gray-200"
                         : "bg-white"
                         }`}
-                      onClick={() => setSelectedClassId(classItem.id)}
+                      onClick={() => classItem.id !== undefined && setSelectedClassId(classItem.id)}
                     >
                       {classItem.class_name}
                     </button>

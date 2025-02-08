@@ -6,19 +6,25 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
+import { isAxiosError } from "axios";
+
 import API from "../../api";
 
 import { TUpdateClassDialogProps } from "../../types";
-import { AxiosError, isAxiosError } from "axios";
 
-const UpdateClassDialog: React.FC<TUpdateClassDialogProps> = ({
+function UpdateClassDialog({
   open,
   setOpen,
   id,
   className,
   explanation,
   onUpdate,
-}) => {
+}: TUpdateClassDialogProps) {
+  const { t } = useTranslation();
+
   const [newClassName, setNewClassName] = useState<string>(className);
   const [newExplanation, setNewExplanation] = useState<string>(explanation);
   const [error, setError] = useState<string | null>(null);
@@ -29,19 +35,20 @@ const UpdateClassDialog: React.FC<TUpdateClassDialogProps> = ({
     setMessage(null);
 
     try {
-      await API.class.update(id, { class_name: newClassName, explanation: newExplanation });
+      await API.class.update({ id, class_name: newClassName, explanation: newExplanation });
       setMessage("Sınıf bilgileri başarıyla güncellendi.");
       setTimeout(() => {
         setMessage(null);
         setOpen(false);
-        onUpdate(); // Sınıf adı güncellendikten sonra geri çağırma fonksiyonunu çağır
+        onUpdate();
       }, 3000);
-    } catch (error: AxiosError | Error | any) {
+    } catch (error: unknown) {
+      console.error(error);
       if (isAxiosError(error) && error.response) {
         const errorMessage = error.response?.data?.message;
-        setError(errorMessage || "Bir hata oluştu. Lütfen tekrar deneyin.");
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
       } else {
-        console.error(error);
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
       }
     }
   };

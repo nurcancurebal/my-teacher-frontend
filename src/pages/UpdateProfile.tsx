@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
+import { isAxiosError } from "axios";
 
 import API from "../api";
 
-import { TUpdateProfileProps } from "../types";
+import { TContentProps } from "../types";
 
-const UpdateProfile: React.FC<TUpdateProfileProps> = ({
+function UpdateProfile({
   userData,
   onProfileUpdate,
-}) => {
+}: TContentProps) {
+  const { t } = useTranslation();
+
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -39,12 +45,13 @@ const UpdateProfile: React.FC<TUpdateProfileProps> = ({
     }
 
     try {
-      await API.user.profileUpdate({
+      await API.profile.update({
         id: userData.id,
         firstname,
         lastname,
         username,
         email,
+        language: userData.language,
       });
       setMessage("Kullanıcı bilgileri başarıyla güncellendi.");
       setTimeout(() => {
@@ -52,9 +59,14 @@ const UpdateProfile: React.FC<TUpdateProfileProps> = ({
         setPassword("");
         onProfileUpdate();
       }, 3000);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
-      setError(error?.response?.data?.message);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
     }
   };
 

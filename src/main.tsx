@@ -9,7 +9,7 @@ import App from './App.tsx'
 
 const toastOptions = {
   position: "bottom-right" as ToastPosition,
-  autoClose: 5000,
+  autoClose: 3000,
   hideProgressBar: false,
   closeOnClick: false,
   pauseOnHover: true,

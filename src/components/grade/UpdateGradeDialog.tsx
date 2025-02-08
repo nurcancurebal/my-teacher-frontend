@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Dialog,
@@ -7,12 +7,18 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
+import { isAxiosError } from "axios";
+
 import API from "../../api";
 
-import { TSelectProps, TClassItem } from "../../types";
+import { TSelectProps, TClass } from "../../types";
 
-const SelectGrade: React.FC<TSelectProps> = ({ open, setOpen }) => {
-  const [classes, setClasses] = useState<TClassItem[]>([]);
+function SelectGrade({ open, setOpen }: TSelectProps) {
+  const { t } = useTranslation();
+  const [classes, setClasses] = useState<TClass[]>([]);
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [showStudentSelection, setShowStudentSelection] =
@@ -37,8 +43,14 @@ const SelectGrade: React.FC<TSelectProps> = ({ open, setOpen }) => {
     try {
       const classes = await API.class.allList();
       setClasses(classes.data.data);
-    } catch (error) {
-      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+    } catch (error: unknown) {
+      console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
     }
   };
 
@@ -54,7 +66,7 @@ const SelectGrade: React.FC<TSelectProps> = ({ open, setOpen }) => {
 
         const uniqueGradeTypes = Array.from(
           new Set(
-            (notesInClass.data.data as { grade_type: string }[]).map(
+            (notesInClass.data.data as unknown as { grade_type: string }[]).map(
               (note) => note.grade_type
             )
           )
@@ -64,20 +76,13 @@ const SelectGrade: React.FC<TSelectProps> = ({ open, setOpen }) => {
           return;
         }
         setGradeType(uniqueGradeTypes);
-      } catch (error) {
-        if (error.response) {
-          const errorMessage = error.response.data.message;
-
-          switch (errorMessage) {
-            case "Invalid class_id":
-              setError("Geçersiz sınıf.");
-              break;
-            case "Class not found or not authorized":
-              setError("Sınıf bulunamadı veya yetkiniz yok.");
-              break;
-            default:
-              setError("Bir hata oluştu. Lütfen tekrar deneyin.");
-          }
+      } catch (error: unknown) {
+        console.error(error);
+        if (isAxiosError(error) && error.response) {
+          const errorMessage = error.response?.data?.message;
+          toast.error(errorMessage || t('UNKNOWN_ERROR'));
+        } else {
+          toast.error((error as Error).message || t('UNKNOWN_ERROR'));
         }
       }
 
@@ -92,7 +97,7 @@ const SelectGrade: React.FC<TSelectProps> = ({ open, setOpen }) => {
     if (gradeName !== "") {
       setMessage("Not güncellemek için yönlendiriliyorsunuz.");
       setTimeout(() => {
-        navigate("/not-guncelle", {
+        navigate("/update-grade", {
           state: { selectedClassId, gradeName },
         });
         setGradeName("");
@@ -155,7 +160,7 @@ const SelectGrade: React.FC<TSelectProps> = ({ open, setOpen }) => {
                       ? "bg-gray-200"
                       : "bg-white"
                       }`}
-                    onClick={() => setSelectedClassId(classItem.id)}
+                    onClick={() => classItem.id !== undefined && setSelectedClassId(classItem.id)}
                   >
                     {classItem.class_name}
                   </button>

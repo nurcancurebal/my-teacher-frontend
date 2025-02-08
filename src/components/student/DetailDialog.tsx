@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -8,11 +7,11 @@ import {
 
 import { TViewDetailDialogProps } from "../../types";
 
-const ViewDetailDialog: React.FC<TViewDetailDialogProps> = ({
+function ViewDetailDialog({
   open,
   setOpen,
   student,
-}) => {
+}: TViewDetailDialogProps) {
   return (
     <Dialog
       open={open}
@@ -67,7 +66,7 @@ const ViewDetailDialog: React.FC<TViewDetailDialogProps> = ({
               <div className="sm:mx-0 mx-4">
                 <span className="text-lg font-medium">Doğum Tarihi:</span>
                 <span className="text-base ml-3">
-                  {new Date(student.birthdate).toLocaleDateString()}
+                  {student.birthdate ? new Date(student.birthdate).toLocaleDateString() : "N/A"}
                 </span>
               </div>
             </div>

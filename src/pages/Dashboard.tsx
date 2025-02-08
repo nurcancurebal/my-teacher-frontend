@@ -2,11 +2,18 @@ import { useState, useEffect } from "react";
 
 import API from "../api";
 
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
+import { isAxiosError } from "axios";
+
 import AddClassDialog from "../components/class/AddDialog";
 import AddStudentDialog from "../components/student/AddDialog";
 import AddGradeDialog from "../components/grade/AddDialog";
 
 function Dashboard() {
+  const { t } = useTranslation();
+
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
   const [isAddStudentOpen, setIsAddStudentOpen] = useState(false);
   const [isSelectClassOpen, setIsSelectClassOpen] = useState(false);
@@ -49,28 +56,48 @@ function Dashboard() {
     try {
       const classes = await API.class.count();
       setTotalClasses(classes.data.data);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
     }
   };
 
   const fetchTotalStudentsFunc = async () => {
     try {
       const count = await API.student.count();
-      console.log("fetchTotalStudentsFunc", count.data.data);
       setTotalStudents(count.data.data);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
     }
   };
 
   const fetchLastAddedGrade = async () => {
     try {
       const response = await API.grade.findLatestGrade();
-      console.log("fetchLastAddedGrade", response.data.data);
-      setLastAddedGrade(response.data.data);
-    } catch (error) {
+
+      const date = new Date(response.data.data);
+      const formattedDate = date.toLocaleDateString();
+
+      setLastAddedGrade(formattedDate);
+    } catch (error: unknown) {
       console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
     }
   };
 
@@ -78,12 +105,16 @@ function Dashboard() {
     try {
       const response = await API.student.genderCount();
 
-      console.log("fetchGenderCount", response.data.data);
-
       setFemaleCount(response.data.data.femaleCount);
       setMaleCount(response.data.data.maleCount);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
     }
   };
 
@@ -122,7 +153,7 @@ function Dashboard() {
       </div>
 
       <div className="p-16 bg-white my-10">
-        <div className="mx-auto max-w-7xl grid gap-8 lg:grid-cols-4 px-5 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl grid gap-8 lg:grid-cols-3 px-5 sm:px-6 lg:px-8">
           <button
             className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-md text-center min-w-48"
             onClick={() => setIsAddClassOpen(true)}
