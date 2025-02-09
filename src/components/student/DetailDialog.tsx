@@ -41,19 +41,19 @@ function ViewDetailDialog({
 
               <div className="sm:mx-0 mx-4 pb-5">
                 <span className="text-lg font-medium">TC Kimlik Numarası:</span>
-                <span className="text-base ml-3">{student.id_number.toString()}</span>
+                <span className="text-base ml-3">{student.idNumber.toString()}</span>
               </div>
 
               <div className="sm:mx-0 mx-4 pb-5">
                 <span className="text-lg font-medium">Adı Soyadı:</span>
                 <span className="text-base ml-3">
-                  {student.student_name} {student.student_lastname}
+                  {student.studentName} {student.studentLastname}
                 </span>
               </div>
 
               <div className="sm:mx-0 mx-4 pb-5">
                 <span className="text-lg font-medium">Öğrenci Numarası:</span>
-                <span className="text-base ml-3">{student.student_number}</span>
+                <span className="text-base ml-3">{student.studentNumber}</span>
               </div>
 
               <div className="sm:mx-0 mx-4 pb-5">

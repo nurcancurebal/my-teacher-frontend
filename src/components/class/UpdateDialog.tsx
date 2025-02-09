@@ -29,7 +29,7 @@ function UpdateClassDialog({
   const handleUpdateClass = async () => {
 
     try {
-      const response = await API.class.update({ id, class_name: newClassName, explanation: newExplanation });
+      const response = await API.class.update({ id, className: newClassName, explanation: newExplanation });
 
       toast.success(response.data.message);
 

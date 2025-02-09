@@ -22,9 +22,10 @@ function Login() {
     try {
       const response = await API.auth.login({ email, password });
 
-      localStorage.setItem("access_token", response.data.data.accessToken);
+      localStorage.setItem("accessToken", response.data.data.accessToken);
 
       toast.success(response.data.message);
+      toast.info(t('REDIRECTING_TO_HOME_PAGE'));
 
       setTimeout(() => navigate("/"), 3000);
     } catch (error: unknown) {

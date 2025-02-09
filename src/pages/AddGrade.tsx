@@ -30,8 +30,8 @@ function AddGrade() {
           response.data.data
             .filter((student: TStudent) => student.id !== undefined)
             .map((student: TStudent) => ({
-              student_id: student.id as number,
-              grade_value: null,
+              studentId: student.id as number,
+              gradeValue: null,
             }))
         );
       } catch (error: unknown) {
@@ -50,13 +50,13 @@ function AddGrade() {
     }
   }, [selectedClassId]);
 
-  const handleGradeChange = (student_id: number, grade_value: string) => {
+  const handleGradeChange = (studentId: number, gradeValue: string) => {
     const parsedGradeValue =
-      grade_value === "" ? null : parseFloat(grade_value);
+      gradeValue === "" ? null : parseFloat(gradeValue);
     setGrades((prevGrades) =>
       prevGrades.map((grade) =>
-        grade.student_id === student_id
-          ? { ...grade, grade_value: parsedGradeValue }
+        grade.studentId === studentId
+          ? { ...grade, gradeValue: parsedGradeValue }
           : grade
       )
     );
@@ -68,10 +68,10 @@ function AddGrade() {
     try {
       for (const grade of grades) {
         await API.grade.add({
-          grade_type: gradeName,
-          grade_value: grade.grade_value,
-          class_id: selectedClassId,
-          student_id: grade.student_id,
+          gradeType: gradeName,
+          gradeValue: grade.gradeValue,
+          classId: selectedClassId,
+          studentId: grade.studentId,
         });
       }
       toast.success(t('GRADE_SUCCESSFULLY_ADDED'));
@@ -120,20 +120,20 @@ function AddGrade() {
               {students.map((student, index) => (
                 <tr key={index}>
                   <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
-                    {student.student_name}
+                    {student.studentName}
                   </td>
                   <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
-                    {student.student_lastname}
+                    {student.studentLastname}
                   </td>
                   <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
-                    {student.student_number}
+                    {student.studentNumber}
                   </td>
                   <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
                     <input
                       type="text"
                       value={
-                        grades.find((grade) => grade.student_id === student.id)
-                          ?.grade_value ?? ""
+                        grades.find((grade) => grade.studentId === student.id)
+                          ?.gradeValue ?? ""
                       }
                       onChange={(e) =>
                         student.id !== undefined && handleGradeChange(student.id, e.target.value)

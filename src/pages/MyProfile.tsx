@@ -37,7 +37,7 @@ function UserInformaition({ userData }: TUserDataProps) {
           </span>
           <span className="text-lg text-gray-600 ml-3">
             {userData
-              ? new Date(userData.created_at ?? "").toLocaleDateString()
+              ? new Date(userData.createdAt ?? "").toLocaleDateString()
               : "N/A"}
           </span>
         </div>
@@ -47,7 +47,7 @@ function UserInformaition({ userData }: TUserDataProps) {
           </span>
           <span className="text-lg text-gray-600 ml-3">
             {userData
-              ? new Date(userData.last_updated ?? "").toLocaleDateString()
+              ? new Date(userData.lastUpdated ?? "").toLocaleDateString()
               : "N/A"}
           </span>
         </div>

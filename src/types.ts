@@ -28,8 +28,8 @@ export type TUser = {
   username: string;
   email: string;
   language?: string;
-  created_at?: Date;
-  last_updated?: Date;
+  createdAt?: Date;
+  lastUpdated?: Date;
   password?: string;
 };
 
@@ -93,11 +93,11 @@ export type TUserDataProps = {
 
 export type TClass = {
   id?: number;
-  class_name: string;
+  className: string;
   explanation: string;
-  teacher_id?: number;
-  created_at?: Date;
-  last_updated?: Date;
+  teacherId?: number;
+  createdAt?: Date;
+  lastUpdated?: Date;
 };
 
 export type TClassAddResponse = {
@@ -106,25 +106,25 @@ export type TClassAddResponse = {
 
 export type TStudent = {
   id?: number;
-  class_id: number;
-  teacher_id?: number;
-  id_number: bigint;
-  student_name: string;
-  student_lastname: string;
-  student_number: number;
+  classId: number;
+  teacherId?: number;
+  idNumber: string;
+  studentName: string;
+  studentLastname: string;
+  studentNumber: number;
   gender: string;
   birthdate: Date | null;
 };
 
 export type TGrade = {
   id?: number;
-  teacher_id?: number;
-  student_id: number;
-  class_id: number;
-  grade_type: string;
-  grade_value: number | null;
-  created_at?: Date;
-  last_updated?: Date;
+  teacherId?: number;
+  studentId: number;
+  classId: number;
+  gradeType: string;
+  gradeValue: number | null;
+  createdAt?: Date;
+  lastUpdated?: Date;
 };
 
 export type TStudentResponse = {
@@ -132,8 +132,8 @@ export type TStudentResponse = {
 } & TResponseOtherParams;
 
 export type TGradeTypeExists = {
-  grade_type: string;
-  class_id: number;
+  gradeType: string;
+  classId: number;
 };
 
 export type TOpenProps = {
@@ -188,6 +188,6 @@ export type TFilterStudentProps = {
 };
 
 export type TGradeValue = {
-  student_id: number;
-  grade_value: number | null;
+  studentId: number;
+  gradeValue: number | null;
 };

@@ -43,9 +43,9 @@ function UpdateGrade() {
   const getGradeValue = (studentId: number) => {
     const grade = grades.find(
       (grade) =>
-        grade.student_id === studentId && grade.grade_type === gradeName
+        grade.studentId === studentId && grade.gradeType === gradeName
     );
-    return grade && grade.grade_value !== null ? grade.grade_value : "-";
+    return grade && grade.gradeValue !== null ? grade.gradeValue : "-";
   };
 
   const handleGradeChange = (studentId: number, value: string) => {
@@ -54,8 +54,8 @@ function UpdateGrade() {
       const numericValue = value === "" ? null : parseFloat(value);
       setGrades((prevGrades) =>
         prevGrades.map((grade) =>
-          grade.student_id === studentId && grade.grade_type === gradeName
-            ? { ...grade, grade_value: numericValue }
+          grade.studentId === studentId && grade.gradeType === gradeName
+            ? { ...grade, gradeValue: numericValue }
             : grade
         )
       );
@@ -70,10 +70,10 @@ function UpdateGrade() {
       const updatePromises = grades.map((grade) =>
         API.grade.update({
           id: grade.id!,
-          student_id: grade.student_id,
-          class_id: selectedClassId,
-          grade_type: gradeName,
-          grade_value: grade.grade_value
+          studentId: grade.studentId,
+          classId: selectedClassId,
+          gradeType: gradeName,
+          gradeValue: grade.gradeValue
         })
       );
       await Promise.all(updatePromises);
@@ -116,13 +116,13 @@ function UpdateGrade() {
               {students.map((student, index) => (
                 <tr key={index}>
                   <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
-                    {student.student_name}
+                    {student.studentName}
                   </td>
                   <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
-                    {student.student_lastname}
+                    {student.studentLastname}
                   </td>
                   <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
-                    {student.student_number}
+                    {student.studentNumber}
                   </td>
                   <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
                     <input

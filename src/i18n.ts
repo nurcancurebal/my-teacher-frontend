@@ -35,6 +35,9 @@ const resources = {
       BEING_REDIRECTED_TO_LOG_IN: "You are being redirected to the login page.",
       GRADES_CAN_BE_NUMERIC: "Grades can be numeric.",
       USER_DATA_NOT_AVAILABLE: "User data is not available.",
+      YOU_ARE_BEING_DIRECTED_TO_THE_HOMEPAGE:
+        "You are being directed to the homepage.",
+      REDIRECTING_TO_HOME_PAGE: "Redirecting to the homepage.",
     },
   },
   TR: {
@@ -67,6 +70,9 @@ const resources = {
       BEING_REDIRECTED_TO_LOG_IN: "Giriş sayfasına yönlendiriliyorsunuz.",
       GRADES_CAN_BE_NUMERIC: "Notlar sayısal olabilir.",
       USER_DATA_NOT_AVAILABLE: "Kullanıcı verileri mevcut değil.",
+      YOU_ARE_BEING_DIRECTED_TO_THE_HOMEPAGE:
+        "Anasayfaya yönlendiriliyorsunuz.",
+      REDIRECTING_TO_HOME_PAGE: "Anasayfaya yönlendiriliyorsunuz.",
     },
   },
 };

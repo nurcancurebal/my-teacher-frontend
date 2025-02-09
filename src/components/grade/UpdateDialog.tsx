@@ -59,8 +59,8 @@ function SelectGrade({ open, setOpen }: TOpenProps) {
 
         const uniqueGradeTypes = Array.from(
           new Set(
-            (notesInClass.data.data as unknown as { grade_type: string }[]).map(
-              (note) => note.grade_type
+            (notesInClass.data.data as unknown as { gradeType: string }[]).map(
+              (note) => note.gradeType
             )
           )
         );
@@ -153,7 +153,7 @@ function SelectGrade({ open, setOpen }: TOpenProps) {
                       }`}
                     onClick={() => classItem.id !== undefined && setSelectedClassId(classItem.id)}
                   >
-                    {classItem.class_name}
+                    {classItem.className}
                   </button>
                 ))}
               </div>

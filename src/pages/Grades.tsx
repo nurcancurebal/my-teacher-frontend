@@ -18,7 +18,7 @@ function Grade() {
               className={`mx-auto m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${selectedClassId === classItem.id ? "bg-slate-200" : "bg-white"
                 }`}
             >
-              {classItem.class_name}
+              {classItem.className}
             </button>
           ))}
           <button
@@ -55,16 +55,16 @@ function Grade() {
                 className={index % 2 === 0 ? "bg-gray-200" : "bg-gray-100"}
               >
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {student.student_number}
+                  {student.studentNumber}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {student.student_name} {student.student_lastname}
+                  {student.studentName} {student.studentLastname}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                   {student.gender}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {classes.find((c) => c.id === student.class_id)?.class_name}
+                  {classes.find((c) => c.id === student.classId)?.className}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4">
                   <div className="flex justify-center mx-auto">

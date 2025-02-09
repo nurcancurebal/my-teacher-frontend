@@ -74,12 +74,12 @@ export default {
   },
   student: {
     add: async (data: TStudent): Promise<AxiosResponse<TStudentResponse>> => {
-      const { class_id, ...bodyData } = data;
-      return await axios.post(`student/${class_id}`, { bodyData });
+      const { classId, ...bodyData } = data;
+      return await axios.post(`student/${classId}`, bodyData);
     },
     update: async (data: TStudent): Promise<AxiosResponse<TNumberResponse>> => {
       const { id, ...bodyData } = data;
-      return await axios.put(`student/${id}`, { bodyData });
+      return await axios.put(`student/${id}`, bodyData);
     },
     delete: async (id: number): Promise<AxiosResponse<TBooleanResponse>> => {
       return await axios.delete(`student/${id}`);
@@ -116,16 +116,16 @@ export default {
     gradeTypeExists: async (
       data: TGradeTypeExists
     ): Promise<AxiosResponse<TBooleanResponse>> => {
-      return await axios.post(`grade/${data.class_id}`, data.grade_type);
+      return await axios.post(`grade/${data.classId}`, data.gradeType);
     },
     add: async (data: TGrade): Promise<AxiosResponse<TGrade>> => {
-      const { class_id, student_id, ...bodyData } = data;
+      const { classId, studentId, ...bodyData } = data;
 
-      return await axios.post(`grade/${class_id}/${student_id}`, bodyData);
+      return await axios.post(`grade/${classId}/${studentId}`, bodyData);
     },
     update: async (data: TGrade): Promise<AxiosResponse<TNumberResponse>> => {
-      const { class_id, student_id, id, ...bodyData } = data;
-      return await axios.put(`grade/${class_id}/${student_id}/${id}`, bodyData);
+      const { classId, studentId, id, ...bodyData } = data;
+      return await axios.put(`grade/${classId}/${studentId}/${id}`, bodyData);
     },
   },
 };

@@ -33,7 +33,7 @@ function FilterStudentNumber({
 
     if (value !== "") {
       const filtered = localStudents.filter((student) =>
-        student.student_number.toString().includes(value)
+        student.studentNumber.toString().includes(value)
       );
 
       handleFilter(filtered);

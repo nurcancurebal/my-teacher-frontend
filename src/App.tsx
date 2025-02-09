@@ -44,10 +44,10 @@ function App() {
   useEffect(() => {
     if (WHITE_NONTOKEN_PATH_NAMES.includes(location.pathname)) {
       setUser(null);
-      localStorage.removeItem("access_token");
+      localStorage.removeItem("accessToken");
       setLoadFetchUser(true);
     } else {
-      const token = localStorage.getItem("access_token");
+      const token = localStorage.getItem("accessToken");
 
       if (!token) {
         navigate("/login");

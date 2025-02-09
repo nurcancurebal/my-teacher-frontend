@@ -64,7 +64,7 @@ function FilterClassNameSelect({
       filterStudent = [
         ...filterStudent,
         ...filteredStudents.filter(
-          (student) => student.class_id === classItem?.id
+          (student) => student.classId === classItem?.id
         ),
       ];
     });
@@ -93,7 +93,7 @@ function FilterClassNameSelect({
         });
 
         const selectedClass = classes.find(
-          (classItem) => classItem.class_name === className
+          (classItem) => classItem.className === className
         );
 
         if (selectedClass) {
@@ -101,7 +101,7 @@ function FilterClassNameSelect({
         }
 
         const filterStudent: TStudent[] = localStudents.filter(
-          (student) => student.class_id === selectedClass?.id
+          (student) => student.classId === selectedClass?.id
         );
 
         if (localFilteredStudents.length > 0) {
@@ -181,15 +181,15 @@ function FilterClassNameSelect({
               <MenuItem
                 as="button"
                 key={classItem.id}
-                value={classItem.class_name}
-                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${selectClassName.includes(classItem.class_name)
+                value={classItem.className}
+                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${selectClassName.includes(classItem.className)
                   ? "text-gray-300 cursor-not-allowed"
                   : "text-gray-900"
                   }`}
-                onClick={() => handleSelectClass(classItem.class_name)}
-                disabled={selectClassName.includes(classItem.class_name)}
+                onClick={() => handleSelectClass(classItem.className)}
+                disabled={selectClassName.includes(classItem.className)}
               >
-                {classItem.class_name}
+                {classItem.className}
               </MenuItem>
             ))}
           </div>

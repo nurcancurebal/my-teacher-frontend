@@ -38,7 +38,6 @@ function Classes() {
       const classesData = response.data.data;
 
       if (!classesData || classesData.length === 0) {
-        toast.error(t("CLASS_NOT_FOUND"));
         return;
       }
       setClasses(classesData);
@@ -47,6 +46,7 @@ function Classes() {
       if (isAxiosError(error) && error.response) {
         const errorMessage = error.response?.data?.message;
         toast.error(errorMessage || t('UNKNOWN_ERROR'));
+
       } else {
         toast.error((error as Error).message || t('UNKNOWN_ERROR'));
       }
@@ -143,7 +143,7 @@ function Classes() {
                 className={index % 2 === 0 ? "bg-gray-200" : "bg-gray-100"}
               >
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {classItem.class_name}
+                  {classItem.className}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                   {classItem.explanation}
@@ -152,10 +152,10 @@ function Classes() {
                   {classItem.id !== undefined ? studentCount[classItem.id] || 0 : 0}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {classItem.created_at ? new Date(classItem.created_at).toLocaleDateString() : "N/A"}
+                  {classItem.createdAt ? new Date(classItem.createdAt).toLocaleDateString() : "N/A"}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {classItem.last_updated ? new Date(classItem.last_updated).toLocaleDateString() : "N/A"}
+                  {classItem.lastUpdated ? new Date(classItem.lastUpdated).toLocaleDateString() : "N/A"}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4">
                   <button
@@ -222,7 +222,7 @@ function Classes() {
           open={updateDialogOpen}
           setOpen={handleUpdateDialogClose}
           id={selectedUpdateClass.id}
-          className={selectedUpdateClass.class_name}
+          className={selectedUpdateClass.className}
           explanation={selectedUpdateClass.explanation}
           onUpdate={handleClassUpdate}
         />
@@ -233,7 +233,7 @@ function Classes() {
           open={deleteDialogOpen}
           setOpen={handleDeleteDialogClose}
           id={selectedDeleteClass.id}
-          className={selectedDeleteClass.class_name}
+          className={selectedDeleteClass.className}
           onDelete={handleClassUpdate}
         />
       )}

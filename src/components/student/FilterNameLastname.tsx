@@ -42,8 +42,8 @@ function FilterStudentNameLastname({
     if (value !== "") {
       let filtered = localStudents.filter(
         (student) =>
-          student.student_name.toLowerCase().includes(value.toLowerCase()) ||
-          student.student_lastname.toLowerCase().includes(value.toLowerCase())
+          student.studentName.toLowerCase().includes(value.toLowerCase()) ||
+          student.studentLastname.toLowerCase().includes(value.toLowerCase())
       );
 
       if (filtered.length === 0 && value.includes(" ")) {
@@ -54,8 +54,8 @@ function FilterStudentNameLastname({
           const lastName = terms[terms.length - 1];
           filtered = localStudents.filter(
             (student) =>
-              student.student_name.toLowerCase().includes(firstName) &&
-              student.student_lastname.toLowerCase().includes(lastName)
+              student.studentName.toLowerCase().includes(firstName) &&
+              student.studentLastname.toLowerCase().includes(lastName)
           );
         }
       }

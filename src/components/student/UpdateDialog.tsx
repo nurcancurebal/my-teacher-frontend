@@ -6,7 +6,6 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import Datepicker from "react-tailwindcss-datepicker";
 
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
@@ -22,20 +21,20 @@ function UpdateStudentDialog({
 }: TUpdateStudentDialogProps) {
   const { t } = useTranslation();
 
-  const [idNumber, setIdNumber] = useState<bigint>(student.id_number);
-  const [studentName, setStudentName] = useState<string>(student.student_name);
+  const [idNumber, setIdNumber] = useState<string>(student.idNumber);
+  const [studentName, setStudentName] = useState<string>(student.studentName);
   const [studentLastname, setStudentLastName] = useState<string>(
-    student.student_lastname
+    student.studentLastname
   );
   const [studentNumber, setStudentNumber] = useState<number>(
-    student.student_number
+    student.studentNumber
   );
   const [gender, setGender] = useState<string>(student.gender);
   const [date, setDate] = useState<TDateValueType>({
     startDate: student.birthdate,
     endDate: student.birthdate,
   });
-  const [classId, setClassId] = useState<number>(student.class_id);
+  const [classId, setClassId] = useState<number>(student.classId);
   const [classes, setClasses] = useState<TClass[]>([]);
 
   useEffect(() => {
@@ -58,7 +57,7 @@ function UpdateStudentDialog({
 
   const handleUpdateStudent = async () => {
     try {
-      const response = await API.student.update({ id: student.id, class_id: classId, id_number: idNumber, student_name: studentName, student_lastname: studentLastname, student_number: studentNumber, gender, birthdate: date.startDate });
+      const response = await API.student.update({ id: student.id, classId, idNumber, studentName, studentLastname, studentNumber: studentNumber, gender, birthdate: date.startDate });
       toast.success(response.data.message);
 
       setTimeout(() => {
@@ -124,7 +123,7 @@ function UpdateStudentDialog({
                         }`}
                       onClick={() => classItem.id !== undefined && setClassId(classItem.id)}
                     >
-                      {classItem.class_name}
+                      {classItem.className}
                     </button>
                   ))}
                 </div>
@@ -145,7 +144,7 @@ function UpdateStudentDialog({
                     type="text"
                     required
                     value={idNumber.toString()}
-                    onChange={(e) => setIdNumber(BigInt(e.target.value))}
+                    onChange={(e) => setIdNumber(e.target.value)}
                     onKeyDown={enterKeyHandler}
                     className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3"
                   />
@@ -221,7 +220,7 @@ function UpdateStudentDialog({
                       type="button"
                       className={`m-5 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100
                     ${gender === "K" ? "bg-slate-200" : "bg-white"}`}
-                      onClick={() => setGender("K")}
+                      onClick={() => setGender("Female")}
                     >
                       Kız
                     </button>
@@ -229,34 +228,31 @@ function UpdateStudentDialog({
                       type="button"
                       className={`m-5 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${gender === "E" ? "bg-slate-200" : "bg-white"
                         }`}
-                      onClick={() => setGender("E")}
+                      onClick={() => setGender("Male")}
                     >
                       Erkek
                     </button>
                   </div>
                 </div>
-                <div>
+                <div className="mt-5 grid grid-cols-2">
                   <label
                     htmlFor="datePicker"
-                    className="mt-5 block text-lg font-medium text-gray-900"
+                    className="block text-lg font-medium text-gray-900"
                   >
                     Doğum Tarihi:
                   </label>
 
-                  <Datepicker
-                    useRange={false}
-                    asSingle={true}
+                  <input
+                    type="date"
                     required={true}
-                    inputId="datePicker"
-                    inputName="datePicker"
-                    value={date}
+                    id="birthday"
+                    name="birthday"
+                    value={date.startDate ? date.startDate.toISOString().split('T')[0] : ''}
                     placeholder="Doğum Tarihi Seçiniz"
-                    displayFormat="DD.MM.YYYY"
-                    inputClassName="text-base"
-                    onChange={(newDate: TDateValueType | null) => {
-                      if (newDate) {
-                        setDate(newDate);
-                      }
+                    className="text-base"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      const newDate = e.target.value;
+                      setDate({ startDate: new Date(newDate), endDate: new Date(newDate) });
                     }}
                   />
                 </div>

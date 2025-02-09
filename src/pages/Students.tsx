@@ -38,7 +38,6 @@ function Students() {
       const studentsData = response.data.data;
 
       if (!studentsData || studentsData.length === 0) {
-        toast.error(t("NO_STUDENT_FOUND"));
         setStudents([]);
         return;
       }
@@ -61,7 +60,6 @@ function Students() {
       const classesData = response.data.data;
 
       if (!classesData || classesData.length === 0) {
-        toast.error(t("CLASS_NOT_FOUND"));
         setClasses([]);
         return;
       }
@@ -147,16 +145,16 @@ function Students() {
                 className={index % 2 === 0 ? "bg-gray-200" : "bg-gray-100"}
               >
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {student.student_number}
+                  {student.studentNumber}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {student.student_name} {student.student_lastname}
+                  {student.studentName} {student.studentLastname}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                   {student.gender === "E" ? "Erkek" : "Kız"}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {classes.find((c) => c.id === student.class_id)?.class_name}
+                  {classes.find((c) => c.id === student.classId)?.className}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4">
                   <div className="flex justify-center mx-auto">
@@ -262,8 +260,8 @@ function Students() {
           open={deleteDialogOpen}
           setOpen={handleDeleteDialogClose}
           id={selectedDeleteStudent?.id ?? 0}
-          studentName={selectedDeleteStudent.student_name}
-          studentLastName={selectedDeleteStudent.student_lastname}
+          studentName={selectedDeleteStudent.studentName}
+          studentLastName={selectedDeleteStudent.studentLastname}
           onDelete={async () => await fetchStudents()}
         />
       )}

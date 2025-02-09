@@ -32,7 +32,8 @@ function Register() {
         password,
       });
       toast.success(response.data.message);
-      localStorage.setItem("token", response.data.data.accessToken);
+      toast.success(t('YOU_ARE_BEING_DIRECTED_TO_THE_HOMEPAGE'));
+      localStorage.setItem("accessToken", response.data.data.accessToken);
 
       setTimeout(() => {
         navigate("/");
