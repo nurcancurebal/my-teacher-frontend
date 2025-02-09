@@ -1,23 +1,20 @@
 import { useEffect, useState, useCallback } from "react";
+import { isAxiosError } from "axios";
 
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-
-import { isAxiosError } from "axios";
 
 import UpdateDialog from "../components/class/UpdateDialog";
 import DeleteDialog from "../components/class/DeleteDialog";
 import AddDialog from "../components/class/AddDialog";
 
 import API from "../api";
-
 import { TClass } from "../types";
 
 function Classes() {
   const { t } = useTranslation();
 
   const [classes, setClasses] = useState<TClass[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [studentCount, setStudentCount] = useState<{ [key: number]: number }>(
     {}
   );
@@ -41,7 +38,7 @@ function Classes() {
       const classesData = response.data.data;
 
       if (!classesData || classesData.length === 0) {
-        setError("Sınıf bulunamadı.");
+        toast.error(t("CLASS_NOT_FOUND"));
         return;
       }
       setClasses(classesData);
@@ -207,11 +204,7 @@ function Classes() {
           </tbody>
         </table>
       </div>
-      {error && (
-        <p className="mt-2 text-center xl:text-lg md:text-base text-sm text-red-600 col-start-1 col-span-4">
-          {error}
-        </p>
-      )}
+
       <div className="xl:col-start-3 md:col-start-2 xl:p-0">
         <div className="flex justify-end ">
           <button

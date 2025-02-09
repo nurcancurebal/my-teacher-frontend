@@ -5,13 +5,12 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import { isAxiosError } from "axios";
+
 import { useTranslation } from 'react-i18next';
 import { toast } from "react-toastify";
 
-import { isAxiosError } from "axios";
-
 import API from "../../api";
-
 import { TAddProps } from "../../types";
 
 function AddClass({ open, setOpen, onAdd }: TAddProps) {
@@ -23,7 +22,9 @@ function AddClass({ open, setOpen, onAdd }: TAddProps) {
   const addClass = async () => {
 
     try {
-      await API.class.add({ class_name: className, explanation });
+      const response = await API.class.add({ class_name: className, explanation });
+
+      toast.success(response.data.message);
 
       setTimeout(() => {
         setClassName("");

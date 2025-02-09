@@ -5,14 +5,12 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import { isAxiosError } from "axios";
 
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { isAxiosError } from "axios";
-
 import API from "../../api";
-
 import { TUpdateClassDialogProps } from "../../types";
 
 function UpdateClassDialog({
@@ -27,18 +25,15 @@ function UpdateClassDialog({
 
   const [newClassName, setNewClassName] = useState<string>(className);
   const [newExplanation, setNewExplanation] = useState<string>(explanation);
-  const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
 
   const handleUpdateClass = async () => {
-    setError(null);
-    setMessage(null);
 
     try {
-      await API.class.update({ id, class_name: newClassName, explanation: newExplanation });
-      setMessage("Sınıf bilgileri başarıyla güncellendi.");
+      const response = await API.class.update({ id, class_name: newClassName, explanation: newExplanation });
+
+      toast.success(response.data.message);
+
       setTimeout(() => {
-        setMessage(null);
         setOpen(false);
         onUpdate();
       }, 3000);
@@ -130,13 +125,6 @@ function UpdateClassDialog({
                 />
               </div>
             </div>
-
-            {error && (
-              <p className="text-center text-base text-red-600">{error}</p>
-            )}
-            {message && (
-              <p className="text-center text-base text-green-600">{message}</p>
-            )}
 
             <div className="p-5 bg-gray-50 sm:flex sm:flex-row-reverse">
               <button

@@ -1,27 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { isAxiosError } from "axios";
 
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { isAxiosError } from "axios";
-
 import API from "../api";
-
 import { TStudent, TGradeValue } from "../types";
 
 function AddGrade() {
   const { t } = useTranslation();
+  const location = useLocation();
+
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const [students, setStudents] = useState<TStudent[]>([]);
   const [grades, setGrades] = useState<TGradeValue[]>([]);
-  const location = useLocation();
+
   const { selectedClassId, formattedGradeName: gradeName } =
     location.state || {};
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -66,8 +64,6 @@ function AddGrade() {
 
   const addGrade = async () => {
     setLoading(true);
-    setError("");
-    setMessage("");
 
     try {
       for (const grade of grades) {
@@ -78,9 +74,7 @@ function AddGrade() {
           student_id: grade.student_id,
         });
       }
-      setMessage(
-        "Notlar başarıyla kaydedildi. Ana sayfaya yönlendiriliyorsunuz."
-      );
+      toast.success(t('GRADE_SUCCESSFULLY_ADDED'));
       setTimeout(() => navigate("/"), 3000);
     } catch (error: unknown) {
       console.error(error);
@@ -152,19 +146,6 @@ function AddGrade() {
               ))}
             </tbody>
           </table>
-        </div>
-
-        <div className="md:col-start-2 md:col-span-2 col-span-2 md:p-0 px-12">
-          {error && (
-            <p className="my-5 xl:text-lg md:text-base text-sm text-center text-red-600 col-start-1 col-span-4">
-              {error}
-            </p>
-          )}
-          {message && (
-            <p className="my-5 xl:text-lg md:text-base text-sm text-center text-green-600 col-start-1 col-span-4">
-              {message}
-            </p>
-          )}
         </div>
         <div className="xl:col-start-3 md:col-start-2 xl:p-0">
           <div className="flex justify-end ">

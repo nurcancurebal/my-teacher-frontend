@@ -1,20 +1,17 @@
 import { useState, useCallback, useEffect } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
+import { isAxiosError } from "axios";
 
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { isAxiosError } from "axios";
-
 import API from "../../api";
-
 import { TClass, TStudent, TFilterStudentProps } from "../../types";
 
 function FilterClassNameSelect({
   filteredStudents,
   handleFilter,
-  setError,
 }: TFilterStudentProps) {
   const { t } = useTranslation();
 
@@ -39,37 +36,22 @@ function FilterClassNameSelect({
         toast.error((error as Error).message || t('UNKNOWN_ERROR'));
       }
     }
-  }, [setError]);
+  }, []);
 
   useEffect(() => {
     fetchClasses();
   }, [fetchClasses]);
 
   useEffect(() => {
-    console.log(
-      "c-useEffect1:",
-      "filteredStudents",
-      filteredStudents,
-      "localStudents",
-      localStudents,
-      "localFilteredStudents",
-      localFilteredStudents
-    );
+
     if (localStudents.length === 0) {
-      console.log("c-useEffect1-1:", "filteredStudents", filteredStudents);
       setLocalStudents(filteredStudents);
     } else {
       if (
         localFilteredStudents.length > 0 &&
         filteredStudents.length !== localFilteredStudents.length
       ) {
-        console.log(
-          "c-useEffect1-2:",
-          "filteredStudents",
-          filteredStudents,
-          "localStudents",
-          localStudents
-        );
+
         filteredSelectClass();
       }
     }
@@ -77,7 +59,6 @@ function FilterClassNameSelect({
 
   const filteredSelectClass = () => {
     let filterStudent: TStudent[] = [];
-    console.log("filteredSelectClass1:", "localStudents", localStudents);
 
     selectedClassItem.forEach((classItem) => {
       filterStudent = [
@@ -89,58 +70,23 @@ function FilterClassNameSelect({
     });
 
     if (filterStudent.length > 0) {
-      console.log(
-        "filteredSelectClass1-1:",
-        "filterStudent",
-        filterStudent,
-        "localFilteredStudents",
-        localFilteredStudents
-      );
-      setError(null);
 
       setLocalFilteredStudents(filterStudent);
 
       handleFilter(filterStudent);
     } else {
-      console.log(
-        "filteredSelectClass2:",
-        "filterStudent",
-        filterStudent,
-        "localFilteredStudents",
-        localFilteredStudents
-      );
-      setError(`Öğrenci bulunamadı.`);
+      toast.error(t('NO_STUDENTS_FOUND'));
     }
   };
 
   const handleSelectClass = useCallback(
     (className: string) => {
       if (className === "Tüm Sınıflar") {
-        console.log(
-          "handleSelectClass1:",
-          "localStudents",
-          localStudents,
-          "localFilteredStudents",
-          localFilteredStudents,
-          "selectClassName",
-          selectClassName
-        );
         setSelectClassName(["Tüm Sınıflar"]);
         setLocalFilteredStudents([]);
-        setError(null);
         handleFilter(localStudents);
       } else {
-        console.log(
-          "handleSelectClass2:",
-          "className",
-          className,
-          "localStudents",
-          localStudents,
-          "localFilteredStudents",
-          localFilteredStudents,
-          "filteredStudents",
-          filteredStudents
-        );
+
         setSelectClassName((prev) => {
           const newClassNames = prev.filter((name) => name !== "Tüm Sınıflar");
           return [...newClassNames, className];
@@ -160,23 +106,9 @@ function FilterClassNameSelect({
 
         if (localFilteredStudents.length > 0) {
           if (filterStudent.length > 0) {
-            console.log(
-              "handleSelectClass3:",
-              "filterStudent",
-              filterStudent,
-              "localFilteredStudents",
-              localFilteredStudents
-            );
-            setError(null);
 
             if (localFilteredStudents.length !== localStudents.length) {
-              console.log(
-                "handleSelectClass3.1:",
-                "localFilteredStudents",
-                localFilteredStudents,
-                "filterStudent",
-                filterStudent
-              );
+
               setLocalFilteredStudents([
                 ...localFilteredStudents,
                 ...filterStudent,
@@ -184,45 +116,21 @@ function FilterClassNameSelect({
 
               handleFilter([...localFilteredStudents, ...filterStudent]);
             } else {
-              console.log(
-                "handleSelectClass3.2:",
-                "localFilteredStudents",
-                localFilteredStudents,
-                "filterStudent",
-                filterStudent
-              );
+
               setLocalFilteredStudents(filterStudent);
               handleFilter(filterStudent);
             }
           } else {
-            console.log(
-              "handleSelectClass4:",
-              "filterStudent",
-              filterStudent,
-              "localFilteredStudents",
-              localFilteredStudents
-            );
-            setError(`${className} sınıfında öğrenci bulunamadı.`);
+
+            toast.error(t('NO_STUDENTS_FOUND_CLASS'));
           }
         } else {
-          console.log(
-            "handleSelectClass5:",
-            "filterStudent",
-            filterStudent,
-            "localFilteredStudents",
-            localFilteredStudents,
-            "localStudents",
-            localStudents
-          );
 
           if (filterStudent.length > 0) {
-            console.log("handleSelectClass6:", "filterStudent", filterStudent);
-            setError(null);
             setLocalFilteredStudents(filterStudent);
             handleFilter(filterStudent);
           } else {
-            console.log("handleSelectClass7:", "filterStudent", filterStudent);
-            setError(`${className} sınıfında öğrenci bulunamadı.`);
+            toast.error(t('NO_STUDENTS_FOUND_CLASS'));
             handleFilter([]);
             setLocalFilteredStudents([]);
           }
@@ -233,7 +141,6 @@ function FilterClassNameSelect({
       classes,
       localStudents,
       handleFilter,
-      setError,
       localFilteredStudents,
       selectClassName,
     ]

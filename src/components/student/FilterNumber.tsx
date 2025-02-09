@@ -1,50 +1,45 @@
 import React, { useEffect, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 import { TFilterStudentProps, TStudent } from "../../types";
 
 function FilterStudentNumber({
   filteredStudents,
   handleFilter,
-  setError,
 }: TFilterStudentProps) {
+  const { t } = useTranslation();
+
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [localStudents, setLocalStudents] = useState<TStudent[]>([]);
 
   useEffect(() => {
-    console.log("i-useEffect1:", "filteredStudents", filteredStudents);
     if (localStudents.length === 0) {
       setLocalStudents(filteredStudents);
     }
   }, [filteredStudents, localStudents]);
 
   const searchInputNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("searchInputNumber:", "e.target.value", e.target.value);
     const value = e.target.value;
     setSearchTerm(value);
 
     if (isNaN(Number(value))) {
-      console.log("searchInputNumber:1-2");
       handleFilter(localStudents);
-      setError("Öğrenci numarası sadece sayısal değerlerden oluşabilir.");
+      toast.error(t("STUDENT_NUMBERS_CAN_CONSIST_OF_NUMERICAL_VALUES"))
       return;
     }
 
     if (value !== "") {
-      console.log("searchInputNumber:1-3");
       const filtered = localStudents.filter((student) =>
         student.student_number.toString().includes(value)
       );
 
       handleFilter(filtered);
-      setError(
-        filtered.length === 0 ? "Bu numaraya ait öğrenci bulunamadı." : null
-      );
+      toast.error(t("NO_STUDENT_FOUND_FOR_THIS_NUMBER"))
     } else {
-      console.log("searchInputNumber:1-4");
       handleFilter(localStudents);
-      setError(null);
     }
   };
 

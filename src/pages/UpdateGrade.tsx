@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { isAxiosError } from "axios";
+
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { isAxiosError } from "axios";
 import API from "../api";
-
 import { TGrade, TStudent } from "../types";
 
 function UpdateGrade() {
@@ -14,11 +14,9 @@ function UpdateGrade() {
 
   const { selectedClassId, gradeName } = location.state || {};
 
+  const [loading, setLoading] = useState(false);
   const [students, setStudents] = useState<TStudent[]>([]);
   const [grades, setGrades] = useState<TGrade[]>([]);
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,8 +49,7 @@ function UpdateGrade() {
   };
 
   const handleGradeChange = (studentId: number, value: string) => {
-    setError("");
-    setMessage("");
+
     if (value === "" || /^[0-9]*\.?[0-9]*$/.test(value)) {
       const numericValue = value === "" ? null : parseFloat(value);
       setGrades((prevGrades) =>
@@ -63,13 +60,12 @@ function UpdateGrade() {
         )
       );
     } else {
-      setError("Notlar sadece sayısal değerler olabilir.");
+      toast.error(t("GRADES_CAN_BE_NUMERIC"));
     }
   };
   const updateGradeClick = async () => {
     setLoading(true);
-    setError("");
-    setMessage("");
+
     try {
       const updatePromises = grades.map((grade) =>
         API.grade.update({
@@ -81,7 +77,7 @@ function UpdateGrade() {
         })
       );
       await Promise.all(updatePromises);
-      setMessage("Notlar başarıyla güncellendi.");
+      toast.success(t("GRADE_SUCCESSFULLY_ADDED"));
     } catch (error: unknown) {
       console.error(error);
       if (isAxiosError(error) && error.response) {
@@ -144,18 +140,6 @@ function UpdateGrade() {
           </table>
         </div>
 
-        <div className="md:col-start-2 md:col-span-2 col-span-2 md:p-0 px-12">
-          {error && (
-            <p className="my-5 xl:text-lg md:text-base text-sm text-center text-red-600 col-start-1 col-span-4">
-              {error}
-            </p>
-          )}
-          {message && (
-            <p className="my-5 xl:text-lg md:text-base text-sm text-center text-green-600 col-start-1 col-span-4">
-              {message}
-            </p>
-          )}
-        </div>
         <div className="xl:col-start-3 md:col-start-2 xl:p-0">
           <div className="flex justify-end">
             <button

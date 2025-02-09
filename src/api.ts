@@ -23,6 +23,7 @@ import {
   TGenderCountResponse,
   TDateResponse,
   TGradeListResponse,
+  TStudentResponse,
 } from "./types";
 
 export default {
@@ -72,7 +73,7 @@ export default {
     },
   },
   student: {
-    add: async (data: TStudent): Promise<AxiosResponse<TStudent>> => {
+    add: async (data: TStudent): Promise<AxiosResponse<TStudentResponse>> => {
       const { class_id, ...bodyData } = data;
       return await axios.post(`student/${class_id}`, { bodyData });
     },

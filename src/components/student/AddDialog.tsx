@@ -6,14 +6,12 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import { isAxiosError } from "axios";
 
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { isAxiosError } from "axios";
-
 import API from "../../api";
-
 import { TAddProps, TClass, TDateValueType } from "../../types";
 
 function AddStudent({ open, setOpen, onAdd }: TAddProps) {
@@ -23,8 +21,6 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
   const [studentName, setStudentName] = useState<string>("");
   const [studentLastname, setStudentLastName] = useState<string>("");
   const [studentNumber, setStudentNumber] = useState<number>();
-  const [error, setError] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
   const [idNumber, setIdNumber] = useState<bigint>();
   const [date, setDate] = useState<TDateValueType>({
@@ -49,7 +45,7 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
       if (classes.length > 0) {
         setClasses(classes);
       } else {
-        setError("Sınıf bulunamadı. Lütfen önce sınıf ekleyin.");
+        toast.error(t('CLASS_NOT_FOUND_ADD_CLASS_FIRST'));
       }
     } catch (error: unknown) {
       console.error(error);
@@ -69,27 +65,18 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
     setStudentNumber(undefined);
     setGender("");
     setDate({ startDate: null, endDate: null });
-    setMessage("");
-    setError("");
     setSelectedClassId(null);
   };
 
   const handleAddStudent = async () => {
-    setError("");
-    setMessage("");
 
     if (selectedClassId === null) {
-      setError("Sınıf seçimi yapılmadı.");
-      return;
-    }
-
-    if (!date.startDate) {
-      setError("Doğum tarihi seçilmedi.");
+      toast.error(t('CLASS_SELECTION_WAS_NOT_MADE'));
       return;
     }
 
     try {
-      await API.student.add({
+      const response = await API.student.add({
         class_id: selectedClassId,
         id_number: idNumber ?? BigInt(0),
         student_name: studentName,
@@ -98,7 +85,7 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
         gender,
         birthdate: date.startDate,
       });
-      setMessage("Öğrenci başarıyla eklendi.");
+      toast.success(response.data.message);
       setTimeout(() => {
         resetForm();
         onAdd();
@@ -315,13 +302,6 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
                 </div>
               </div>
             </div>
-
-            {message && (
-              <p className="text-center text-base text-green-600">{message}</p>
-            )}
-            {error && (
-              <p className="text-center text-base text-red-600">{error}</p>
-            )}
 
             <div className="bg-gray-50 p-5 sm:flex sm:flex-row-reverse">
               <button

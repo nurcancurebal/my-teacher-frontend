@@ -127,23 +127,51 @@ export type TGrade = {
   last_updated?: Date;
 };
 
+export type TStudentResponse = {
+  data: TStudent;
+} & TResponseOtherParams;
+
 export type TGradeTypeExists = {
   grade_type: string;
   class_id: number;
 };
 
-export type TViewDetailDialogProps = {
+export type TOpenProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  student: TStudent;
 };
 
-export type TUpdateStudentDialogProps = {
-  open: boolean;
-  setOpen: (open: boolean) => void;
+export type TViewDetailDialogProps = {
   student: TStudent;
+} & TOpenProps;
+
+export type TUpdateStudentDialogProps = {
   onUpdate: () => void;
-};
+} & TViewDetailDialogProps;
+
+export type TAddProps = {
+  onAdd: () => void;
+} & TOpenProps;
+
+export type TDeleteStudentDialogProps = {
+  id: number;
+  studentName: string;
+  studentLastName: string;
+  onDelete: () => void;
+} & TOpenProps;
+
+export type TDeleteClassDialogProps = {
+  id: number;
+  className: string;
+  onDelete: () => void;
+} & TOpenProps;
+
+export type TUpdateClassDialogProps = {
+  id: number;
+  className: string;
+  explanation: string;
+  onUpdate: () => void;
+} & TOpenProps;
 
 export type TDateValueType = {
   startDate: Date | null;
@@ -152,50 +180,11 @@ export type TDateValueType = {
 
 export type TFilteredStudentsProps = {
   setStudents: React.Dispatch<React.SetStateAction<TStudent[]>>;
-  setError: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export type TFilterStudentProps = {
   filteredStudents: TStudent[];
   handleFilter: (filtered: TStudent[]) => void;
-  setError: (error: string | null) => void;
-};
-
-export type TAddProps = {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  onAdd: () => void;
-};
-
-export type TDeleteStudentDialogProps = {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  id: number;
-  studentName: string;
-  studentLastName: string;
-  onDelete: () => void;
-};
-
-export type TDeleteClassDialogProps = {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  id: number;
-  className: string;
-  onDelete: () => void;
-};
-
-export type TUpdateClassDialogProps = {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  id: number;
-  className: string;
-  explanation: string;
-  onUpdate: () => void;
-};
-
-export type TSelectProps = {
-  open: boolean;
-  setOpen: (open: boolean) => void;
 };
 
 export type TGradeValue = {

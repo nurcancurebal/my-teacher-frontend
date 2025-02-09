@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { isAxiosError } from "axios";
 
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-
-import { isAxiosError } from "axios";
 
 import API from "../api";
 
@@ -13,22 +12,15 @@ function ForgotPassword() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>("");
-  const [error, setError] = useState<string>("");
-
   const [email, setEmail] = useState<string>("");
 
   const handleForgotPassword = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
-    setMessage("");
-    setError("");
 
     try {
-      await API.auth.forgotPassword({ email });
-      setMessage(
-        "OTP kodu email adresinize gönderildi. Şifrenizi sıfırlamak için yönlendiriliyorsunuz..."
-      );
+      const response = await API.auth.forgotPassword({ email });
+      toast.success(response.data.message);
       setTimeout(() => {
         navigate("/reset-password", { state: { email } });
       }, 3000);
@@ -86,14 +78,6 @@ function ForgotPassword() {
                   : "Şifre Sıfırlama Kodu Gönder"}
               </button>
             </div>
-            {message && (
-              <p className="mt-2 text-center text-base text-green-600">
-                {message}
-              </p>
-            )}
-            {error && (
-              <p className="mt-2 text-center text-base text-red-600">{error}</p>
-            )}
           </form>
 
           <p className="mt-10 text-center text-base text-gray-500">

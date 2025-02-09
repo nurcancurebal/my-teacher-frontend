@@ -1,12 +1,9 @@
 import { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { isAxiosError } from "axios";
 
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-
-import { isAxiosError } from "axios";
-
-import API from "../api";
 
 import DetailDialog from "../components/student/DetailDialog";
 import UpdateDialog from "../components/student/UpdateDialog";
@@ -14,6 +11,7 @@ import DeleteDialog from "../components/student/DeleteDialog";
 import AddDialog from "../components/student/AddDialog";
 import Filtered from "../components/student/Filtered";
 
+import API from "../api";
 import { TStudent, TClass } from "../types";
 
 function Students() {
@@ -33,7 +31,6 @@ function Students() {
   const [updateDialogOpen, setUpdateDialogOpen] = useState<boolean>(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
   const [addDialogOpen, setAddDialogOpen] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
 
   const fetchStudents = useCallback(async () => {
     try {
@@ -41,7 +38,7 @@ function Students() {
       const studentsData = response.data.data;
 
       if (!studentsData || studentsData.length === 0) {
-        setError("Öğrenci bulunamadı.");
+        toast.error(t("NO_STUDENT_FOUND"));
         setStudents([]);
         return;
       }
@@ -64,7 +61,7 @@ function Students() {
       const classesData = response.data.data;
 
       if (!classesData || classesData.length === 0) {
-        setError("Sınıf bulunamadı.");
+        toast.error(t("CLASS_NOT_FOUND"));
         setClasses([]);
         return;
       }
@@ -117,19 +114,14 @@ function Students() {
 
   const handleAddStudent = () => {
     setAddDialogOpen(true);
-    setError(null);
     navigate(`?class=tum-siniflar`);
   };
 
   return (
     <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 xl:px-0 md:px-24 px-12">
       <div className="overflow-x-auto xl:col-start-2 col-span-2 xl:p-0">
-        <Filtered setStudents={setStudents} setError={setError} />
-        {error && (
-          <p className="mt-2 text-center xl:text-lg md:text-base text-sm text-red-600 col-start-1 col-span-4">
-            {error}
-          </p>
-        )}
+        <Filtered setStudents={setStudents} />
+
         <table className="border-collapse w-full mt-5 border border-slate-300">
           <thead>
             <tr>

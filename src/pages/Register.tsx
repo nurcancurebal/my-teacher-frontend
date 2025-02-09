@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { isAxiosError } from "axios";
 
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-
-import { isAxiosError } from "axios";
 
 import API from "../api";
 
@@ -13,9 +12,6 @@ function Register() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
-
   const [firstname, setFirstname] = useState<string>("");
   const [lastname, setLastname] = useState<string>("");
   const [username, setUsername] = useState<string>("");
@@ -26,8 +22,6 @@ function Register() {
     event.preventDefault();
 
     setLoading(true);
-    setError("");
-    setMessage("");
 
     try {
       const response = await API.auth.register({
@@ -37,7 +31,7 @@ function Register() {
         email,
         password,
       });
-      setMessage("Kayıt başarılı. Yönlendiriliyorsunuz...");
+      toast.success(response.data.message);
       localStorage.setItem("token", response.data.data.accessToken);
 
       setTimeout(() => {
@@ -171,14 +165,6 @@ function Register() {
                 {loading ? "Kayıt işlemi gerçekleştiriliyor..." : "Kayıt ol"}
               </button>
             </div>
-            {message && (
-              <p className="mt-2 text-center text-base text-green-600">
-                {message}
-              </p>
-            )}
-            {error && (
-              <p className="mt-2 text-center text-base text-red-600">{error}</p>
-            )}
           </form>
 
           <p className="mt-10 text-center text-base text-gray-500">

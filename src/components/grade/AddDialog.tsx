@@ -6,23 +6,19 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import { isAxiosError } from "axios";
 
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { isAxiosError } from "axios";
-
 import API from "../../api";
+import { TOpenProps, TClass } from "../../types";
 
-import { TSelectProps, TClass } from "../../types";
-
-function AddStudent({ open, setOpen }: TSelectProps) {
+function AddStudent({ open, setOpen }: TOpenProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [classes, setClasses] = useState<TClass[]>([]);
-  const [error, setError] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
   const [showStudentSelection, setShowStudentSelection] =
     useState<boolean>(true);
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
@@ -34,8 +30,6 @@ function AddStudent({ open, setOpen }: TSelectProps) {
     if (open) {
       fetchClasses();
       setShowStudentSelection(true);
-      setMessage("");
-      setError("");
       setSelectedClassId(null);
       setGradeName("");
     }
@@ -47,8 +41,9 @@ function AddStudent({ open, setOpen }: TSelectProps) {
       const classes = response.data.data;
       if (classes.length > 0) {
         setClasses(classes);
+
       } else {
-        setError("Sınıf bulunamadı. Lütfen önce sınıf ekleyin.");
+        toast.error(t("CLASS_NOT_FOUND_ADD_CLASS_FIRST"));
       }
     } catch (error: unknown) {
       console.error(error);
@@ -62,15 +57,13 @@ function AddStudent({ open, setOpen }: TSelectProps) {
   };
 
   const handleSelectClass = async () => {
-    setError("");
-    setMessage("");
-
     if (showStudentSelection && selectedClassId !== null) {
       try {
-        const result = await API.student.getListByClass(selectedClassId);
-        const students = result.data.data;
+        const response = await API.student.getListByClass(selectedClassId);
+        const students = response.data.data;
+        toast.success(response.data.message);
         if (students.length === 0) {
-          setError("Bu sınıfta öğrenci bulunamadı.");
+          toast.error(t("NO_STUDENTS_FOUND_CLASS"));
           return;
         }
         setShowStudentSelection(false);
@@ -87,7 +80,7 @@ function AddStudent({ open, setOpen }: TSelectProps) {
     }
 
     if (showStudentSelection && selectedClassId === null) {
-      setError("Sınıf seçimi yapılmadı.");
+      toast.error(t("CLASS_SELECTION_WAS_NOT_MADE"));
       return;
     }
 
@@ -98,12 +91,13 @@ function AddStudent({ open, setOpen }: TSelectProps) {
         .replace(/^[a-z]/, (c: string) => c.toUpperCase());
 
       if (selectedClassId !== null) {
-        await API.grade.gradeTypeExists({ class_id: selectedClassId, grade_type: formattedGradeName });
+        const response = await API.grade.gradeTypeExists({ class_id: selectedClassId, grade_type: formattedGradeName });
+        toast.success(response.data.message);
       } else {
-        setError("Sınıf seçimi yapılmadı.");
+        toast.error(t("CLASS_SELECTION_WAS_NOT_MADE"));
         return;
       }
-      setMessage("Not eklemek için yönlendiriliyorsunuz.");
+      toast.success(t("BEING_DIRECTED_TO_ADD_NOTE"));
       setTimeout(() => {
         navigate("/add-grade", {
           state: { selectedClassId, formattedGradeName },
@@ -123,7 +117,6 @@ function AddStudent({ open, setOpen }: TSelectProps) {
 
   const cancelReturn = () => {
     setShowStudentSelection(true);
-    setError("");
     setGradeName("");
     if (showStudentSelection) {
       setOpen(false);
@@ -184,7 +177,6 @@ function AddStudent({ open, setOpen }: TSelectProps) {
                         if (classItem.id !== undefined) {
                           setSelectedClassId(classItem.id);
                         }
-                        setError("");
                       }}
                     >
                       {classItem.class_name}
@@ -213,13 +205,6 @@ function AddStudent({ open, setOpen }: TSelectProps) {
                 </div>
               )}
             </div>
-
-            {message && (
-              <p className="text-center text-base text-green-600">{message}</p>
-            )}
-            {error && (
-              <p className="text-center text-base text-red-600">{error}</p>
-            )}
 
             <div className="bg-gray-50 p-5 sm:flex sm:flex-row-reverse">
               <button

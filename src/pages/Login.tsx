@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { isAxiosError } from "axios";
+
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-
-import { isAxiosError } from "axios";
 
 import API from "../api";
 
@@ -12,7 +12,6 @@ function Login() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState<boolean>(false);
-
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 

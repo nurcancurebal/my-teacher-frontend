@@ -6,40 +6,35 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import { isAxiosError } from "axios";
 
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { isAxiosError } from "axios";
-
 import API from "../../api";
+import { TOpenProps, TClass } from "../../types";
 
-import { TSelectProps, TClass } from "../../types";
-
-function SelectGrade({ open, setOpen }: TSelectProps) {
+function SelectGrade({ open, setOpen }: TOpenProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
   const [classes, setClasses] = useState<TClass[]>([]);
-  const [error, setError] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
   const [showStudentSelection, setShowStudentSelection] =
     useState<boolean>(true);
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
   const [gradeName, setGradeName] = useState<string>("");
   const [gradeType, setGradeType] = useState<string[]>([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (open) {
-      getClasses();
+      fetchClasses();
       setShowStudentSelection(true);
-      setMessage("");
-      setError("");
       setSelectedClassId(null);
       setGradeName("");
     }
   }, [open]);
 
-  const getClasses = async () => {
+  const fetchClasses = async () => {
     try {
       const classes = await API.class.allList();
       setClasses(classes.data.data);
@@ -55,8 +50,6 @@ function SelectGrade({ open, setOpen }: TSelectProps) {
   };
 
   const handleSelectGrade = async () => {
-    setError("");
-    setMessage("");
 
     if (showStudentSelection && selectedClassId !== null) {
       setShowStudentSelection(false);
@@ -72,7 +65,7 @@ function SelectGrade({ open, setOpen }: TSelectProps) {
           )
         );
         if (uniqueGradeTypes.length === 0) {
-          setError("Sınıfta not bulunmamaktadır.");
+          toast.error(t("THERE_ARE_NO_NOTES_CLASS"));
           return;
         }
         setGradeType(uniqueGradeTypes);
@@ -90,12 +83,12 @@ function SelectGrade({ open, setOpen }: TSelectProps) {
     }
 
     if (showStudentSelection && selectedClassId === null) {
-      setError("Sınıf seçimi yapılmadı.");
+      toast.error(t("CLASS_SELECTION_NOT_MADE"));
       return;
     }
 
     if (gradeName !== "") {
-      setMessage("Not güncellemek için yönlendiriliyorsunuz.");
+      toast.success(t("BEING_DIRECTED_TO_UPDATE_YOUR_NOTE"));
       setTimeout(() => {
         navigate("/update-grade", {
           state: { selectedClassId, gradeName },
@@ -107,9 +100,7 @@ function SelectGrade({ open, setOpen }: TSelectProps) {
 
   const cancelReturn = () => {
     setShowStudentSelection(true);
-    setError("");
     setGradeName("");
-    setMessage("");
     setGradeType([]);
 
     if (showStudentSelection) {
@@ -179,13 +170,6 @@ function SelectGrade({ open, setOpen }: TSelectProps) {
                   </button>
                 ))}
               </div>
-            )}
-
-            {message && (
-              <p className="text-center text-base text-green-600">{message}</p>
-            )}
-            {error && (
-              <p className="text-center text-base text-red-600">{error}</p>
             )}
 
             <div className="my-5 bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">

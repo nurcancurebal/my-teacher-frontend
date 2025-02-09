@@ -6,7 +6,6 @@ function Grade() {
   const [students, setStudents] = useState<TStudent[]>([]);
   const [classes, setClasses] = useState<TClass[]>([]);
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   return (
     <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 xl:px-0 md:px-24 px-12">
@@ -124,11 +123,7 @@ function Grade() {
           </tbody>
         </table>
       </div>
-      {error && (
-        <p className="mt-2 text-center xl:text-lg md:text-base text-sm text-red-600 col-start-1 col-span-4">
-          {error}
-        </p>
-      )}
+
       <div className="xl:col-start-3 md:col-start-2 xl:p-0">
         <div className="flex justify-end ">
           <button

@@ -1,15 +1,14 @@
 import { useState, useEffect } from "react";
-
-import API from "../api";
+import { isAxiosError } from "axios";
 
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { isAxiosError } from "axios";
-
 import AddClassDialog from "../components/class/AddDialog";
 import AddStudentDialog from "../components/student/AddDialog";
 import AddGradeDialog from "../components/grade/AddDialog";
+
+import API from "../api";
 
 function Dashboard() {
   const { t } = useTranslation();
@@ -92,12 +91,6 @@ function Dashboard() {
       setLastAddedGrade(formattedDate);
     } catch (error: unknown) {
       console.error(error);
-      if (isAxiosError(error) && error.response) {
-        const errorMessage = error.response?.data?.message;
-        toast.error(errorMessage || t('UNKNOWN_ERROR'));
-      } else {
-        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
-      }
     }
   };
 

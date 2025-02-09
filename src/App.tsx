@@ -1,20 +1,18 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
-
 import { isAxiosError } from "axios";
 
-import Navbar from "./components/Navbar";
-import Headers from "./components/Headers";
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify'
 
 import Router from "./Router";
 
+import API from "./api";
+import { WHITE_NONTOKEN_PATH_NAMES } from "./consts";
 import { TUser, TContentProps } from "./types";
 
-import { WHITE_NONTOKEN_PATH_NAMES } from "./consts";
-
-import API from "./api";
+import Navbar from "./components/Navbar";
+import Headers from "./components/Headers";
 
 function App() {
   const { i18n, t } = useTranslation();
@@ -27,6 +25,7 @@ function App() {
   const fetchAuthUser = async () => {
     try {
       const response = await API.auth.getUser();
+
       const userLanguage = response.data.data.language;
       i18n.changeLanguage(userLanguage);
       setUser(response.data.data);

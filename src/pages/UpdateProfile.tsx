@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { isAxiosError } from "axios";
+
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { isAxiosError } from "axios";
-
 import API from "../api";
-
 import { TContentProps } from "../types";
 
 function UpdateProfile({
@@ -14,9 +13,6 @@ function UpdateProfile({
 }: TContentProps) {
   const { t } = useTranslation();
 
-  const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
-
   const [firstname, setFirstname] = useState<string>("");
   const [lastname, setLastname] = useState<string>("");
   const [username, setUsername] = useState<string>("");
@@ -24,8 +20,6 @@ function UpdateProfile({
   const [password, setPassword] = useState<string>("");
 
   useEffect(() => {
-    setMessage(null);
-    setError(null);
 
     if (userData) {
       setFirstname(userData.firstname);
@@ -36,16 +30,14 @@ function UpdateProfile({
   }, [userData]);
 
   const updateUser = async () => {
-    setError(null);
-    setMessage(null);
 
     if (!userData) {
-      setError("User data is not available.");
+      toast.error(t('USER_DATA_NOT_AVAILABLE'));
       return;
     }
 
     try {
-      await API.profile.update({
+      const response = await API.profile.update({
         id: userData.id,
         firstname,
         lastname,
@@ -53,9 +45,8 @@ function UpdateProfile({
         email,
         language: userData.language,
       });
-      setMessage("Kullanıcı bilgileri başarıyla güncellendi.");
+      toast.success(response.data.message);
       setTimeout(() => {
-        setMessage(null);
         setPassword("");
         onProfileUpdate();
       }, 3000);
@@ -177,8 +168,6 @@ function UpdateProfile({
           />
         </div>
 
-        {error && <p className="mt-3 text-base text-red-600">{error}</p>}
-        {message && <p className="mt-3 text-base text-green-600">{message}</p>}
         <div className="sm:flex sm:flex-row-reverse my-8">
           <button
             type="button"

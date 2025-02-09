@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { isAxiosError } from "axios";
 
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { isAxiosError } from "axios";
-
 import API from "../api";
-
 import { TQueryPasswordParams } from "../types";
 
 function ResetPassword() {
@@ -18,8 +16,6 @@ function ResetPassword() {
   const { email } = location.state as TQueryPasswordParams;
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
 
   const [password, setPassword] = useState<string>("");
   const [newPasswordRepeat, setnewPasswordRepeat] = useState<string>("");
@@ -28,20 +24,18 @@ function ResetPassword() {
   const handleResetPassword = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
-    setError("");
-    setMessage("");
+
 
     if (password !== newPasswordRepeat) {
-      setError("Şifreler eşleşmiyor. Lütfen kontrol edin.");
+      toast.error(t("PASSWORDS_DO_NOT_MATCH"));
       setLoading(false);
       return;
     }
 
     try {
-      await API.auth.resetPassword({ email, password, otp });
-      setMessage(
-        "Şifreniz başarıyla değiştirildi. Giriş yapmak için yönlendiriliyorsunuz..."
-      );
+      const response = await API.auth.resetPassword({ email, password, otp });
+      toast.success(response.data.message);
+      toast.success(t("BEING_REDIRECTED_TO_LOG_IN"));
       setTimeout(() => {
         navigate("/login");
       }, 3000);
@@ -156,14 +150,7 @@ function ResetPassword() {
                 {loading ? "Şifre değiştiriliyor..." : "Şifremi Sıfırla"}
               </button>
             </div>
-            {message && (
-              <p className="mt-2 text-center text-base text-green-600">
-                {message}
-              </p>
-            )}
-            {error && (
-              <p className="mt-2 text-center text-base text-red-600">{error}</p>
-            )}
+
           </form>
 
           <p className="mt-10 text-center text-base text-gray-500">

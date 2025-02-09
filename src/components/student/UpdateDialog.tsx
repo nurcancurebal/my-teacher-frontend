@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { isAxiosError } from "axios";
 import {
   Dialog,
   DialogBackdrop,
@@ -10,10 +11,7 @@ import Datepicker from "react-tailwindcss-datepicker";
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { isAxiosError } from "axios";
-
 import API from "../../api";
-
 import { TUpdateStudentDialogProps, TDateValueType, TClass } from "../../types";
 
 function UpdateStudentDialog({
@@ -39,8 +37,6 @@ function UpdateStudentDialog({
   });
   const [classId, setClassId] = useState<number>(student.class_id);
   const [classes, setClasses] = useState<TClass[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchClasses = async () => {
@@ -61,18 +57,12 @@ function UpdateStudentDialog({
   }, []);
 
   const handleUpdateStudent = async () => {
-    setError(null);
-    setMessage(null);
-
-
     try {
-      await API.student.update({ id: student.id, class_id: classId, id_number: idNumber, student_name: studentName, student_lastname: studentLastname, student_number: studentNumber, gender, birthdate: date.startDate });
-      setMessage("Öğrenci başarıyla güncellendi.");
+      const response = await API.student.update({ id: student.id, class_id: classId, id_number: idNumber, student_name: studentName, student_lastname: studentLastname, student_number: studentNumber, gender, birthdate: date.startDate });
+      toast.success(response.data.message);
 
       setTimeout(() => {
         setOpen(false);
-        setMessage(null);
-        setError(null);
         onUpdate();
       }, 3000);
     } catch (error: unknown) {
@@ -272,13 +262,6 @@ function UpdateStudentDialog({
                 </div>
               </div>
             </div>
-
-            {error && (
-              <p className="text-center text-base text-red-600">{error}</p>
-            )}
-            {message && (
-              <p className="text-center text-base text-green-600">{message}</p>
-            )}
 
             <div className="bg-gray-50 sm:flex sm:flex-row-reverse p-5">
               <button

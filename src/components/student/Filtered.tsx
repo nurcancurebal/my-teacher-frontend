@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { isAxiosError } from "axios";
 
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-
-import { isAxiosError } from "axios";
 
 import FilterGenderSelect from "./FilterGenderSelect";
 import FilterClassNameSelect from "./FilterClassNameSelect";
@@ -13,12 +12,10 @@ import FilterNameLastname from "./FilterNameLastname";
 import FilterNumber from "./FilterNumber";
 
 import API from "../../api";
-
 import { TStudent, TFilteredStudentsProps } from "../../types";
 
 function FilteredStudents({
   setStudents,
-  setError,
 }: TFilteredStudentsProps) {
   const { t } = useTranslation();
 
@@ -35,13 +32,11 @@ function FilteredStudents({
 
       if (!studentsData || studentsData.length === 0) {
         setStudents([]);
-        setError("Öğrenci bulunamadı.");
         return;
       }
 
       setStudents(studentsData);
       setFilteredStudents(studentsData);
-      setError(null);
     } catch (error: unknown) {
       console.error(error);
       if (isAxiosError(error) && error.response) {
@@ -51,7 +46,7 @@ function FilteredStudents({
         toast.error((error as Error).message || t('UNKNOWN_ERROR'));
       }
     }
-  }, [setError, setStudents]);
+  }, [setStudents]);
 
   useEffect(() => {
     fetchStudents();
@@ -60,7 +55,6 @@ function FilteredStudents({
   const handleFilter = (filtered: TStudent[]) => {
     setFilteredStudents(filtered);
     setStudents(filtered);
-    console.log("anacomp", "filtered", filtered);
   };
 
   return (
@@ -135,28 +129,24 @@ function FilteredStudents({
           <FilterNameLastname
             filteredStudents={filteredStudents}
             handleFilter={handleFilter}
-            setError={setError}
           />
         ) : null}
         {filterNumber ? (
           <FilterNumber
             filteredStudents={filteredStudents}
             handleFilter={handleFilter}
-            setError={setError}
           />
         ) : null}
         {filterClassName ? (
           <FilterClassNameSelect
             filteredStudents={filteredStudents}
             handleFilter={handleFilter}
-            setError={setError}
           />
         ) : null}
         {filterGender ? (
           <FilterGenderSelect
             filteredStudents={filteredStudents}
             handleFilter={handleFilter}
-            setError={setError}
           />
         ) : null}
       </div>

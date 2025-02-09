@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
+import { t } from "i18next";
+import { toast } from 'react-toastify';
+
 import { TStudent, TFilterStudentProps } from "../../types";
 
 function FilterStudentGenderSelect({
   filteredStudents,
   handleFilter,
-  setError,
 }: TFilterStudentProps) {
   const [genderFemale, setGenderFemale] = useState<boolean>(false);
   const [genderMale, setGenderMale] = useState<boolean>(false);
@@ -17,11 +19,9 @@ function FilterStudentGenderSelect({
   );
 
   const handleGenderChange = (gender: string) => {
-    console.log("handleGenderChange:", "localStudents", localStudents);
     let filtered: TStudent[] = filteredStudents;
 
     if (gender === "Kız") {
-      console.log("handleGenderChange1");
       setGenderFemale(!genderFemale);
       if (genderMale) {
         filtered = localStudents;
@@ -29,7 +29,6 @@ function FilterStudentGenderSelect({
         filtered = localStudents.filter((student) => student.gender === "K");
       }
     } else if (gender === "Erkek") {
-      console.log("handleGenderChange2");
       setGenderMale(!genderMale);
       if (genderFemale) {
         filtered = localStudents;
@@ -39,12 +38,10 @@ function FilterStudentGenderSelect({
     }
 
     if (filtered.length === 0) {
-      console.log("handleGenderChange3", "filtered", filtered);
       handleFilter([]);
       setLocalFilteredStudents([]);
-      setError(`${gender} öğrenci bulunamadı.`);
+      toast.error(t("NO_STUDENT_FOUND"));
     } else {
-      console.log("handleGenderChange4", "filtered", filtered);
       setLocalFilteredStudents(filtered);
       handleFilter(filtered);
     }
@@ -52,55 +49,24 @@ function FilterStudentGenderSelect({
 
   useEffect(() => {
     if (localFilteredStudents.length !== 0 && filteredStudents.length !== 0) {
-      console.log(
-        "g-useEffect1:",
-        "localFilteredStudents",
-        localFilteredStudents,
-        "filteredStudents",
-        filteredStudents,
-        "localStudents",
-        localStudents
-      );
+
       if (filteredStudents.length !== localStudents.length) {
-        console.log(
-          "g-useEffect1-1",
-          "localFilteredStudents",
-          localFilteredStudents,
-          "filteredStudents",
-          filteredStudents
-        );
+
         if (localFilteredStudents.length !== filteredStudents.length) {
-          console.log("g-useEffect1-1-1");
           filterGenderChange();
         }
-        /* if (localFilteredStudents.length === localStudents.length) {
-          console.log("g-useEffect1-1-2");
-          handleFilter(localStudents);
-        } */
-      } else {
-        console.log(" bu koşul ne zaman gerçekleşir not halinde yaz");
       }
     } else if (
       localFilteredStudents.length !== 0 &&
       filteredStudents.length === 0
     ) {
-      console.log(
-        "g-useEffect2:",
-        "localFilteredStudents",
-        localFilteredStudents,
-        "filteredStudents",
-        filteredStudents
-      );
+
       handleFilter([]);
-    } //  else {
-    //  console.log("g-useEffect3"); buraya gerek var mı?
-    //  return;
-    //    }
+    }
   }, [localFilteredStudents, handleFilter, filteredStudents, localStudents]);
 
   const filterGenderChange = () => {
     if (genderFemale && !genderMale) {
-      console.log("filterGenderChange1", "genderFemale", genderFemale);
       const filtered = filteredStudents.filter(
         (student) => student.gender === "K"
       );
@@ -108,34 +74,17 @@ function FilterStudentGenderSelect({
       handleFilter(filtered);
       setLocalFilteredStudents(filtered);
     } else if (genderMale && !genderFemale) {
-      console.log("filterGenderChange2", "genderMale", genderMale);
       const filtered = filteredStudents.filter(
         (student) => student.gender === "E"
       );
       handleFilter(filtered);
       setLocalFilteredStudents(filtered);
-    } /*  else {
-      console.log(
-        "filterGenderChange3",
-        "localFilteredStudents",
-        localFilteredStudents
-      );
-      // handleFilter(localFilteredStudents); bunu yapma hata veriyor erkek kız seçili iken sınıf eklediğimde
-      // setLocalStudents(localFilteredStudents); diğerlerinde yok ne işe yarıyor
-      return;
-    } */
+    }
   };
 
   useEffect(() => {
-    console.log(
-      "g-useEffect1:",
-      "filteredStudents",
-      filteredStudents,
-      "localStudents",
-      localStudents
-    );
+
     if (localStudents.length === 0) {
-      console.log("g-useEffect4:", "localStudents", localStudents);
       setLocalStudents(filteredStudents);
     }
   }, [filteredStudents, localStudents]);

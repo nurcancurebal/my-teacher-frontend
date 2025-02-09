@@ -1,18 +1,15 @@
-import { useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import { isAxiosError } from "axios";
 
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { isAxiosError } from "axios";
-
 import API from "../../api";
-
 import { TDeleteStudentDialogProps } from "../../types";
 
 function DeleteStudentDialog({
@@ -25,18 +22,12 @@ function DeleteStudentDialog({
 }: TDeleteStudentDialogProps) {
   const { t } = useTranslation();
 
-  const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
-
   const handleDeleteStudent = async () => {
-    setError(null);
-    setMessage(null);
 
     try {
-      await API.student.delete(id);
-      setMessage("Öğrenci başarıyla silindi.");
+      const response = await API.student.delete(id);
+      toast.success(response.data.message);
       setTimeout(() => {
-        setMessage(null);
         setOpen(false);
         onDelete();
       }, 3000);
@@ -85,13 +76,6 @@ function DeleteStudentDialog({
                 </DialogTitle>
               </div>
             </div>
-
-            {error && (
-              <p className="text-center text-base text-red-600">{error}</p>
-            )}
-            {message && (
-              <p className="text-center text-base text-green-600">{message}</p>
-            )}
 
             <div className="bg-gray-50 sm:flex sm:flex-row-reverse p-5">
               <button
