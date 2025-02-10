@@ -1,6 +1,6 @@
 export const WHITE_NONTOKEN_PATH_NAMES = [
   "/login",
   "/register",
-  "/forget-password",
+  "/forgot-password",
   "/reset-password",
 ];

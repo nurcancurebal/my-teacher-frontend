@@ -26,7 +26,9 @@ function App() {
     try {
       const response = await API.auth.getUser();
       const userLanguage = response.data.data.language;
-      i18n.changeLanguage(userLanguage);
+
+      i18n.changeLanguage(userLanguage || "EN");
+
       setUser(response.data.data);
       setLoadFetchUser(true);
     } catch (error: unknown) {
@@ -41,19 +43,27 @@ function App() {
   };
 
   useEffect(() => {
-    if (WHITE_NONTOKEN_PATH_NAMES.includes(location.pathname)) {
-      setUser(null);
-      localStorage.removeItem("accessToken");
-      setLoadFetchUser(true);
-    } else {
-      const token = localStorage.getItem("accessToken");
 
-      if (!token) {
-        navigate("/login");
+    const fetchUser = async () => {
+      if (WHITE_NONTOKEN_PATH_NAMES.includes(location.pathname)) {
+        setUser(null);
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("userLanguage");
+        i18n.changeLanguage("EN");
+        setLoadFetchUser(true);
+      } else {
+        const token = localStorage.getItem("accessToken");
+
+        if (!token) {
+          navigate("/login");
+        }
+
+        await fetchAuthUser();
       }
+    };
 
-      fetchAuthUser();
-    }
+    fetchUser();
   }, [location]);
 
   return (

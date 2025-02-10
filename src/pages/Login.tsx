@@ -23,8 +23,9 @@ function Login() {
       const response = await API.auth.login({ email, password });
 
       localStorage.setItem("accessToken", response.data.data.accessToken);
+      localStorage.setItem("refreshToken", response.data.data.refreshToken);
 
-      toast.success(`${response.data.message} ${t('REDIRECTING_TO_HOME_PAGE')}`);
+      toast.success(response.data.message);
 
       setTimeout(() => navigate("/"), 3000);
     } catch (error: unknown) {
@@ -56,7 +57,7 @@ function Login() {
                 htmlFor="email"
                 className="block text-lg font-medium text-gray-900"
               >
-                Email adresi
+                {t('EMAIL')}
               </label>
               <input
                 id="email"
@@ -76,14 +77,14 @@ function Login() {
                   htmlFor="password"
                   className="block text-lg font-medium text-gray-900"
                 >
-                  Şifre
+                  {t('PASSWORD')}
                 </label>
                 <button
                   onClick={() => navigate("/forgot-password")}
                   type="button"
                   className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
                 >
-                  Şifrenizi mi unuttunuz?
+                  {t('FORGOT_PASSWORD')}
                 </button>
               </div>
               <input
@@ -103,18 +104,18 @@ function Login() {
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 disabled={loading}
               >
-                {loading ? "Giriş yapılıyor..." : "Giriş yap"}
+                {loading ? t("ACCESSING") : t("INTRODUCTION")}
               </button>
             </div>
           </form>
 
           <p className="mt-10 text-center text-base text-gray-500">
-            Üye değil misiniz?{" "}
+            {t("NOT_A_MEMBER")}{" "}
             <button
               onClick={() => navigate("/register")}
               className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
             >
-              Şimdi kaydolun
+              {t("REGISTER_NOW")}
             </button>
           </p>
         </div>

@@ -1,4 +1,8 @@
+import { useTranslation } from 'react-i18next';
+
+
 function Headers() {
+  const { t } = useTranslation();
   return (
     <>
       <div className="relative isolate overflow-hidden bg-gray-900 py-24 sm:py-32">
@@ -35,12 +39,7 @@ function Headers() {
               My Teacher
             </h2>
             <p className="mt-8 text-pretty text-lg font-medium text-gray-300 sm:text-xl/8">
-              My Teacher uygulaması, öğretmenlerin sınıflarını ve öğrencilerini
-              kaydedip, öğrencilerinin notlarını takip edebilecekleri ve
-              öğrenciler hakkında kişisel notlar alabilecekleri bir platformdur.
-              Ayrıca, öğretmenler istedikleri zaman arama yaparak sınıflarını ve
-              öğrencilerini kolayca bulabilir ve ilgili notları
-              görüntüleyebilirler.
+              {t("HEADER")}
             </p>
           </div>
         </div>

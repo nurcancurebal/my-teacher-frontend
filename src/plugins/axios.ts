@@ -1,5 +1,3 @@
-import { useNavigate } from "react-router-dom";
-
 import axios, { AxiosError } from "axios";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL as string;
@@ -25,8 +23,9 @@ instance.interceptors.response.use(
   (error: AxiosError) => {
     if (error.response) {
       if (error.response.status === 401) {
-        const navigate = useNavigate();
-        navigate("/login");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        location.reload();
       }
     }
     return Promise.reject(error);

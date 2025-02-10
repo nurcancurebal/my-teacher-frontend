@@ -32,8 +32,9 @@ function Register() {
         password,
       });
       toast.success(response.data.message);
-      toast.success(t('YOU_ARE_BEING_DIRECTED_TO_THE_HOMEPAGE'));
+
       localStorage.setItem("accessToken", response.data.data.accessToken);
+      localStorage.setItem("refreshToken", response.data.data.refreshToken);
 
       setTimeout(() => {
         navigate("/");
@@ -56,7 +57,7 @@ function Register() {
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
-            Kayıt olun
+            {t('REGISTER_NOW')}
           </h2>
         </div>
 
@@ -67,7 +68,7 @@ function Register() {
                 htmlFor="firstname"
                 className="block text-lg font-medium text-gray-900"
               >
-                İsim
+                {t('NAME')}
               </label>
               <input
                 id="firstname"
@@ -85,7 +86,7 @@ function Register() {
                 htmlFor="lastname"
                 className="block text-lg font-medium text-gray-900"
               >
-                Soyisim
+                {t('SURNAME')}
               </label>
               <input
                 id="lastname"
@@ -104,7 +105,7 @@ function Register() {
                 htmlFor="username"
                 className="block text-lg font-medium text-gray-900"
               >
-                Kullanıcı adı
+                {t('USERNAME')}
               </label>
               <input
                 id="username"
@@ -123,7 +124,7 @@ function Register() {
                 htmlFor="email"
                 className="block text-lg font-medium text-gray-900"
               >
-                E-posta
+                {t('EMAIL')}
               </label>
               <input
                 id="email"
@@ -143,7 +144,7 @@ function Register() {
                   htmlFor="password"
                   className="block text-lg font-medium text-gray-900"
                 >
-                  Şifre
+                  {t('PASSWORD')}
                 </label>
               </div>
               <input
@@ -163,18 +164,18 @@ function Register() {
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 disabled={loading}
               >
-                {loading ? "Kayıt işlemi gerçekleştiriliyor..." : "Kayıt ol"}
+                {loading ? t("REGISTRATION_IN_PROGRESS") : t("REGISTER")}
               </button>
             </div>
           </form>
 
           <p className="mt-10 text-center text-base text-gray-500">
-            Zaten bir hesabınız var mı?{" "}
+            {t("ALREADY_HAVE_AN_ACCOUNT")}{" "}
             <button
               onClick={() => navigate("/login")}
               className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
             >
-              Giriş yapın
+              {t("SIGN_IN")}
             </button>
           </p>
         </div>
