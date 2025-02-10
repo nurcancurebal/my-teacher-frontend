@@ -25,7 +25,6 @@ function App() {
   const fetchAuthUser = async () => {
     try {
       const response = await API.auth.getUser();
-
       const userLanguage = response.data.data.language;
       i18n.changeLanguage(userLanguage);
       setUser(response.data.data);

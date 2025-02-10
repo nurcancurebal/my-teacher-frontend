@@ -43,7 +43,7 @@ function UpdateProfile({
         lastname,
         username,
         email,
-        language: userData.language,
+        password,
       });
       toast.success(response.data.message);
       setTimeout(() => {

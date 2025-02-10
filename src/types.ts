@@ -173,11 +173,6 @@ export type TUpdateClassDialogProps = {
   onUpdate: () => void;
 } & TOpenProps;
 
-export type TDateValueType = {
-  startDate: Date | null;
-  endDate: Date | null;
-};
-
 export type TFilteredStudentsProps = {
   setStudents: React.Dispatch<React.SetStateAction<TStudent[]>>;
 };

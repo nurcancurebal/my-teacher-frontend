@@ -61,7 +61,6 @@ function AddStudent({ open, setOpen }: TOpenProps) {
       try {
         const response = await API.student.getListByClass(selectedClassId);
         const students = response.data.data;
-        toast.success(response.data.message);
         if (students.length === 0) {
           toast.error(t("NO_STUDENTS_FOUND_CLASS"));
           return;
@@ -89,15 +88,14 @@ function AddStudent({ open, setOpen }: TOpenProps) {
         .trim()
         .toLowerCase()
         .replace(/^[a-z]/, (c: string) => c.toUpperCase());
-
       if (selectedClassId !== null) {
-        const response = await API.grade.gradeTypeExists({ classId: selectedClassId, gradeType: formattedGradeName });
-        toast.success(response.data.message);
+        await API.grade.gradeTypeExists({ classId: selectedClassId, gradeType: formattedGradeName });
+        toast.success(t("BEING_DIRECTED_TO_ADD_NOTE"));
       } else {
         toast.error(t("CLASS_SELECTION_WAS_NOT_MADE"));
         return;
       }
-      toast.success(t("BEING_DIRECTED_TO_ADD_NOTE"));
+
       setTimeout(() => {
         navigate("/add-grade", {
           state: { selectedClassId, formattedGradeName },

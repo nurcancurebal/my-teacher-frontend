@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import {
   Dialog,
   DialogBackdrop,
@@ -15,6 +16,7 @@ import { TAddProps } from "../../types";
 
 function AddClass({ open, setOpen, onAdd }: TAddProps) {
   const { t } = useTranslation();
+  const location = useLocation();
 
   const [className, setClassName] = useState("");
   const [explanation, setExplanation] = useState("");
@@ -31,6 +33,9 @@ function AddClass({ open, setOpen, onAdd }: TAddProps) {
         setClassName("");
         setExplanation("");
         onAdd();
+        if (location.pathname === "/classes") {
+          setOpen(false);
+        }
       }, 3000);
     } catch (error: unknown) {
       console.error(error);

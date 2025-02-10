@@ -38,6 +38,7 @@ const resources = {
       YOU_ARE_BEING_DIRECTED_TO_THE_HOMEPAGE:
         "You are being directed to the homepage.",
       REDIRECTING_TO_HOME_PAGE: "Redirecting to the homepage.",
+      EXITING: "Exiting...",
     },
   },
   TR: {
@@ -73,6 +74,7 @@ const resources = {
       YOU_ARE_BEING_DIRECTED_TO_THE_HOMEPAGE:
         "Anasayfaya yönlendiriliyorsunuz.",
       REDIRECTING_TO_HOME_PAGE: "Anasayfaya yönlendiriliyorsunuz.",
+      EXITING: "Çıkış yapılıyor...",
     },
   },
 };

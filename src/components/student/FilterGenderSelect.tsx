@@ -26,14 +26,14 @@ function FilterStudentGenderSelect({
       if (genderMale) {
         filtered = localStudents;
       } else {
-        filtered = localStudents.filter((student) => student.gender === "K");
+        filtered = localStudents.filter((student) => student.gender === "Female");
       }
     } else if (gender === "Erkek") {
       setGenderMale(!genderMale);
       if (genderFemale) {
         filtered = localStudents;
       } else {
-        filtered = localStudents.filter((student) => student.gender === "E");
+        filtered = localStudents.filter((student) => student.gender === "Male");
       }
     }
 
@@ -68,14 +68,14 @@ function FilterStudentGenderSelect({
   const filterGenderChange = () => {
     if (genderFemale && !genderMale) {
       const filtered = filteredStudents.filter(
-        (student) => student.gender === "K"
+        (student) => student.gender === "Female"
       );
 
       handleFilter(filtered);
       setLocalFilteredStudents(filtered);
     } else if (genderMale && !genderFemale) {
       const filtered = filteredStudents.filter(
-        (student) => student.gender === "E"
+        (student) => student.gender === "Male"
       );
       handleFilter(filtered);
       setLocalFilteredStudents(filtered);

@@ -10,6 +10,7 @@ import MyProfile from "./pages/MyProfile";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import AddGrade from "./pages/AddGrade";
 
 import { TContentProps } from "./types";
 
@@ -32,6 +33,10 @@ function Router({ userData, onProfileUpdate }: TContentProps) {
         <Route
           path="/my-profile"
           element={<MyProfile userData={userData} />}
+        />
+        <Route
+          path="/add-grade"
+          element={<AddGrade />}
         />
       </Routes>
     </>

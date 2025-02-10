@@ -24,8 +24,7 @@ function Login() {
 
       localStorage.setItem("accessToken", response.data.data.accessToken);
 
-      toast.success(response.data.message);
-      toast.info(t('REDIRECTING_TO_HOME_PAGE'));
+      toast.success(`${response.data.message} ${t('REDIRECTING_TO_HOME_PAGE')}`);
 
       setTimeout(() => navigate("/"), 3000);
     } catch (error: unknown) {

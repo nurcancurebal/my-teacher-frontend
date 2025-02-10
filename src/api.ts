@@ -52,7 +52,8 @@ export default {
   },
   profile: {
     update: async (data: TUser): Promise<AxiosResponse<TUpdateResponse>> => {
-      return await axios.put("profile", data);
+      const { id, ...bodyData } = data;
+      return await axios.put(`profile/${id}`, bodyData);
     },
   },
   class: {
@@ -60,7 +61,8 @@ export default {
       return await axios.post("class", data);
     },
     update: async (data: TClass): Promise<AxiosResponse<TUpdateResponse>> => {
-      return await axios.put(`class/${data.id}`, data);
+      const { id, ...bodyData } = data;
+      return await axios.put(`class/${id}`, bodyData);
     },
     delete: async (id: number): Promise<AxiosResponse<TNumberResponse>> => {
       return await axios.delete(`class/${id}`);
@@ -116,7 +118,9 @@ export default {
     gradeTypeExists: async (
       data: TGradeTypeExists
     ): Promise<AxiosResponse<TBooleanResponse>> => {
-      return await axios.post(`grade/${data.classId}`, data.gradeType);
+      return await axios.post(`grade/${data.classId}`, {
+        gradeType: data.gradeType,
+      });
     },
     add: async (data: TGrade): Promise<AxiosResponse<TGrade>> => {
       const { classId, studentId, ...bodyData } = data;

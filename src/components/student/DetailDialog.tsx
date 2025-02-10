@@ -24,7 +24,7 @@ function ViewDetailDialog({
       />
 
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div className="flex min-h-full items-end justify-center p-4 text-center items-center sm:p-0">
+        <div className="flex min-h-full justify-center p-4 text-center items-center sm:p-0">
           <DialogPanel
             transition
             className="relative transform overflow-hidden rounded-md bg-white text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 p-5 sm:max-w-lg data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
@@ -59,7 +59,7 @@ function ViewDetailDialog({
               <div className="sm:mx-0 mx-4 pb-5">
                 <span className="text-lg font-medium">Cinsiyeti:</span>
                 <span className="text-base ml-3">
-                  {student.gender === "K" ? "Kız" : "Erkek"}
+                  {student.gender === "Male" ? "Erkek" : "Kadın"}
                 </span>
               </div>
 

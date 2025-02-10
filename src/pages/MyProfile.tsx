@@ -54,7 +54,7 @@ function UserInformaition({ userData }: TUserDataProps) {
         <div className="flex justify-end">
           <button
             className="flex w-24 justify-center rounded-md bg-green-600 px-3 py-1.5 text-lg font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
-            onClick={() => navigate("/update-user")}
+            onClick={() => navigate("/update-profile")}
           >
             Güncelle
           </button>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { isAxiosError } from "axios";
 
 import { useTranslation } from 'react-i18next';
@@ -13,7 +13,6 @@ function AddGrade() {
   const location = useLocation();
 
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const [students, setStudents] = useState<TStudent[]>([]);
   const [grades, setGrades] = useState<TGradeValue[]>([]);
@@ -75,7 +74,7 @@ function AddGrade() {
         });
       }
       toast.success(t('GRADE_SUCCESSFULLY_ADDED'));
-      setTimeout(() => navigate("/"), 3000);
+
     } catch (error: unknown) {
       console.error(error);
       if (isAxiosError(error) && error.response) {

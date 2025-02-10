@@ -151,7 +151,7 @@ function Students() {
                   {student.studentName} {student.studentLastname}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {student.gender === "E" ? "Erkek" : "Kız"}
+                  {student.gender === "Male" ? "Erkek" : "Kız"}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                   {classes.find((c) => c.id === student.classId)?.className}

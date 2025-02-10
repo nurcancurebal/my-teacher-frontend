@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import API from "../../api";
-import { TUpdateStudentDialogProps, TDateValueType, TClass } from "../../types";
+import { TUpdateStudentDialogProps, TClass } from "../../types";
 
 function UpdateStudentDialog({
   open,
@@ -30,10 +30,7 @@ function UpdateStudentDialog({
     student.studentNumber
   );
   const [gender, setGender] = useState<string>(student.gender);
-  const [date, setDate] = useState<TDateValueType>({
-    startDate: student.birthdate,
-    endDate: student.birthdate,
-  });
+  const [birthdate, setBirthdate] = useState<Date>(student.birthdate ? new Date(student.birthdate) : new Date());
   const [classId, setClassId] = useState<number>(student.classId);
   const [classes, setClasses] = useState<TClass[]>([]);
 
@@ -57,7 +54,7 @@ function UpdateStudentDialog({
 
   const handleUpdateStudent = async () => {
     try {
-      const response = await API.student.update({ id: student.id, classId, idNumber, studentName, studentLastname, studentNumber: studentNumber, gender, birthdate: date.startDate });
+      const response = await API.student.update({ id: student.id, classId, idNumber, studentName, studentLastname, studentNumber: studentNumber, gender, birthdate });
       toast.success(response.data.message);
 
       setTimeout(() => {
@@ -93,7 +90,7 @@ function UpdateStudentDialog({
       />
 
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div className="flex min-h-full items-end justify-center text-center items-center sm:p-0">
+        <div className="flex min-h-full justify-center text-center items-center sm:p-0">
           <DialogPanel
             transition
             className="relative transform overflow-hidden rounded-md bg-white text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 p-5 sm:max-w-lg data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
@@ -219,14 +216,14 @@ function UpdateStudentDialog({
                     <button
                       type="button"
                       className={`m-5 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100
-                    ${gender === "K" ? "bg-slate-200" : "bg-white"}`}
+                    ${gender === "Female" ? "bg-slate-200" : "bg-white"}`}
                       onClick={() => setGender("Female")}
                     >
                       Kız
                     </button>
                     <button
                       type="button"
-                      className={`m-5 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${gender === "E" ? "bg-slate-200" : "bg-white"
+                      className={`m-5 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${gender === "Male" ? "bg-slate-200" : "bg-white"
                         }`}
                       onClick={() => setGender("Male")}
                     >
@@ -247,12 +244,11 @@ function UpdateStudentDialog({
                     required={true}
                     id="birthday"
                     name="birthday"
-                    value={date.startDate ? date.startDate.toISOString().split('T')[0] : ''}
+                    value={birthdate.toISOString().split('T')[0]}
                     placeholder="Doğum Tarihi Seçiniz"
                     className="text-base"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      const newDate = e.target.value;
-                      setDate({ startDate: new Date(newDate), endDate: new Date(newDate) });
+                      setBirthdate(new Date(e.target.value));
                     }}
                   />
                 </div>

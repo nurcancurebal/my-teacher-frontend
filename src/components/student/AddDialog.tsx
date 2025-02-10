@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import {
   Dialog,
   DialogBackdrop,
@@ -11,10 +12,11 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import API from "../../api";
-import { TAddProps, TClass, TDateValueType } from "../../types";
+import { TAddProps, TClass } from "../../types";
 
 function AddStudent({ open, setOpen, onAdd }: TAddProps) {
   const { t } = useTranslation();
+  const location = useLocation();
 
   const [classes, setClasses] = useState<TClass[]>([]);
   const [studentName, setStudentName] = useState<string>("");
@@ -22,10 +24,7 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
   const [studentNumber, setStudentNumber] = useState<number>();
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
   const [idNumber, setIdNumber] = useState<string>();
-  const [date, setDate] = useState<TDateValueType>({
-    startDate: null,
-    endDate: null,
-  });
+  const [birthdate, setBirthdate] = useState<Date>();
   const [gender, setGender] = useState<string>("");
 
   const isDisabled = classes.length === 0;
@@ -63,7 +62,7 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
     setStudentLastName("");
     setStudentNumber(undefined);
     setGender("");
-    setDate({ startDate: null, endDate: null });
+    setBirthdate(undefined);
     setSelectedClassId(null);
   };
 
@@ -82,12 +81,15 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
         studentLastname,
         studentNumber: studentNumber ?? 0,
         gender,
-        birthdate: date.startDate,
+        birthdate: birthdate ?? null,
       });
       toast.success(response.data.message);
       setTimeout(() => {
         resetForm();
         onAdd();
+        if (location.pathname.includes('student')) {
+          setOpen(false);
+        }
       }, 3000);
     } catch (error: unknown) {
       console.error(error);
@@ -255,7 +257,7 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
                   <div className="grid grid-cols-2">
                     <button
                       type="button"
-                      className={`my-5 mx-auto inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 disabled:opacity-75 disabled:hover:bg-white ${gender === "K" ? "bg-slate-200" : "bg-white"
+                      className={`my-5 mx-auto inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 disabled:opacity-75 disabled:hover:bg-white ${gender === "Female" ? "bg-slate-200" : "bg-white"
                         }`}
                       onClick={() => setGender("Female")}
                       disabled={isDisabled}
@@ -264,7 +266,7 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
                     </button>
                     <button
                       type="button"
-                      className={`my-5 mx-auto inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 disabled:opacity-75 disabled:hover:bg-white ${gender === "E" ? "bg-slate-200" : "bg-white"
+                      className={`my-5 mx-auto inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 disabled:opacity-75 disabled:hover:bg-white ${gender === "Male" ? "bg-slate-200" : "bg-white"
                         }`}
                       onClick={() => setGender("Male")}
                       disabled={isDisabled}
@@ -287,12 +289,11 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
                     required={true}
                     id="birthday"
                     name="birthday"
-                    value={date.startDate ? date.startDate.toISOString().split('T')[0] : ''}
+                    value={birthdate ? birthdate.toISOString().split('T')[0] : ""}
                     placeholder="Doğum Tarihi Seçiniz"
                     className="text-base disabled:opacity-75"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      const newDate = e.target.value;
-                      setDate({ startDate: new Date(newDate), endDate: new Date(newDate) });
+                      setBirthdate(new Date(e.target.value));
                     }}
                     disabled={isDisabled}
                   />
