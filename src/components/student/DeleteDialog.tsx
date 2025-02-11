@@ -72,7 +72,7 @@ function DeleteStudentDialog({
                   <span className="text-red-500">
                     "{studentName} {studentLastName}"
                   </span>{" "}
-                  öğrencisini silmek istediğinize emin misiniz?
+                  {t("STUDENT_ARE_YOU_SURE_DELETE")}
                 </DialogTitle>
               </div>
             </div>
@@ -83,7 +83,7 @@ function DeleteStudentDialog({
                 className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24"
                 onClick={handleDeleteStudent}
               >
-                Sil
+                {t("DELETE")}
               </button>
               <button
                 type="button"
@@ -91,7 +91,7 @@ function DeleteStudentDialog({
                 className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 sm:mt-0 sm:w-24"
                 onClick={onClose}
               >
-                İptal Et
+                {t("CANCEL")}
               </button>
             </div>
           </DialogPanel>

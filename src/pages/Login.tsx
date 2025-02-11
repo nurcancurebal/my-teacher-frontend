@@ -84,7 +84,7 @@ function Login() {
                   type="button"
                   className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
                 >
-                  {t('FORGOT_PASSWORD')}
+                  {t('FORGOT_YOUR_PASSWORD')}
                 </button>
               </div>
               <input
@@ -104,7 +104,7 @@ function Login() {
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 disabled={loading}
               >
-                {loading ? t("ACCESSING") : t("INTRODUCTION")}
+                {loading ? t("ACCESSING") : t("LOGIN")}
               </button>
             </div>
           </form>

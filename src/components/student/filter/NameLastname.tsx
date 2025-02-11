@@ -4,7 +4,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 import { useTranslation } from 'react-i18next';
 import { toast } from "react-toastify";
 
-import { TFilterStudentProps, TStudent } from "../../types";
+import { TFilterStudentProps, TStudent } from "../../../types";
 
 function FilterStudentNameLastname({
   filteredStudents,
@@ -62,7 +62,7 @@ function FilterStudentNameLastname({
 
       setLocalFilteredStudents(filtered);
       if (filtered.length === 0) {
-        toast.error(t("NO_STUDENTS_WITH_NAME_OR_SURNAME_FOUND"));
+        toast.error(t("NO_STUDENTS_WITH_NAME_OR_LASTNAME_FOUND"));
         handleFilter([]);
       } else {
         handleFilter(filtered);
@@ -80,7 +80,7 @@ function FilterStudentNameLastname({
           id="price"
           name="price"
           type="text"
-          placeholder="Ad ve Soyad"
+          placeholder={t("NAME") + " " + t("LASTNAME")}
           value={searchTerm}
           onChange={searchInputName}
           onBlur={() => {

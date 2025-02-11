@@ -42,7 +42,7 @@ function ForgotPassword() {
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
-            Şifremi Unuttum
+            {t('FORGOT_PASSWORD')}
           </h2>
         </div>
 
@@ -53,7 +53,7 @@ function ForgotPassword() {
                 htmlFor="email"
                 className="block text-lg font-medium text-gray-900"
               >
-                Email address
+                {t('EMAIL')}
               </label>
               <input
                 id="email"
@@ -74,28 +74,28 @@ function ForgotPassword() {
                 disabled={loading}
               >
                 {loading
-                  ? "Kod gönderiliyor..."
-                  : "Şifre Sıfırlama Kodu Gönder"}
+                  ? t('SENDING_CODE')
+                  : t('SEND_PASSWORD_RESET_CODE')}
               </button>
             </div>
           </form>
 
           <p className="mt-10 text-center text-base text-gray-500">
-            Üye değil misiniz?{" "}
+            {t("NOT_A_MEMBER")}{" "}
             <button
               onClick={() => navigate("/register")}
               className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
             >
-              Şimdi kaydolun
+              {t("REGISTER_NOW")}
             </button>
           </p>
           <p className="mt-4 text-center text-base text-gray-500">
-            Zaten bir hesabınız var mı?{" "}
+            {t("ALREADY_HAVE_AN_ACCOUNT")} {" "}
             <button
               onClick={() => navigate("/login")}
               className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
             >
-              Giriş yapın
+              {t("LOGIN")}
             </button>
           </p>
         </div>

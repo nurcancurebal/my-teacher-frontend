@@ -118,19 +118,19 @@ function Classes() {
           <thead>
             <tr>
               <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                Sınıf Adı
+                {t('CLASS_NAME')}
               </th>
               <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                Açıklama
+                {t('DESCRIPTION')}
               </th>
               <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                Toplam Öğrenci
+                {t('TOTAL_STUDENTS')}
               </th>
               <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                Oluşturulma Tarihi
+                {t("CREATED_AT")}
               </th>
               <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                Güncellenme Tarihi
+                {t("UPDATED_AT")}
               </th>
               <th className="border-b border-slate-400"></th>
               <th className="border-b border-slate-400"></th>
@@ -212,7 +212,7 @@ function Classes() {
             className="my-5 col-start-4 inline-flex justify-center rounded-md bg-green-600 px-6 py-2 xl:text-lg md:text-base text-sm font-semibold text-white shadow-sm hover:bg-green-500"
             onClick={() => setIsAddClassOpen(true)}
           >
-            Sınıf Ekle
+            {t('ADD_CLASS')}
           </button>
         </div>
       </div>

@@ -6,8 +6,8 @@ import { isAxiosError } from "axios";
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import API from "../../api";
-import { TClass, TStudent, TFilterStudentProps } from "../../types";
+import API from "../../../api";
+import { TClass, TStudent, TFilterStudentProps } from "../../../types";
 
 function FilterClassNameSelect({
   filteredStudents,
@@ -81,14 +81,14 @@ function FilterClassNameSelect({
 
   const handleSelectClass = useCallback(
     (className: string) => {
-      if (className === "Tüm Sınıflar") {
-        setSelectClassName(["Tüm Sınıflar"]);
+      if (className === t("ALL_CLASSES")) {
+        setSelectClassName([t("ALL_CLASSES")]);
         setLocalFilteredStudents([]);
         handleFilter(localStudents);
       } else {
 
         setSelectClassName((prev) => {
-          const newClassNames = prev.filter((name) => name !== "Tüm Sınıflar");
+          const newClassNames = prev.filter((name) => name !== t("ALL_CLASSES"));
           return [...newClassNames, className];
         });
 
@@ -151,7 +151,7 @@ function FilterClassNameSelect({
       <Menu as="div" className="inline-block text-left">
         <div>
           <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-            Öğrenci Sınıfı
+            {t("CLASS_NAME")}
             <ChevronDownIcon
               aria-hidden="true"
               className="size-5 text-gray-500 self-center"
@@ -167,15 +167,15 @@ function FilterClassNameSelect({
             <MenuItem
               as="button"
               key={"all"}
-              value={"Tüm Sınıflar"}
-              className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${selectClassName.includes("Tüm Sınıflar")
+              value={t("ALL_CLASSES")}
+              className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${selectClassName.includes(t("ALL_CLASSES"))
                 ? "text-gray-300 cursor-not-allowed"
                 : "text-gray-900"
                 }`}
-              onClick={() => handleSelectClass("Tüm Sınıflar")}
-              disabled={selectClassName.includes("Tüm Sınıflar")}
+              onClick={() => handleSelectClass(t("ALL_CLASSES"))}
+              disabled={selectClassName.includes(t("ALL_CLASSES"))}
             >
-              Tüm Sınıflar
+              {t("ALL_CLASSES")}
             </MenuItem>
             {classes.map((classItem) => (
               <MenuItem

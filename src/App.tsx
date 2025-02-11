@@ -22,7 +22,7 @@ function App() {
   const [loadFetchUser, setLoadFetchUser] = React.useState<boolean>(false);
   const [user, setUser] = React.useState<TUser | null>(null);
 
-  const fetchAuthUser = async () => {
+  const fetchUser = async () => {
     try {
       const response = await API.auth.getUser();
       const userLanguage = response.data.data.language;
@@ -44,7 +44,7 @@ function App() {
 
   useEffect(() => {
 
-    const fetchUser = async () => {
+    const authenticateUser = async () => {
       if (WHITE_NONTOKEN_PATH_NAMES.includes(location.pathname)) {
         setUser(null);
         localStorage.removeItem("accessToken");
@@ -59,17 +59,17 @@ function App() {
           navigate("/login");
         }
 
-        await fetchAuthUser();
+        await fetchUser();
       }
     };
 
-    fetchUser();
+    authenticateUser();
   }, [location]);
 
   return (
     <div>
       {loadFetchUser && (
-        <Content userData={user} onProfileUpdate={fetchAuthUser} />
+        <Content userData={user} onProfileUpdate={fetchUser} />
       )}
     </div>
   );

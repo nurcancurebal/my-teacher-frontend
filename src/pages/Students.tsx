@@ -9,7 +9,7 @@ import DetailDialog from "../components/student/DetailDialog";
 import UpdateDialog from "../components/student/UpdateDialog";
 import DeleteDialog from "../components/student/DeleteDialog";
 import AddDialog from "../components/student/AddDialog";
-import Filtered from "../components/student/Filtered";
+import Filtered from "../components/student/filter/Filtered";
 
 import API from "../api";
 import { TStudent, TClass } from "../types";
@@ -124,16 +124,16 @@ function Students() {
           <thead>
             <tr>
               <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                Öğrenci Numarası
+                {t('STUDENT_NUMBER')}
               </th>
               <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                Öğrenci Adı Soyadı
+                {t('NAME')} {t('LASTNAME')}
               </th>
               <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                Cinsiyeti
+                {t("GENDER")}
               </th>
               <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                Sınıfı
+                {t("CLASS_NAME")}
               </th>
               <th className="border-b border-slate-400"></th>
             </tr>
@@ -233,7 +233,7 @@ function Students() {
             className="my-5 col-start-4 inline-flex justify-center rounded-md bg-green-600 px-6 py-2 xl:text-lg md:text-base text-sm font-semibold text-white shadow-sm hover:bg-green-500"
             onClick={() => handleAddStudent()}
           >
-            Öğrenci Ekle
+            {t('ADD_STUDENT')}
           </button>
         </div>
       </div>

@@ -89,8 +89,8 @@ function AddStudent({ open, setOpen }: TOpenProps) {
         .toLowerCase()
         .replace(/^[a-z]/, (c: string) => c.toUpperCase());
       if (selectedClassId !== null) {
-        await API.grade.gradeTypeExists({ classId: selectedClassId, gradeType: formattedGradeName });
-        toast.success(t("BEING_DIRECTED_TO_ADD_NOTE"));
+        const response = await API.grade.gradeTypeExists({ classId: selectedClassId, gradeType: formattedGradeName });
+        toast.success(response.data.message);
       } else {
         toast.error(t("CLASS_SELECTION_WAS_NOT_MADE"));
         return;
@@ -155,8 +155,8 @@ function AddStudent({ open, setOpen }: TOpenProps) {
                     className="text-2xl font-semibold text-gray-900"
                   >
                     {showStudentSelection
-                      ? "Bir sınıf seçiniz?"
-                      : "Hangi notu eklemek istediğinizi yazınız."}
+                      ? t("SELECT_A_CLASS")
+                      : t("WRITE_WHICH_NOTE_YOU_WANT_TO_ADD")}
                   </DialogTitle>
                 </div>
               </div>
@@ -187,7 +187,7 @@ function AddStudent({ open, setOpen }: TOpenProps) {
                     htmlFor="studentName"
                     className="block text-lg font-medium text-gray-900"
                   >
-                    Not Adı:
+                    {t("NOTE_TITLE")}:
                   </label>
 
                   <input
@@ -211,7 +211,7 @@ function AddStudent({ open, setOpen }: TOpenProps) {
                 onClick={handleSelectClass}
                 disabled={isDisabled}
               >
-                Devam Et
+                {t("CONTINUE")}
               </button>
               <button
                 type="button"
@@ -219,7 +219,7 @@ function AddStudent({ open, setOpen }: TOpenProps) {
                 onClick={cancelReturn}
                 className="mt-3 inline-flex w-full justify-center rounded-md bg-white py-2 text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-24"
               >
-                {showStudentSelection ? "İptal Et" : "Geri Dön"}
+                {showStudentSelection ? t("CANCEL") : t("GO_BACK")}
               </button>
             </div>
           </DialogPanel>

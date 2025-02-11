@@ -1,8 +1,12 @@
 import { useState } from "react";
 
+import { useTranslation } from 'react-i18next';
+
 import { TClass, TStudent } from "../types";
 
 function Grade() {
+  const { t } = useTranslation();
+
   const [students, setStudents] = useState<TStudent[]>([]);
   const [classes, setClasses] = useState<TClass[]>([]);
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
@@ -26,7 +30,7 @@ function Grade() {
             className={`mx-auto m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${selectedClassId === null ? "bg-slate-200" : "bg-white"
               }`}
           >
-            Tüm Sınıflar
+            {t('ALL_CLASSES')}
           </button>
         </div>
 
@@ -34,16 +38,16 @@ function Grade() {
           <thead>
             <tr>
               <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                Öğrenci Numarası
+                {t('STUDENT_NUMBER')}
               </th>
               <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                Öğrenci Adı Soyadı
+                {t("NAME") + " " + t("LASTNAME")}
               </th>
               <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                Cinsiyeti
+                {t(("GENDER"))}
               </th>
               <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                Sınıfı
+                {t('CLASS_NAME')}
               </th>
               <th className="border-b border-slate-400"></th>
             </tr>
@@ -130,7 +134,7 @@ function Grade() {
             type="button"
             className="my-5 col-start-4 inline-flex justify-center rounded-md bg-green-600 px-6 py-2 xl:text-lg md:text-base text-sm font-semibold text-white shadow-sm hover:bg-green-500"
           >
-            Not Ekle
+            {t('ADD_GRADE')}
           </button>
         </div>
       </div>

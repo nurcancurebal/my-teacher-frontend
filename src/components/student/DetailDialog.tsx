@@ -4,6 +4,7 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import { useTranslation } from 'react-i18next';
 
 import { TViewDetailDialogProps } from "../../types";
 
@@ -12,6 +13,8 @@ function ViewDetailDialog({
   setOpen,
   student,
 }: TViewDetailDialogProps) {
+  const { t } = useTranslation();
+
   return (
     <Dialog
       open={open}
@@ -35,36 +38,36 @@ function ViewDetailDialog({
                   as="h3"
                   className="text-2xl font-semibold text-gray-900 mx-auto"
                 >
-                  Öğrenci Bilgileri
+                  {t("STUDENT_INFORMATION")}
                 </DialogTitle>
               </div>
 
               <div className="sm:mx-0 mx-4 pb-5">
-                <span className="text-lg font-medium">TC Kimlik Numarası:</span>
+                <span className="text-lg font-medium">{t("TR_IDENTITY_NUMBER")}:</span>
                 <span className="text-base ml-3">{student.idNumber.toString()}</span>
               </div>
 
               <div className="sm:mx-0 mx-4 pb-5">
-                <span className="text-lg font-medium">Adı Soyadı:</span>
+                <span className="text-lg font-medium">{t("NAME") + " " + t("LASTNAME")} :</span>
                 <span className="text-base ml-3">
                   {student.studentName} {student.studentLastname}
                 </span>
               </div>
 
               <div className="sm:mx-0 mx-4 pb-5">
-                <span className="text-lg font-medium">Öğrenci Numarası:</span>
+                <span className="text-lg font-medium">{t("STUDENT_NUMBER")}:</span>
                 <span className="text-base ml-3">{student.studentNumber}</span>
               </div>
 
               <div className="sm:mx-0 mx-4 pb-5">
-                <span className="text-lg font-medium">Cinsiyeti:</span>
+                <span className="text-lg font-medium">{t("GENDER")}:</span>
                 <span className="text-base ml-3">
-                  {student.gender === "Male" ? "Erkek" : "Kadın"}
+                  {student.gender === t("MALE") ? t("MALE") : t("FEMALE")}
                 </span>
               </div>
 
               <div className="sm:mx-0 mx-4">
-                <span className="text-lg font-medium">Doğum Tarihi:</span>
+                <span className="text-lg font-medium">{t("BIRTHDATE")}:</span>
                 <span className="text-base ml-3">
                   {student.birthdate ? new Date(student.birthdate).toLocaleDateString() : "N/A"}
                 </span>
@@ -77,7 +80,7 @@ function ViewDetailDialog({
                 className="mt-3 inline-flex w-full justify-center rounded-md bg-white py-2 text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-24"
                 onClick={() => setOpen(false)}
               >
-                Kapat
+                {t("CLOSE")}
               </button>
             </div>
           </DialogPanel>

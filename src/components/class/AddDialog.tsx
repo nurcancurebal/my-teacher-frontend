@@ -80,14 +80,14 @@ function AddClass({ open, setOpen, onAdd }: TAddProps) {
                     as="h3"
                     className="text-2xl text-center font-semibold text-gray-900 mb-5"
                   >
-                    Sınıf Ekle
+                    {t('ADD_CLASS')}
                   </DialogTitle>
                   <div>
                     <label
                       htmlFor="className"
                       className="block text-lg font-medium text-gray-900"
                     >
-                      Sınıf Adı:
+                      {t('CLASS_NAME')}:
                     </label>
                     <input
                       id="className"
@@ -106,7 +106,7 @@ function AddClass({ open, setOpen, onAdd }: TAddProps) {
                       htmlFor="explanation"
                       className="mt-5 block text-lg font-medium text-gray-900"
                     >
-                      Açıklama:
+                      {t('DESCRIPTION')}:
                     </label>
                     <textarea
                       id="explanation"
@@ -126,7 +126,7 @@ function AddClass({ open, setOpen, onAdd }: TAddProps) {
                 onClick={addClass}
                 className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24"
               >
-                Ekle
+                {t('ADD')}
               </button>
               <button
                 type="button"
@@ -134,7 +134,7 @@ function AddClass({ open, setOpen, onAdd }: TAddProps) {
                 onClick={handleOpen}
                 className="mt-3 inline-flex w-full justify-center rounded-md bg-white py-2 text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-24"
               >
-                İptal Et
+                {t('CANCEL')}
               </button>
             </div>
           </DialogPanel>

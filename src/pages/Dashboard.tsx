@@ -36,17 +36,17 @@ function Dashboard() {
   const stats = [
     {
       id: 1,
-      name: "Toplam Sınıflarınız",
+      name: t("TOTAL_CLASSES"),
       value: totalClasses !== null ? totalClasses : 0,
     },
     {
       id: 2,
-      name: "Toplam Öğrencileriniz",
+      name: t("TOTAL_STUDENTS"),
       value: totalStudents !== null ? totalStudents : 0,
     },
     {
       id: 3,
-      name: "En Son Eklenen Not Tarihi",
+      name: t("LAST_ADDED_NOTE_DATE"),
       value: lastAddedGrade !== null ? lastAddedGrade : "N/A",
     },
   ];
@@ -151,19 +151,19 @@ function Dashboard() {
             className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-md text-center min-w-48"
             onClick={() => setIsAddClassOpen(true)}
           >
-            <span>Sınıf Ekle</span> <span className="text-xl">+</span>
+            <span>{t("ADD_CLASS")}</span> <span className="text-xl">+</span>
           </button>
           <button
             className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-md text-center min-w-48"
             onClick={() => setIsAddStudentOpen(true)}
           >
-            Öğrenci Ekle <span className="text-xl">+</span>
+            {t("ADD_STUDENT")} <span className="text-xl">+</span>
           </button>
           <button
             className="px-7 py-5 text-base font-medium bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-md text-center min-w-48"
             onClick={() => setIsSelectClassOpen(true)}
           >
-            Not Ekle <span className="text-xl">+</span>
+            {t("ADD_GRADE")} <span className="text-xl">+</span>
           </button>
         </div>
       </div>

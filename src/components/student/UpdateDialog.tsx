@@ -102,14 +102,14 @@ function UpdateStudentDialog({
                     as="h3"
                     className="text-2xl font-semibold text-gray-900 mx-auto"
                   >
-                    Öğrenci Bilgilerini Güncelle
+                    {t('UPDATE_STUDENT_INFORMATION')}
                   </DialogTitle>
                 </div>
               </div>
 
               <div className="mt-3 mx-6">
                 <div className="block text-lg font-medium text-gray-900">
-                  Sınıf Seçiniz:
+                  {t('SELECT_CLASS')}:
                 </div>
                 <div className="grid sm:grid-cols-3 grid-cols-2 gap-5">
                   {classes.map((classItem, index) => (
@@ -132,7 +132,7 @@ function UpdateStudentDialog({
                     htmlFor="studentTc"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
-                    Öğrenci TC:
+                    {t('TR_IDENTITY_NUMBER')}:
                   </label>
 
                   <input
@@ -152,7 +152,7 @@ function UpdateStudentDialog({
                     htmlFor="studentName"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
-                    Öğrenci Adı:
+                    {t('NAME')}:
                   </label>
 
                   <input
@@ -172,7 +172,7 @@ function UpdateStudentDialog({
                     htmlFor="studentLastname"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
-                    Öğrenci Soyadı:
+                    {t('LASTNAME')}:
                   </label>
 
                   <input
@@ -192,7 +192,7 @@ function UpdateStudentDialog({
                     htmlFor="studentNumber"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
-                    Öğrenci Numarası:
+                    {t('STUDENT_NUMBER')}:
                   </label>
 
                   <input
@@ -209,25 +209,25 @@ function UpdateStudentDialog({
 
                 <div>
                   <div className="mt-5 block text-lg font-medium text-gray-900">
-                    Öğrenci Cinsiyeti:
+                    {t("GENDER")}:
                   </div>
 
                   <div className="grid grid-cols-2">
                     <button
                       type="button"
                       className={`m-5 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100
-                    ${gender === "Female" ? "bg-slate-200" : "bg-white"}`}
-                      onClick={() => setGender("Female")}
+                    ${gender === t("FEMALE") ? "bg-slate-200" : "bg-white"}`}
+                      onClick={() => setGender(t("FEMALE"))}
                     >
-                      Kız
+                      {t("FEMALE")}
                     </button>
                     <button
                       type="button"
-                      className={`m-5 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${gender === "Male" ? "bg-slate-200" : "bg-white"
+                      className={`m-5 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${gender === t("MALE") ? "bg-slate-200" : "bg-white"
                         }`}
-                      onClick={() => setGender("Male")}
+                      onClick={() => setGender(t("MALE"))}
                     >
-                      Erkek
+                      {t("MALE")}
                     </button>
                   </div>
                 </div>
@@ -236,7 +236,7 @@ function UpdateStudentDialog({
                     htmlFor="datePicker"
                     className="block text-lg font-medium text-gray-900"
                   >
-                    Doğum Tarihi:
+                    {t("BIRTHDATE")}:
                   </label>
 
                   <input
@@ -261,7 +261,7 @@ function UpdateStudentDialog({
                 className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24"
                 onClick={handleUpdateStudent}
               >
-                Güncelle
+                {t("UPDATE")}
               </button>
               <button
                 type="button"
@@ -269,7 +269,7 @@ function UpdateStudentDialog({
                 className="mt-3 inline-flex w-full justify-center rounded-md bg-white py-2 text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-24"
                 onClick={() => setOpen(false)}
               >
-                İptal Et
+                {t("CANCEL")}
               </button>
             </div>
           </DialogPanel>

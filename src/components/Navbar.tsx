@@ -194,8 +194,8 @@ function Navbar({ userData }: TUserDataProps) {
               ))}
             </div>
             <div className="border-t border-gray-700 pb-3 pt-4">
-              <button
-                className="flex items-center px-5"
+              <DisclosureButton
+                className="flex items-center px-5 cursor-pointer"
                 onClick={() => navigate("/my-profile")}
               >
                 <div className="shrink-0">
@@ -222,29 +222,32 @@ function Navbar({ userData }: TUserDataProps) {
                     {userData?.email}
                   </div>
                 </div>
-              </button>
+              </DisclosureButton>
               <div className="mt-3 space-y-1 px-2">
                 {userNavigation.map((item) => (
-                  <MenuItem key={item.name}>
+                  <div key={item.name}>
                     {item.name === t("LOGOUT") ? (
                       <button
                         onClick={() => {
                           toast.success(t("REDIRECTING_TO_HOME_PAGE"));
                           setTimeout(() => navigate(item.href), 3000);
                         }}
-                        className="block w-full text-left px-4 py-2 text-lg text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none"
+                        className="block w-full text-left px-4 py-2 text-lg text-white data-[focus]:bg-gray-100 data-[focus]:outline-none cursor-pointer"
                       >
                         {item.name}
                       </button>
                     ) : (
-                      <Link
-                        to={item.href}
-                        className="block px-4 py-2 text-lg text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none"
+
+                      <DisclosureButton
+                        key={item.name}
+                        onClick={() => navigate(item.href)}
+                        className="block px-4 py-2 text-lg text-white data-[focus]:bg-gray-100 data-[focus]:outline-none cursor-pointer"
                       >
                         {item.name}
-                      </Link>
+                      </DisclosureButton>
+
                     )}
-                  </MenuItem>
+                  </div>
                 ))}
               </div>
             </div>

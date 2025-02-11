@@ -86,7 +86,7 @@ function Register() {
                 htmlFor="lastname"
                 className="block text-lg font-medium text-gray-900"
               >
-                {t('SURNAME')}
+                {t('LASTNAME')}
               </label>
               <input
                 id="lastname"
@@ -175,7 +175,7 @@ function Register() {
               onClick={() => navigate("/login")}
               className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
             >
-              {t("SIGN_IN")}
+              {t("LOGIN")}
             </button>
           </p>
         </div>

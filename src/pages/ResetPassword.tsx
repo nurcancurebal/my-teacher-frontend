@@ -35,7 +35,6 @@ function ResetPassword() {
     try {
       const response = await API.auth.resetPassword({ email, password, otp });
       toast.success(response.data.message);
-      toast.success(t("BEING_REDIRECTED_TO_LOG_IN"));
       setTimeout(() => {
         navigate("/login");
       }, 3000);
@@ -57,7 +56,7 @@ function ResetPassword() {
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
-            Şifremi Sıfırla
+            {t("RESET_PASSWORD")}
           </h2>
         </div>
 
@@ -68,7 +67,7 @@ function ResetPassword() {
                 htmlFor="email"
                 className="block text-lg font-medium text-gray-900"
               >
-                Email address
+                {t("EMAIL")}
               </label>
               <input
                 id="email"
@@ -87,7 +86,7 @@ function ResetPassword() {
                   htmlFor="password"
                   className="block text-lg font-medium text-gray-900"
                 >
-                  Yeni Şifre
+                  {t("NEW_PASSWORD")}
                 </label>
               </div>
               <input
@@ -107,7 +106,7 @@ function ResetPassword() {
                   htmlFor="newPasswordRepeat"
                   className="block text-lg font-medium text-gray-900"
                 >
-                  Yeni Şifre Tekrar
+                  {t("NEW_PASSWORD_AGAIN")}
                 </label>
               </div>
               <input
@@ -127,7 +126,7 @@ function ResetPassword() {
                   htmlFor="otp"
                   className="block text-lg font-medium text-gray-900"
                 >
-                  OTP Kodu
+                  {t("OTP_CODE")}
                 </label>
               </div>
               <input
@@ -147,28 +146,28 @@ function ResetPassword() {
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 disabled={loading}
               >
-                {loading ? "Şifre değiştiriliyor..." : "Şifremi Sıfırla"}
+                {loading ? t("CHANGING_PASSWORD") : t("RESET_PASSWORD")}
               </button>
             </div>
 
           </form>
 
           <p className="mt-10 text-center text-base text-gray-500">
-            Üye değil misiniz?{" "}
+            {t("NOT_A_MEMBER")}{" "}
             <button
               onClick={() => navigate("/register")}
               className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
             >
-              Şimdi kaydolun
+              {t("REGISTER_NOW")}
             </button>
           </p>
           <p className="mt-4 text-center text-base text-gray-500">
-            Zaten bir hesabınız var mı?{" "}
+            {t("ALREADY_HAVE_AN_ACCOUNT")} {" "}
             <button
               onClick={() => navigate("/login")}
               className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
             >
-              Giriş yapın
+              {t("LOGIN")}
             </button>
           </p>
         </div>

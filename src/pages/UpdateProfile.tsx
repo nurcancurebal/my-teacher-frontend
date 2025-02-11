@@ -71,14 +71,14 @@ function UpdateProfile({
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 lg:px-8">
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
         <div className="my-5 text-center font-semibold text-2xl">
-          Profili Güncelle
+          {t("UPDATE_PROFILE")}
         </div>
         <div>
           <label
             htmlFor="firstname"
             className="mt-5 block text-lg font-medium text-gray-900"
           >
-            İsim
+            {t("NAME")}
           </label>
           <input
             id="firstname"
@@ -97,7 +97,7 @@ function UpdateProfile({
             htmlFor="lastname"
             className="mt-5 block text-lg font-medium text-gray-900"
           >
-            Soyisim
+            {t("LASTNAME")}
           </label>
           <input
             id="lastname"
@@ -115,7 +115,7 @@ function UpdateProfile({
             htmlFor="username"
             className="mt-5 block text-lg font-medium text-gray-900"
           >
-            Kullanıcı adı
+            {t("USERNAME")}
           </label>
           <input
             id="username"
@@ -134,7 +134,7 @@ function UpdateProfile({
             htmlFor="email"
             className="mt-5 block text-lg font-medium text-gray-900"
           >
-            E-posta
+            {t("EMAIL")}
           </label>
           <input
             id="email"
@@ -154,7 +154,7 @@ function UpdateProfile({
             htmlFor="password"
             className="mt-5 block text-lg font-medium text-gray-900"
           >
-            Mevcut Şifre
+            {t("PASSWORD")}
           </label>
           <input
             id="password"
@@ -174,7 +174,7 @@ function UpdateProfile({
             onClick={updateUser}
             className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24"
           >
-            Güncelle
+            {t("UPDATE")}
           </button>
         </div>
       </div>

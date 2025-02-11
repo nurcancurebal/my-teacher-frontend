@@ -138,14 +138,14 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
                     as="h3"
                     className="text-2xl font-semibold text-gray-900"
                   >
-                    Öğrenci Ekle
+                    {t('ADD_STUDENT')}
                   </DialogTitle>
                 </div>
               </div>
 
               <div className="mt-3 mx-6">
                 <div className="block text-lg font-medium text-gray-900">
-                  Sınıf Seçiniz:
+                  {t('SELECT_CLASS')}:
                 </div>
                 <div className="grid sm:grid-cols-3 grid-cols-2 gap-5">
                   {classes.map((classItem, index) => (
@@ -170,7 +170,7 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
                     htmlFor="studentTc"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
-                    Öğrenci TC:
+                    {t('TR_IDENTITY_NUMBER')}:
                   </label>
 
                   <input
@@ -191,7 +191,7 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
                     htmlFor="studentName"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
-                    Öğrenci Adı:
+                    {t('NAME')}:
                   </label>
 
                   <input
@@ -212,7 +212,7 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
                     htmlFor="studentLastname"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
-                    Öğrenci Soyadı:
+                    {t('LASTNAME')}:
                   </label>
 
                   <input
@@ -233,7 +233,7 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
                     htmlFor="studentNumber"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
-                    Öğrenci Numarası:
+                    {t('STUDENT_NUMBER')}:
                   </label>
 
                   <input
@@ -251,27 +251,27 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
 
                 <div>
                   <div className="mt-5 block text-lg font-medium text-gray-900">
-                    Öğrenci Cinsiyeti:
+                    {t("GENDER")}:
                   </div>
 
                   <div className="grid grid-cols-2">
                     <button
                       type="button"
-                      className={`my-5 mx-auto inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 disabled:opacity-75 disabled:hover:bg-white ${gender === "Female" ? "bg-slate-200" : "bg-white"
+                      className={`my-5 mx-auto inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 disabled:opacity-75 disabled:hover:bg-white ${gender === t("FEMALE") ? "bg-slate-200" : "bg-white"
                         }`}
-                      onClick={() => setGender("Female")}
+                      onClick={() => setGender(t("FEMALE"))}
                       disabled={isDisabled}
                     >
-                      Kız
+                      {t("FEMALE")}
                     </button>
                     <button
                       type="button"
-                      className={`my-5 mx-auto inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 disabled:opacity-75 disabled:hover:bg-white ${gender === "Male" ? "bg-slate-200" : "bg-white"
+                      className={`my-5 mx-auto inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 disabled:opacity-75 disabled:hover:bg-white ${gender === t("MALE") ? "bg-slate-200" : "bg-white"
                         }`}
-                      onClick={() => setGender("Male")}
+                      onClick={() => setGender(t("MALE"))}
                       disabled={isDisabled}
                     >
-                      Erkek
+                      {t("MALE")}
                     </button>
                   </div>
                 </div>
@@ -281,7 +281,7 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
                     htmlFor="datePicker"
                     className="block text-lg font-medium text-gray-900"
                   >
-                    Doğum Tarihi:
+                    {t("BIRTHDATE")}:
                   </label>
 
                   <input
@@ -308,7 +308,7 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
                 onClick={handleAddStudent}
                 disabled={isDisabled}
               >
-                Ekle
+                {t('ADD')}
               </button>
               <button
                 type="button"
@@ -316,7 +316,7 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
                 onClick={cancelReturn}
                 className="mt-3 inline-flex w-full justify-center rounded-md bg-white py-2 text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-24  transition-all"
               >
-                İptal Et
+                {t('CANCEL')}
               </button>
             </div>
           </DialogPanel>

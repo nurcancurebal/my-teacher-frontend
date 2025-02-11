@@ -134,8 +134,8 @@ function SelectGrade({ open, setOpen }: TOpenProps) {
                     className="text-2xl font-semibold text-gray-900"
                   >
                     {showStudentSelection
-                      ? "Bir sınıf seçiniz?"
-                      : "Hangi notu güncellemek istediğinizi seçiniz."}
+                      ? t("SELECT_A_CLASS")
+                      : t("SELECT_WHICH_NOTE_YOU_WANT_TO_UPDATE")}
                   </DialogTitle>
                 </div>
               </div>
@@ -178,7 +178,7 @@ function SelectGrade({ open, setOpen }: TOpenProps) {
                 className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24"
                 onClick={handleSelectGrade}
               >
-                Devam Et
+                {t("CONTINUE")}
               </button>
               <button
                 type="button"
@@ -186,7 +186,7 @@ function SelectGrade({ open, setOpen }: TOpenProps) {
                 onClick={cancelReturn}
                 className="mt-3 inline-flex w-full justify-center rounded-md bg-white py-2 text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-24"
               >
-                {showStudentSelection ? "İptal Et" : "Geri Dön"}
+                {showStudentSelection ? t("CANCEL") : t("GO_BACK")}
               </button>
             </div>
           </DialogPanel>

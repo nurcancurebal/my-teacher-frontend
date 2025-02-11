@@ -5,7 +5,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { t } from "i18next";
 import { toast } from 'react-toastify';
 
-import { TStudent, TFilterStudentProps } from "../../types";
+import { TStudent, TFilterStudentProps } from "../../../types";
 
 function FilterStudentGenderSelect({
   filteredStudents,
@@ -21,14 +21,14 @@ function FilterStudentGenderSelect({
   const handleGenderChange = (gender: string) => {
     let filtered: TStudent[] = filteredStudents;
 
-    if (gender === "Kız") {
+    if (gender === t("FEMALE")) {
       setGenderFemale(!genderFemale);
       if (genderMale) {
         filtered = localStudents;
       } else {
         filtered = localStudents.filter((student) => student.gender === "Female");
       }
-    } else if (gender === "Erkek") {
+    } else if (gender === t("MALE")) {
       setGenderMale(!genderMale);
       if (genderFemale) {
         filtered = localStudents;
@@ -95,7 +95,7 @@ function FilterStudentGenderSelect({
         <Menu as="div" className="inline-block text-left">
           <div>
             <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-              Cinsiyet
+              {t("GENDER")}
               <ChevronDownIcon
                 aria-hidden="true"
                 className="size-5 text-gray-500 self-center"
@@ -114,10 +114,10 @@ function FilterStudentGenderSelect({
                   ? "text-gray-300 cursor-not-allowed"
                   : "text-gray-900"
                   }`}
-                onClick={() => handleGenderChange("Kız")}
+                onClick={() => handleGenderChange(t("FEMALE"))}
                 disabled={genderFemale}
               >
-                Kız
+                {t("FEMALE")}
               </MenuItem>
               <MenuItem
                 as="button"
@@ -125,10 +125,10 @@ function FilterStudentGenderSelect({
                   ? "text-gray-300 cursor-not-allowed"
                   : "text-gray-900"
                   }`}
-                onClick={() => handleGenderChange("Erkek")}
+                onClick={() => handleGenderChange(t("MALE"))}
                 disabled={genderMale}
               >
-                Erkek
+                {t("MALE")}
               </MenuItem>
             </div>
           </MenuItems>

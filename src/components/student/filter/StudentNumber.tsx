@@ -4,7 +4,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { TFilterStudentProps, TStudent } from "../../types";
+import { TFilterStudentProps, TStudent } from "../../../types";
 
 function FilterStudentNumber({
   filteredStudents,
@@ -50,7 +50,7 @@ function FilterStudentNumber({
           id="price"
           name="price"
           type="text"
-          placeholder="Öğrenci Numarası"
+          placeholder={t("STUDENT_NUMBER")}
           value={searchTerm}
           onChange={searchInputNumber}
           onBlur={() => {

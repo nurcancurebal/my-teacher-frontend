@@ -83,7 +83,7 @@ function UpdateClassDialog({
                       as="h3"
                       className="text-2xl font-semibold text-gray-900"
                     >
-                      Sınıf Bilgilerini Güncelle
+                      {t('UPDATE_CLASS_INFORMATION')}
                     </DialogTitle>
                   </div>
                 </div>
@@ -94,7 +94,7 @@ function UpdateClassDialog({
                   htmlFor="className"
                   className="block text-base font-medium text-gray-900"
                 >
-                  Sınıf Adı:
+                  {t('CLASS_NAME')}:
                 </label>
                 <input
                   id="className"
@@ -113,7 +113,7 @@ function UpdateClassDialog({
                   htmlFor="explanation"
                   className="mt-5 block text-lg font-medium text-gray-900"
                 >
-                  Açıklama:
+                  {t('DESCRIPTION')}:
                 </label>
                 <textarea
                   id="explanation"
@@ -132,7 +132,7 @@ function UpdateClassDialog({
                 className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24"
                 onClick={handleUpdateClass}
               >
-                Güncelle
+                {t('UPDATE')}
               </button>
               <button
                 type="button"
@@ -140,7 +140,7 @@ function UpdateClassDialog({
                 className="mt-3 inline-flex w-full justify-center rounded-md bg-white py-2 text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-24"
                 onClick={onClose}
               >
-                İptal Et
+                {t('CANCEL')}
               </button>
             </div>
           </DialogPanel>

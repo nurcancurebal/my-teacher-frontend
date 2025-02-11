@@ -6,13 +6,13 @@ import { isAxiosError } from "axios";
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import FilterGenderSelect from "./FilterGenderSelect";
-import FilterClassNameSelect from "./FilterClassNameSelect";
-import FilterNameLastname from "./FilterNameLastname";
-import FilterNumber from "./FilterNumber";
+import Gender from "./Gender";
+import ClassName from "./ClassName";
+import NameLastname from "./NameLastname";
+import StudentNumber from "./StudentNumber";
 
-import API from "../../api";
-import { TStudent, TFilteredStudentsProps } from "../../types";
+import API from "../../../api";
+import { TStudent, TFilteredStudentsProps } from "../../../types";
 
 function FilteredStudents({
   setStudents,
@@ -63,7 +63,7 @@ function FilteredStudents({
         <Menu as="div" className="inline-block text-left">
           <div>
             <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-              Filtre
+              {t('FILTER')}
               <ChevronDownIcon
                 aria-hidden="true"
                 className="size-5 text-gray-500 self-center"
@@ -85,7 +85,7 @@ function FilteredStudents({
                 onClick={() => setFilterNumber(!filterNumber)}
                 disabled={filterNumber}
               >
-                Öğrenci Numarası
+                {t('STUDENT_NUMBER')}
               </MenuItem>
               <MenuItem
                 as="button"
@@ -96,7 +96,7 @@ function FilteredStudents({
                 onClick={() => setFilterNameLastname(!filterNameLastname)}
                 disabled={filterNameLastname}
               >
-                Öğrenci Adı Soyadı
+                {t('NAME') + " " + t('LASTNAME')}
               </MenuItem>
               <MenuItem
                 as="button"
@@ -107,7 +107,7 @@ function FilteredStudents({
                 onClick={() => setFilterGender(!filterGender)}
                 disabled={filterGender}
               >
-                Öğrenci Cinsiyeti
+                {t("GENDER")}
               </MenuItem>
               <MenuItem
                 as="button"
@@ -118,7 +118,7 @@ function FilteredStudents({
                 onClick={() => setFilterClassName(!filterClassName)}
                 disabled={filterClassName}
               >
-                Öğrenci Sınıfı
+                {t('CLASSNAME')}
               </MenuItem>
             </div>
           </MenuItems>
@@ -126,25 +126,25 @@ function FilteredStudents({
       </div>
       <div>
         {filterNameLastname ? (
-          <FilterNameLastname
+          <NameLastname
             filteredStudents={filteredStudents}
             handleFilter={handleFilter}
           />
         ) : null}
         {filterNumber ? (
-          <FilterNumber
+          <StudentNumber
             filteredStudents={filteredStudents}
             handleFilter={handleFilter}
           />
         ) : null}
         {filterClassName ? (
-          <FilterClassNameSelect
+          <ClassName
             filteredStudents={filteredStudents}
             handleFilter={handleFilter}
           />
         ) : null}
         {filterGender ? (
-          <FilterGenderSelect
+          <Gender
             filteredStudents={filteredStudents}
             handleFilter={handleFilter}
           />
