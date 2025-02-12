@@ -67,6 +67,16 @@ export type TGradeListResponse = {
   data: TGrade[];
 } & TResponseOtherParams;
 
+export type TGradeType = {
+  gradeType: string;
+  createAt: Date;
+  lastUpdated: Date;
+};
+
+export type TGrareTypeAllResponse = {
+  data: TGradeType[];
+} & TResponseOtherParams;
+
 export type TContentProps = {
   userData: TUser | null;
   onProfileUpdate: () => void;
@@ -139,6 +149,13 @@ export type TGradeTypeExists = {
 export type TOpenProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
+};
+
+export type TGradeUpdateProps = {
+  open: boolean;
+  onClose: () => void;
+  grade: TGradeType | null;
+  setNewGradeType: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export type TViewDetailDialogProps = {

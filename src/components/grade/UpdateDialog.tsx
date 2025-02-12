@@ -1,118 +1,30 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import { isAxiosError } from "axios";
 
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
 
-import API from "../../api";
-import { TOpenProps, TClass } from "../../types";
+import { TGradeUpdateProps } from "../../types";
 
-function SelectGrade({ open, setOpen }: TOpenProps) {
+function SelectGrade({ open, onClose, grade, setNewGradeType }: TGradeUpdateProps) {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
-  const [classes, setClasses] = useState<TClass[]>([]);
-  const [showStudentSelection, setShowStudentSelection] =
-    useState<boolean>(true);
-  const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
-  const [gradeName, setGradeName] = useState<string>("");
-  const [gradeType, setGradeType] = useState<string[]>([]);
+  const [gradeType, setGradeType] = useState<string>("");
 
   useEffect(() => {
-    if (open) {
-      fetchClasses();
-      setShowStudentSelection(true);
-      setSelectedClassId(null);
-      setGradeName("");
+    if (grade) {
+      setGradeType(grade.gradeType);
     }
-  }, [open]);
-
-  const fetchClasses = async () => {
-    try {
-      const classes = await API.class.allList();
-      setClasses(classes.data.data);
-    } catch (error: unknown) {
-      console.error(error);
-      if (isAxiosError(error) && error.response) {
-        const errorMessage = error.response?.data?.message;
-        toast.error(errorMessage || t('UNKNOWN_ERROR'));
-      } else {
-        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
-      }
-    }
-  };
-
-  const handleSelectGrade = async () => {
-
-    if (showStudentSelection && selectedClassId !== null) {
-      setShowStudentSelection(false);
-
-      try {
-        const notesInClass = await API.grade.classFindAll(selectedClassId);
-
-        const uniqueGradeTypes = Array.from(
-          new Set(
-            (notesInClass.data.data as unknown as { gradeType: string }[]).map(
-              (note) => note.gradeType
-            )
-          )
-        );
-        if (uniqueGradeTypes.length === 0) {
-          toast.error(t("THERE_ARE_NO_NOTES_CLASS"));
-          return;
-        }
-        setGradeType(uniqueGradeTypes);
-      } catch (error: unknown) {
-        console.error(error);
-        if (isAxiosError(error) && error.response) {
-          const errorMessage = error.response?.data?.message;
-          toast.error(errorMessage || t('UNKNOWN_ERROR'));
-        } else {
-          toast.error((error as Error).message || t('UNKNOWN_ERROR'));
-        }
-      }
-
-      return;
-    }
-
-    if (showStudentSelection && selectedClassId === null) {
-      toast.error(t("CLASS_SELECTION_NOT_MADE"));
-      return;
-    }
-
-    if (gradeName !== "") {
-      toast.success(t("BEING_DIRECTED_TO_UPDATE_YOUR_NOTE"));
-      setTimeout(() => {
-        navigate("/update-grade", {
-          state: { selectedClassId, gradeName },
-        });
-        setGradeName("");
-      }, 3000);
-    }
-  };
-
-  const cancelReturn = () => {
-    setShowStudentSelection(true);
-    setGradeName("");
-    setGradeType([]);
-
-    if (showStudentSelection) {
-      setOpen(false);
-      return;
-    }
-  };
+  }, [grade]);
 
   return (
     <Dialog
       open={open}
-      onClose={() => setOpen(false)}
+      onClose={onClose}
       className="relative z-10"
     >
       <DialogBackdrop
@@ -121,72 +33,60 @@ function SelectGrade({ open, setOpen }: TOpenProps) {
       />
 
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div className="flex min-h-full items-end justify-center p-4 text-center items-center sm:p-0">
+        <div className="flex min-h-full justify-center p-4 text-center items-center sm:p-0">
           <DialogPanel
             transition
-            className="relative transform overflow-hidden rounded-md bg-white text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:p-12 sm:max-w-lg data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
+            className="relative transform overflow-hidden rounded-md bg-white text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:p-12 sm:max-w-lg data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95 p-5"
           >
-            <div className="bg-white p-5">
-              <div className="sm:flex sm:items-start">
-                <div className="text-left mx-auto">
-                  <DialogTitle
-                    as="h3"
-                    className="text-2xl font-semibold text-gray-900"
-                  >
-                    {showStudentSelection
-                      ? t("SELECT_A_CLASS")
-                      : t("SELECT_WHICH_NOTE_YOU_WANT_TO_UPDATE")}
-                  </DialogTitle>
+            <div className="p-5">
+              <div className="bg-white">
+                <div className="sm:flex sm:items-start">
+                  <div className="text-left mx-auto">
+                    <DialogTitle
+                      as="h3"
+                      className="text-2xl font-semibold text-gray-900"
+                    >
+                      {t("UPDATE_GRADE_TYPE")}
+                    </DialogTitle>
+                  </div>
                 </div>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="studentName"
+                  className="mt-5 block text-lg font-medium text-gray-900"
+                >
+                  {t('NAME')}:
+                </label>
+
+                <input
+                  id="studentName"
+                  name="studentName"
+                  type="text"
+                  required
+                  value={gradeType}
+                  onChange={(e) => setGradeType(e.target.value)}
+                  className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3"
+                />
               </div>
             </div>
 
-            {showStudentSelection ? (
-              <div className="grid sm:grid-cols-3 grid-cols-2 gap-5">
-                {classes.map((classItem, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    className={`mx-auto m-4 inline-flex w-24 py-2 justify-center rounded-md text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 focus:bg-gray-200 active:bg-gray-100 transition-all ${selectedClassId === classItem.id
-                      ? "bg-gray-200"
-                      : "bg-white"
-                      }`}
-                    onClick={() => classItem.id !== undefined && setSelectedClassId(classItem.id)}
-                  >
-                    {classItem.className}
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <div className="mt-3">
-                {gradeType.map((grade, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    className="m-5 inline-flex justify-center rounded-md bg-white text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 w-24 py-2"
-                    onClick={() => setGradeName(grade)}
-                  >
-                    {grade}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            <div className="my-5 bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+            <div className="p-5 bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
               <button
                 type="button"
                 className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24"
-                onClick={handleSelectGrade}
+                onClick={() => setNewGradeType(gradeType)}
               >
-                {t("CONTINUE")}
+                {t("UPDATE")}
               </button>
               <button
                 type="button"
                 data-autofocus
-                onClick={cancelReturn}
+                onClick={onClose}
                 className="mt-3 inline-flex w-full justify-center rounded-md bg-white py-2 text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-24"
               >
-                {showStudentSelection ? t("CANCEL") : t("GO_BACK")}
+                {t("CANCEL")}
               </button>
             </div>
           </DialogPanel>

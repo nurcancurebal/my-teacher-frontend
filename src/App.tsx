@@ -22,7 +22,7 @@ function App() {
   const [loadFetchUser, setLoadFetchUser] = React.useState<boolean>(false);
   const [user, setUser] = React.useState<TUser | null>(null);
 
-  const fetchUser = async () => {
+  const fetchAuthUser = async () => {
     try {
       const response = await API.auth.getUser();
       const userLanguage = response.data.data.language;
@@ -59,7 +59,7 @@ function App() {
           navigate("/login");
         }
 
-        await fetchUser();
+        await fetchAuthUser();
       }
     };
 
@@ -69,7 +69,7 @@ function App() {
   return (
     <div>
       {loadFetchUser && (
-        <Content userData={user} onProfileUpdate={fetchUser} />
+        <Content userData={user} onProfileUpdate={fetchAuthUser} />
       )}
     </div>
   );

@@ -97,6 +97,10 @@ const resources = {
       SELECT_WHICH_NOTE_YOU_WANT_TO_UPDATE:
         "Select which note you want to update.",
       USER_INFORMATION: "User Information",
+      GRADE_TYPE: "Grade Type",
+      CREATED_ATE: "Created At",
+      LAST_UPDATED: "Last Updated",
+      UPDATE_GRADE_TYPE: "Update Grade Type",
     },
   },
   TR: {
@@ -192,6 +196,10 @@ const resources = {
       SELECT_WHICH_NOTE_YOU_WANT_TO_UPDATE:
         "Güncellemek istediğiniz notu seçiniz.",
       USER_INFORMATION: "Kullanıcı Bilgileri",
+      GRADE_TYPE: "Not Türü",
+      CREATED_ATE: "Oluşturulma Tarihi",
+      LAST_UPDATED: "Son Güncelleme",
+      UPDATE_GRADE_TYPE: "Not Türünü Güncelle",
     },
   },
 };

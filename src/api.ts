@@ -24,6 +24,7 @@ import {
   TDateResponse,
   TGradeListResponse,
   TStudentResponse,
+  TGrareTypeAllResponse,
 } from "./types";
 
 export default {
@@ -135,6 +136,17 @@ export default {
     },
   },
   grade: {
+    allUniqueGradeType: async (): Promise<
+      AxiosResponse<TGrareTypeAllResponse>
+    > => {
+      return await axios.get("grade/grade-type/unique");
+    },
+    allGradeType: async (
+      gradeType: string
+    ): Promise<AxiosResponse<TGradeListResponse>> => {
+      console.log(gradeType);
+      return await axios.post("grade/grade-type", { gradeType });
+    },
     findLatestGrade: async (): Promise<AxiosResponse<TDateResponse>> => {
       return await axios.get("grade/last-added");
     },

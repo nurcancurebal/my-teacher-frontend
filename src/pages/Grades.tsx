@@ -1,94 +1,116 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { isAxiosError } from "axios";
 
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
-import { TClass, TStudent } from "../types";
+import UpdateDialog from "../components/grade/UpdateDialog";
+
+import API from "../api";
+import { TGradeType } from "../types";
 
 function Grade() {
   const { t } = useTranslation();
 
-  const [students, setStudents] = useState<TStudent[]>([]);
-  const [classes, setClasses] = useState<TClass[]>([]);
-  const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
+  const [grades, setGrades] = useState<TGradeType[]>([]);
+  const [selectedGrades, setSelectedGrades] = useState<TGradeType | null>(null);
+  const [newGradeType, setNewGradeType] = useState<string>("");
+  const [oldGradeType, setOldGradeType] = useState<string>("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await API.grade.allUniqueGradeType();
+        setGrades(response.data.data);
+      } catch (error: unknown) {
+        console.error(error);
+        if (isAxiosError(error) && error.response) {
+          const errorMessage = error.response?.data?.message;
+          toast.error(errorMessage || t('UNKNOWN_ERROR'));
+
+        } else {
+          toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+        }
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    console.log(newGradeType);
+    async function fetchGradeTypeData() {
+      try {
+        const response = await API.grade.allGradeType(oldGradeType);
+
+        for (const grade of response.data.data) {
+          const { classId, studentId, id, gradeValue } = grade;
+          const bodyData = { gradeType: newGradeType, gradeValue };
+          await API.grade.update({ classId, studentId, id, ...bodyData });
+        }
+
+
+
+      } catch (error: unknown) {
+        console.error(error);
+        if (isAxiosError(error) && error.response) {
+          const errorMessage = error.response?.data?.message;
+          toast.error(errorMessage || t('UNKNOWN_ERROR'));
+        } else {
+          toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+        }
+      }
+    }
+
+    if (newGradeType) {
+      fetchGradeTypeData();
+    }
+  }, [newGradeType]);
+
+  const handleUpdate = (grade: TGradeType) => {
+    setSelectedGrades(grade);
+  };
 
   return (
     <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 xl:px-0 md:px-24 px-12">
       <div className="overflow-x-auto xl:col-start-2 col-span-2 xl:p-0">
-        <div className="grid 2xl:grid-cols-7 xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 grid-cols-2">
-          {classes.map((classItem, index) => (
-            <button
-              key={index}
-              type="button"
-              className={`mx-auto m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${selectedClassId === classItem.id ? "bg-slate-200" : "bg-white"
-                }`}
-            >
-              {classItem.className}
-            </button>
-          ))}
-          <button
-            type="button"
-            className={`mx-auto m-2 inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 ${selectedClassId === null ? "bg-slate-200" : "bg-white"
-              }`}
-          >
-            {t('ALL_CLASSES')}
-          </button>
-        </div>
 
         <table className="border-collapse w-full mt-5 border border-slate-300">
           <thead>
             <tr>
               <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                {t('STUDENT_NUMBER')}
+                {t('GRADE_TYPE')}
               </th>
               <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                {t("NAME") + " " + t("LASTNAME")}
+                {t("CREATED_ATE")}
               </th>
               <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                {t(("GENDER"))}
-              </th>
-              <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                {t('CLASS_NAME')}
+                {t(("LAST_UPDATED"))}
               </th>
               <th className="border-b border-slate-400"></th>
             </tr>
           </thead>
           <tbody>
-            {students.map((student, index) => (
+            {grades.map((item, index) => (
               <tr
                 key={index}
                 className={index % 2 === 0 ? "bg-gray-200" : "bg-gray-100"}
               >
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {student.studentNumber}
+                  {item.gradeType}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {student.studentName} {student.studentLastname}
+                  {new Date(item.createAt).toLocaleDateString()}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {student.gender}
-                </td>
-                <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {classes.find((c) => c.id === student.classId)?.className}
+                  {new Date(item.lastUpdated).toLocaleDateString()}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4">
                   <div className="flex justify-center mx-auto">
-                    <button className="mx-4" title="Detay">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="size-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v16.5c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Zm3.75 11.625a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"
-                        />
-                      </svg>
-                    </button>
-                    <button className="mx-4" title="Güncelle">
+                    <button className="mx-4" title="Güncelle" onClick={() => {
+                      handleUpdate(item);
+                      setOldGradeType(item.gradeType);
+                    }}>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -138,6 +160,12 @@ function Grade() {
           </button>
         </div>
       </div>
+      <UpdateDialog
+        open={!!selectedGrades}
+        grade={selectedGrades}
+        onClose={() => setSelectedGrades(null)}
+        setNewGradeType={setNewGradeType}
+      />
     </div>
   );
 };
