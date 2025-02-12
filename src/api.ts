@@ -89,6 +89,34 @@ export default {
     allList: async (): Promise<AxiosResponse<TAllListStudentResponse>> => {
       return await axios.get("student");
     },
+    filterStudent: async (filter: {
+      firstname?: string;
+      lastname?: string;
+      studentNumber?: number;
+      gender?: string;
+      classId?: number;
+    }): Promise<AxiosResponse<TAllListStudentResponse>> => {
+      let address = "student/filter";
+      let query = "";
+
+      for (const key in filter) {
+        const typedKey = key as keyof typeof filter;
+        if (filter[typedKey]) {
+          query += `${key}=${filter[typedKey]}&`;
+        }
+      }
+
+      if (query) {
+        address += `?${query}`;
+      }
+
+      if (address.endsWith("&")) {
+        address = address.slice(0, -1);
+      }
+      console.log(address);
+
+      return await axios.get(address);
+    },
     count: async (): Promise<AxiosResponse<TNumberResponse>> => {
       return await axios.get("student/count");
     },

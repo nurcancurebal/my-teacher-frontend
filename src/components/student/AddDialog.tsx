@@ -72,7 +72,6 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
       toast.error(t('CLASS_SELECTION_WAS_NOT_MADE'));
       return;
     }
-
     try {
       const response = await API.student.add({
         classId: selectedClassId,
@@ -101,6 +100,16 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
       }
     }
   };
+
+  useEffect(() => {
+    if (gender === "Erkek") {
+      setGender("Male");
+    }
+
+    if (gender === "Kız") {
+      setGender("Female");
+    }
+  }, [gender]);
 
   const cancelReturn = () => {
     setOpen(false);

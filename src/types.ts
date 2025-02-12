@@ -177,9 +177,13 @@ export type TFilteredStudentsProps = {
   setStudents: React.Dispatch<React.SetStateAction<TStudent[]>>;
 };
 
-export type TFilterStudentProps = {
-  filteredStudents: TStudent[];
-  handleFilter: (filtered: TStudent[]) => void;
+export type TFilterStudentInputProps = {
+  value: string;
+  placeholder: string;
+} & TFilterStudentMenuProps;
+
+export type TFilterStudentMenuProps = {
+  setValue: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export type TGradeValue = {

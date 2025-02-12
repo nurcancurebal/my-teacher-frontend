@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { isAxiosError } from "axios";
@@ -6,37 +6,89 @@ import { isAxiosError } from "axios";
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import Gender from "./Gender";
-import ClassName from "./ClassName";
-import NameLastname from "./NameLastname";
-import StudentNumber from "./StudentNumber";
+import Input from "./Input";
+import GenderMenu from "./GenderMenu";
+import ClassNameMenu from "./ClassNameMenu";
 
 import API from "../../../api";
-import { TStudent, TFilteredStudentsProps } from "../../../types";
+import { TFilteredStudentsProps } from "../../../types";
 
 function FilteredStudents({
   setStudents,
 }: TFilteredStudentsProps) {
   const { t } = useTranslation();
 
-  const [filteredStudents, setFilteredStudents] = useState<TStudent[]>([]);
-  const [filterNumber, setFilterNumber] = useState<boolean>(false);
-  const [filterNameLastname, setFilterNameLastname] = useState<boolean>(false);
-  const [filterGender, setFilterGender] = useState<boolean>(false);
-  const [filterClassName, setFilterClassName] = useState<boolean>(false);
+  const [showArea, setShowArea] = useState<string[]>([]);
 
-  const fetchStudents = useCallback(async () => {
+  const [firstname, setFirstname] = useState<string>("");
+  const [lastname, setLastname] = useState<string>("");
+  const [studentNumber, setStudentNumber] = useState<string>("");
+  const [gender, setGender] = useState<string>("");
+  const [classId, setClassId] = useState<string>("");
+
+  const toggleShowArea = (area: string) => {
+    if (showArea.includes(area)) {
+      setShowArea(showArea.filter((item) => item !== area));
+
+      switch (area) {
+        case t('LASTNAME'):
+          setLastname("");
+          break;
+        case t('FIRSTNAME'):
+          setFirstname("");
+          break;
+        case t('STUDENT_NUMBER'):
+          setStudentNumber("");
+          break;
+        case t('GENDER'):
+          setGender("");
+          break;
+        case t('CLASS_ID'):
+          setClassId("");
+          break;
+        default:
+          break;
+      }
+      fetchStudents();
+    } else {
+      setShowArea([...showArea, area]);
+    }
+  };
+
+  const showAreaCheck = (area: string) => {
+    return showArea.includes(area);
+  }
+
+  const fetchStudents = async () => {
     try {
-      const response = await API.student.allList();
-      const studentsData = response.data.data;
+      const filter: { [key: string]: string } = {};
 
-      if (!studentsData || studentsData.length === 0) {
-        setStudents([]);
-        return;
+      if (firstname) {
+        filter["firstname"] = firstname;
       }
 
-      setStudents(studentsData);
-      setFilteredStudents(studentsData);
+      if (lastname) {
+        filter["lastname"] = lastname;
+      }
+
+      if (studentNumber) {
+        filter["studentNumber"] = studentNumber;
+      }
+
+      if (gender) {
+        filter["gender"] = gender;
+      } else {
+        filter["gender"] = "";
+      }
+
+      if (classId) {
+        filter["classId"] = classId;
+      }
+
+      const response = await API.student.filterStudent(filter);
+      const studentsData = response.data.data;
+
+      setStudents(studentsData && studentsData.length === 0 ? [] : studentsData);
     } catch (error: unknown) {
       console.error(error);
       if (isAxiosError(error) && error.response) {
@@ -46,16 +98,12 @@ function FilteredStudents({
         toast.error((error as Error).message || t('UNKNOWN_ERROR'));
       }
     }
-  }, [setStudents]);
+
+  }
 
   useEffect(() => {
     fetchStudents();
-  }, [fetchStudents]);
-
-  const handleFilter = (filtered: TStudent[]) => {
-    setFilteredStudents(filtered);
-    setStudents(filtered);
-  };
+  }, [firstname, lastname, studentNumber, gender, classId]);
 
   return (
     <div className="flex flex-col ">
@@ -78,75 +126,82 @@ function FilteredStudents({
             <div className="py-1">
               <MenuItem
                 as="button"
-                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${filterNumber
-                  ? "text-gray-300 cursor-not-allowed"
+                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${showAreaCheck("STUDENT_NUMBER")
+                  ? "text-gray-300"
                   : "text-gray-900"
                   }`}
-                onClick={() => setFilterNumber(!filterNumber)}
-                disabled={filterNumber}
+                onClick={() => toggleShowArea("STUDENT_NUMBER")}
               >
                 {t('STUDENT_NUMBER')}
               </MenuItem>
               <MenuItem
                 as="button"
-                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${filterNameLastname
-                  ? "text-gray-300 cursor-not-allowed"
+                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${showAreaCheck("FIRSTNAME")
+                  ? "text-gray-300"
                   : "text-gray-900"
                   }`}
-                onClick={() => setFilterNameLastname(!filterNameLastname)}
-                disabled={filterNameLastname}
+                onClick={() => toggleShowArea("FIRSTNAME")}
               >
-                {t('NAME') + " " + t('LASTNAME')}
+                {t('NAME')}
               </MenuItem>
               <MenuItem
                 as="button"
-                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${filterGender
-                  ? "text-gray-300 cursor-not-allowed"
+                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${showAreaCheck("LASTNAME")
+                  ? "text-gray-300"
                   : "text-gray-900"
                   }`}
-                onClick={() => setFilterGender(!filterGender)}
-                disabled={filterGender}
+                onClick={() => toggleShowArea("LASTNAME")}
+              >
+                {t('LASTNAME')}
+              </MenuItem>
+              <MenuItem
+                as="button"
+                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${showAreaCheck("GENDER")
+                  ? "text-gray-300"
+                  : "text-gray-900"
+                  }`}
+                onClick={() => toggleShowArea("GENDER")}
               >
                 {t("GENDER")}
               </MenuItem>
               <MenuItem
                 as="button"
-                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${filterClassName
-                  ? "text-gray-300 cursor-not-allowed"
+                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${showAreaCheck("CLASS_ID")
+                  ? "text-gray-300"
                   : "text-gray-900"
                   }`}
-                onClick={() => setFilterClassName(!filterClassName)}
-                disabled={filterClassName}
+                onClick={() => toggleShowArea("CLASS_ID")}
               >
-                {t('CLASSNAME')}
+                {t('CLASS_NAME')}
               </MenuItem>
             </div>
           </MenuItems>
         </Menu>
       </div>
       <div>
-        {filterNameLastname ? (
-          <NameLastname
-            filteredStudents={filteredStudents}
-            handleFilter={handleFilter}
+        {showAreaCheck("LASTNAME") ? (
+          <Input
+            setValue={setLastname} value={lastname} placeholder={t('LASTNAME')}
           />
         ) : null}
-        {filterNumber ? (
-          <StudentNumber
-            filteredStudents={filteredStudents}
-            handleFilter={handleFilter}
+        {showAreaCheck("FIRSTNAME") ? (
+          <Input
+            setValue={setFirstname} value={firstname} placeholder={t('NAME')}
           />
         ) : null}
-        {filterClassName ? (
-          <ClassName
-            filteredStudents={filteredStudents}
-            handleFilter={handleFilter}
+        {showAreaCheck("STUDENT_NUMBER") ? (
+          <Input
+            setValue={setStudentNumber} value={studentNumber} placeholder={t('STUDENT_NUMBER')}
           />
         ) : null}
-        {filterGender ? (
-          <Gender
-            filteredStudents={filteredStudents}
-            handleFilter={handleFilter}
+        {showAreaCheck("GENDER") ? (
+          <GenderMenu
+            setValue={setGender}
+          />
+        ) : null}
+        {showAreaCheck("CLASS_ID") ? (
+          <ClassNameMenu
+            setValue={setClassId}
           />
         ) : null}
       </div>

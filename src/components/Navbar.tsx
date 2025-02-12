@@ -253,6 +253,7 @@ function Navbar({ userData }: TUserDataProps) {
             </div>
           </DisclosurePanel>
         </Disclosure>
+        <div></div>
       </div>
     </>
   );
