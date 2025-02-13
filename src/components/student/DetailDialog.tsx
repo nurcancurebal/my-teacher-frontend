@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 import { TViewDetailDialogProps } from "../../types";
 
-function ViewDetailDialog({
+function DetailDialog({
   open,
   setOpen,
   student,
@@ -50,13 +50,13 @@ function ViewDetailDialog({
               <div className="sm:mx-0 mx-4 pb-5">
                 <span className="text-lg font-medium">{t("NAME") + " " + t("LASTNAME")} :</span>
                 <span className="text-base ml-3">
-                  {student.studentName} {student.studentLastname}
+                  {student.firstname} {student.lastname}
                 </span>
               </div>
 
               <div className="sm:mx-0 mx-4 pb-5">
-                <span className="text-lg font-medium">{t("STUDENT_NUMBER")}:</span>
-                <span className="text-base ml-3">{student.studentNumber}</span>
+                <span className="text-lg font-medium">{t("NUMBER")}:</span>
+                <span className="text-base ml-3">{student.number}</span>
               </div>
 
               <div className="sm:mx-0 mx-4 pb-5">
@@ -67,9 +67,9 @@ function ViewDetailDialog({
               </div>
 
               <div className="sm:mx-0 mx-4">
-                <span className="text-lg font-medium">{t("BIRTHDATE")}:</span>
+                <span className="text-lg font-medium">{t("BIRTHDAY")}:</span>
                 <span className="text-base ml-3">
-                  {student.birthdate ? new Date(student.birthdate).toLocaleDateString() : "N/A"}
+                  {student.birthday ? new Date(student.birthday).toLocaleDateString() : "N/A"}
                 </span>
               </div>
             </div>
@@ -90,4 +90,4 @@ function ViewDetailDialog({
   );
 };
 
-export default ViewDetailDialog;
+export default DetailDialog;

@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 import { TGradeUpdateProps } from "../../types";
 
-function SelectGrade({ open, onClose, grade, setNewGradeType }: TGradeUpdateProps) {
+function UpdateDialog({ open, setOpen, grade, setNewGradeType }: TGradeUpdateProps) {
   const { t } = useTranslation();
 
   const [gradeType, setGradeType] = useState<string>("");
@@ -24,7 +24,7 @@ function SelectGrade({ open, onClose, grade, setNewGradeType }: TGradeUpdateProp
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={setOpen}
       className="relative z-10"
     >
       <DialogBackdrop
@@ -54,15 +54,15 @@ function SelectGrade({ open, onClose, grade, setNewGradeType }: TGradeUpdateProp
 
               <div>
                 <label
-                  htmlFor="studentName"
+                  htmlFor="firstname"
                   className="mt-5 block text-lg font-medium text-gray-900"
                 >
                   {t('NAME')}:
                 </label>
 
                 <input
-                  id="studentName"
-                  name="studentName"
+                  id="firstname"
+                  name="firstname"
                   type="text"
                   required
                   value={gradeType}
@@ -83,7 +83,7 @@ function SelectGrade({ open, onClose, grade, setNewGradeType }: TGradeUpdateProp
               <button
                 type="button"
                 data-autofocus
-                onClick={onClose}
+                onClick={() => setOpen(false)}
                 className="mt-3 inline-flex w-full justify-center rounded-md bg-white py-2 text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-24"
               >
                 {t("CANCEL")}
@@ -96,4 +96,4 @@ function SelectGrade({ open, onClose, grade, setNewGradeType }: TGradeUpdateProp
   );
 };
 
-export default SelectGrade;
+export default UpdateDialog;

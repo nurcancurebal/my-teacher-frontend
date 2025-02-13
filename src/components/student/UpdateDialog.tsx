@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 import API from "../../api";
 import { TUpdateStudentDialogProps, TClass } from "../../types";
 
-function UpdateStudentDialog({
+function UpdateDialog({
   open,
   setOpen,
   student,
@@ -22,15 +22,15 @@ function UpdateStudentDialog({
   const { t } = useTranslation();
 
   const [idNumber, setIdNumber] = useState<string>(student.idNumber);
-  const [studentName, setStudentName] = useState<string>(student.studentName);
-  const [studentLastname, setStudentLastName] = useState<string>(
-    student.studentLastname
+  const [firstname, setFirstname] = useState<string>(student.firstname);
+  const [lastname, setLastname] = useState<string>(
+    student.lastname
   );
-  const [studentNumber, setStudentNumber] = useState<number>(
-    student.studentNumber
+  const [number, setNumber] = useState<number>(
+    student.number
   );
   const [gender, setGender] = useState<string>(student.gender);
-  const [birthdate, setBirthdate] = useState<Date>(student.birthdate ? new Date(student.birthdate) : new Date());
+  const [birthday, setBirthday] = useState<Date>(student.birthday ? new Date(student.birthday) : new Date());
   const [classId, setClassId] = useState<number>(student.classId);
   const [classes, setClasses] = useState<TClass[]>([]);
 
@@ -54,7 +54,7 @@ function UpdateStudentDialog({
 
   const handleUpdateStudent = async () => {
     try {
-      const response = await API.student.update({ id: student.id, classId, idNumber, studentName, studentLastname, studentNumber: studentNumber, gender, birthdate });
+      const response = await API.student.update({ id: student.id, classId, idNumber, firstname, lastname, number: number, gender, birthday });
       toast.success(response.data.message);
 
       setTimeout(() => {
@@ -149,19 +149,19 @@ function UpdateStudentDialog({
 
                 <div>
                   <label
-                    htmlFor="studentName"
+                    htmlFor="firstname"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
                     {t('NAME')}:
                   </label>
 
                   <input
-                    id="studentName"
-                    name="studentName"
+                    id="firstname"
+                    name="firstname"
                     type="text"
                     required
-                    value={studentName}
-                    onChange={(e) => setStudentName(e.target.value)}
+                    value={firstname}
+                    onChange={(e) => setFirstname(e.target.value)}
                     onKeyDown={enterKeyHandler}
                     className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3"
                   />
@@ -169,19 +169,19 @@ function UpdateStudentDialog({
 
                 <div>
                   <label
-                    htmlFor="studentLastname"
+                    htmlFor="lastname"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
                     {t('LASTNAME')}:
                   </label>
 
                   <input
-                    id="studentLastname"
-                    name="studentLastname"
+                    id="lastname"
+                    name="lastname"
                     type="text"
                     required
-                    value={studentLastname}
-                    onChange={(e) => setStudentLastName(e.target.value)}
+                    value={lastname}
+                    onChange={(e) => setLastname(e.target.value)}
                     onKeyDown={enterKeyHandler}
                     className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3"
                   />
@@ -189,19 +189,19 @@ function UpdateStudentDialog({
 
                 <div>
                   <label
-                    htmlFor="studentNumber"
+                    htmlFor="number"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
-                    {t('STUDENT_NUMBER')}:
+                    {t('NUMBER')}:
                   </label>
 
                   <input
-                    id="studentNumber"
-                    name="studentNumber"
+                    id="number"
+                    name="number"
                     type="text"
                     required
-                    value={studentNumber}
-                    onChange={(e) => setStudentNumber(Number(e.target.value))}
+                    value={number}
+                    onChange={(e) => setNumber(Number(e.target.value))}
                     onKeyDown={enterKeyHandler}
                     className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3"
                   />
@@ -236,7 +236,7 @@ function UpdateStudentDialog({
                     htmlFor="datePicker"
                     className="block text-lg font-medium text-gray-900"
                   >
-                    {t("BIRTHDATE")}:
+                    {t("BIRTHDAY")}:
                   </label>
 
                   <input
@@ -244,11 +244,11 @@ function UpdateStudentDialog({
                     required={true}
                     id="birthday"
                     name="birthday"
-                    value={birthdate.toISOString().split('T')[0]}
+                    value={birthday.toISOString().split('T')[0]}
                     placeholder="Doğum Tarihi Seçiniz"
                     className="text-base"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      setBirthdate(new Date(e.target.value));
+                      setBirthday(new Date(e.target.value));
                     }}
                   />
                 </div>
@@ -279,4 +279,4 @@ function UpdateStudentDialog({
   );
 };
 
-export default UpdateStudentDialog;
+export default UpdateDialog;

@@ -5,41 +5,45 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import UpdateDialog from "../components/grade/UpdateDialog";
+import AddDialog from "../components/grade/AddDialog";
+import DeleteDialog from "../components/grade/DeleteDialog";
 
 import API from "../api";
 import { TGradeType } from "../types";
 
-function Grade() {
+function Grades() {
   const { t } = useTranslation();
 
   const [grades, setGrades] = useState<TGradeType[]>([]);
   const [selectedGrades, setSelectedGrades] = useState<TGradeType | null>(null);
   const [newGradeType, setNewGradeType] = useState<string>("");
   const [oldGradeType, setOldGradeType] = useState<string>("");
+  const [addOpen, setAddOpen] = useState<boolean>(false);
+  const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
+  const [updateOpen, setUpdateOpen] = useState<boolean>(false);
+
+  const fetchData = async () => {
+    try {
+      const response = await API.grade.allUniqueGradeType();
+      setGrades(response.data.data);
+    } catch (error: unknown) {
+      console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await API.grade.allUniqueGradeType();
-        setGrades(response.data.data);
-      } catch (error: unknown) {
-        console.error(error);
-        if (isAxiosError(error) && error.response) {
-          const errorMessage = error.response?.data?.message;
-          toast.error(errorMessage || t('UNKNOWN_ERROR'));
-
-        } else {
-          toast.error((error as Error).message || t('UNKNOWN_ERROR'));
-        }
-      }
-    };
-
     fetchData();
   }, []);
 
   useEffect(() => {
-    console.log(newGradeType);
-    async function fetchGradeTypeData() {
+    const fetchGradeTypeData = async () => {
       try {
         const response = await API.grade.allGradeType(oldGradeType);
 
@@ -49,7 +53,11 @@ function Grade() {
           await API.grade.update({ classId, studentId, id, ...bodyData });
         }
 
-
+        toast.success(t('GRADE_TYPE_UPDATED'));
+        setTimeout(() => {
+          setSelectedGrades(null);
+          fetchData();
+        }, 3000);
 
       } catch (error: unknown) {
         console.error(error);
@@ -68,6 +76,13 @@ function Grade() {
   }, [newGradeType]);
 
   const handleUpdate = (grade: TGradeType) => {
+    setSelectedGrades(grade);
+    setOldGradeType(grade.gradeType);
+    setUpdateOpen(true);
+  };
+
+  const handleDelete = (grade: TGradeType) => {
+    setDeleteOpen(true);
     setSelectedGrades(grade);
   };
 
@@ -109,7 +124,6 @@ function Grade() {
                   <div className="flex justify-center mx-auto">
                     <button className="mx-4" title="Güncelle" onClick={() => {
                       handleUpdate(item);
-                      setOldGradeType(item.gradeType);
                     }}>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -126,7 +140,7 @@ function Grade() {
                         />
                       </svg>
                     </button>
-                    <button className="mx-4" title="Sil">
+                    <button className="mx-4" title="Sil" onClick={() => { handleDelete(item) }}>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -155,19 +169,22 @@ function Grade() {
           <button
             type="button"
             className="my-5 col-start-4 inline-flex justify-center rounded-md bg-green-600 px-6 py-2 xl:text-lg md:text-base text-sm font-semibold text-white shadow-sm hover:bg-green-500"
+            onClick={() => setAddOpen(true)}
           >
             {t('ADD_GRADE')}
           </button>
         </div>
       </div>
       <UpdateDialog
-        open={!!selectedGrades}
+        open={updateOpen}
         grade={selectedGrades}
-        onClose={() => setSelectedGrades(null)}
+        setOpen={setUpdateOpen}
         setNewGradeType={setNewGradeType}
       />
+      <AddDialog open={addOpen} setOpen={setAddOpen} />
+      <DeleteDialog open={deleteOpen} setOpen={setDeleteOpen} gradeType={selectedGrades?.gradeType || ''} fetchData={fetchData} />
     </div>
   );
 };
 
-export default Grade;
+export default Grades;

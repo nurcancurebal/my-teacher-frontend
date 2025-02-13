@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 import API from "../../api";
 import { TUpdateClassDialogProps } from "../../types";
 
-function UpdateClassDialog({
+function UpdateDialog({
   open,
   setOpen,
   id,
@@ -150,4 +150,4 @@ function UpdateClassDialog({
   );
 };
 
-export default UpdateClassDialog;
+export default UpdateDialog;

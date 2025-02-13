@@ -14,7 +14,7 @@ import { toast } from 'react-toastify';
 import API from "../../api";
 import { TOpenProps, TClass } from "../../types";
 
-function AddStudent({ open, setOpen }: TOpenProps) {
+function AddDialog({ open, setOpen }: TOpenProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -184,15 +184,15 @@ function AddStudent({ open, setOpen }: TOpenProps) {
               ) : (
                 <div className="mx-10">
                   <label
-                    htmlFor="studentName"
+                    htmlFor="firstname"
                     className="block text-lg font-medium text-gray-900"
                   >
                     {t("NOTE_TITLE")}:
                   </label>
 
                   <input
-                    id="studentName"
-                    name="studentName"
+                    id="firstname"
+                    name="firstname"
                     type="text"
                     required
                     value={gradeName}
@@ -229,4 +229,4 @@ function AddStudent({ open, setOpen }: TOpenProps) {
   );
 };
 
-export default AddStudent;
+export default AddDialog;

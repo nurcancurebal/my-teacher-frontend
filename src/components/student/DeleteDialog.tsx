@@ -12,12 +12,12 @@ import { toast } from 'react-toastify';
 import API from "../../api";
 import { TDeleteStudentDialogProps } from "../../types";
 
-function DeleteStudentDialog({
+function DeleteDialog({
   open,
   setOpen,
   id,
-  studentName,
-  studentLastName,
+  firstname,
+  lastname,
   onDelete,
 }: TDeleteStudentDialogProps) {
   const { t } = useTranslation();
@@ -70,7 +70,7 @@ function DeleteStudentDialog({
                   className="text-2xl font-semibold text-gray-900"
                 >
                   <span className="text-red-500">
-                    "{studentName} {studentLastName}"
+                    "{firstname} {lastname}"
                   </span>{" "}
                   {t("STUDENT_ARE_YOU_SURE_DELETE")}
                 </DialogTitle>
@@ -101,4 +101,4 @@ function DeleteStudentDialog({
   );
 };
 
-export default DeleteStudentDialog;
+export default DeleteDialog;

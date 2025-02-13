@@ -119,11 +119,11 @@ export type TStudent = {
   classId: number;
   teacherId?: number;
   idNumber: string;
-  studentName: string;
-  studentLastname: string;
-  studentNumber: number;
+  firstname: string;
+  lastname: string;
+  number: number;
   gender: string;
-  birthdate: Date | null;
+  birthday: Date | null;
 };
 
 export type TGrade = {
@@ -152,11 +152,9 @@ export type TOpenProps = {
 };
 
 export type TGradeUpdateProps = {
-  open: boolean;
-  onClose: () => void;
   grade: TGradeType | null;
   setNewGradeType: React.Dispatch<React.SetStateAction<string>>;
-};
+} & TOpenProps;
 
 export type TViewDetailDialogProps = {
   student: TStudent;
@@ -172,8 +170,8 @@ export type TAddProps = {
 
 export type TDeleteStudentDialogProps = {
   id: number;
-  studentName: string;
-  studentLastName: string;
+  firstname: string;
+  lastname: string;
   onDelete: () => void;
 } & TOpenProps;
 
@@ -207,3 +205,8 @@ export type TGradeValue = {
   studentId: number;
   gradeValue: number | null;
 };
+
+export type TGradeDeleteValueProps = {
+  gradeType: string;
+  fetchData: () => void;
+} & TOpenProps;

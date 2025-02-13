@@ -93,7 +93,7 @@ export default {
     filterStudent: async (filter: {
       firstname?: string;
       lastname?: string;
-      studentNumber?: number;
+      number?: number;
       gender?: string;
       classId?: number;
     }): Promise<AxiosResponse<TAllListStudentResponse>> => {
@@ -114,7 +114,6 @@ export default {
       if (address.endsWith("&")) {
         address = address.slice(0, -1);
       }
-      console.log(address);
 
       return await axios.get(address);
     },
@@ -144,7 +143,6 @@ export default {
     allGradeType: async (
       gradeType: string
     ): Promise<AxiosResponse<TGradeListResponse>> => {
-      console.log(gradeType);
       return await axios.post("grade/grade-type", { gradeType });
     },
     findLatestGrade: async (): Promise<AxiosResponse<TDateResponse>> => {
@@ -170,6 +168,11 @@ export default {
     update: async (data: TGrade): Promise<AxiosResponse<TNumberResponse>> => {
       const { classId, studentId, id, ...bodyData } = data;
       return await axios.put(`grade/${classId}/${studentId}/${id}`, bodyData);
+    },
+    deleteAllGradeType: async (
+      gradeType: string
+    ): Promise<AxiosResponse<TNumberResponse>> => {
+      return await axios.delete(`grade/${gradeType}`);
     },
   },
 };

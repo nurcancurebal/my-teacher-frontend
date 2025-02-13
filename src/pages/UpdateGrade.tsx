@@ -116,13 +116,13 @@ function UpdateGrade() {
               {students.map((student, index) => (
                 <tr key={index}>
                   <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
-                    {student.studentName}
+                    {student.firstname}
                   </td>
                   <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
-                    {student.studentLastname}
+                    {student.lastname}
                   </td>
                   <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
-                    {student.studentNumber}
+                    {student.number}
                   </td>
                   <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
                     <input

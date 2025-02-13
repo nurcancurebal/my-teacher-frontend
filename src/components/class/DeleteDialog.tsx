@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 import API from "../../api";
 import { TDeleteClassDialogProps } from "../../types";
 
-function DeleteClassDialog({
+function DeleteDialog({
   open,
   setOpen,
   id,
@@ -101,4 +101,4 @@ function DeleteClassDialog({
   );
 };
 
-export default DeleteClassDialog;
+export default DeleteDialog;

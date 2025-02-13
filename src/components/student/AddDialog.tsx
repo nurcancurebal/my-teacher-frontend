@@ -14,17 +14,17 @@ import { toast } from 'react-toastify';
 import API from "../../api";
 import { TAddProps, TClass } from "../../types";
 
-function AddStudent({ open, setOpen, onAdd }: TAddProps) {
+function AddDialog({ open, setOpen, onAdd }: TAddProps) {
   const { t } = useTranslation();
   const location = useLocation();
 
   const [classes, setClasses] = useState<TClass[]>([]);
-  const [studentName, setStudentName] = useState<string>("");
-  const [studentLastname, setStudentLastName] = useState<string>("");
-  const [studentNumber, setStudentNumber] = useState<number>();
+  const [firstname, setFirstname] = useState<string>("");
+  const [lastname, setLastname] = useState<string>("");
+  const [number, setNumber] = useState<number>();
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
   const [idNumber, setIdNumber] = useState<string>();
-  const [birthdate, setBirthdate] = useState<Date>();
+  const [birthday, setBirthday] = useState<Date>();
   const [gender, setGender] = useState<string>("");
 
   const isDisabled = classes.length === 0;
@@ -58,11 +58,11 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
 
   const resetForm = () => {
     setIdNumber(undefined);
-    setStudentName("");
-    setStudentLastName("");
-    setStudentNumber(undefined);
+    setFirstname("");
+    setLastname("");
+    setNumber(undefined);
     setGender("");
-    setBirthdate(undefined);
+    setBirthday(undefined);
     setSelectedClassId(null);
   };
 
@@ -76,11 +76,11 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
       const response = await API.student.add({
         classId: selectedClassId,
         idNumber: idNumber ? idNumber.toString() : "0",
-        studentName,
-        studentLastname,
-        studentNumber: studentNumber ?? 0,
+        firstname,
+        lastname,
+        number: number ?? 0,
         gender,
-        birthdate: birthdate ?? null,
+        birthday: birthday ?? null,
       });
       toast.success(response.data.message);
       setTimeout(() => {
@@ -197,19 +197,19 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
 
                 <div>
                   <label
-                    htmlFor="studentName"
+                    htmlFor="firstname"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
                     {t('NAME')}:
                   </label>
 
                   <input
-                    id="studentName"
-                    name="studentName"
+                    id="firstname"
+                    name="firstname"
                     type="text"
                     required
-                    value={studentName}
-                    onChange={(e) => setStudentName(e.target.value)}
+                    value={firstname}
+                    onChange={(e) => setFirstname(e.target.value)}
                     onKeyDown={handleKeyAddStudent}
                     className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3 disabled:opacity-75"
                     disabled={isDisabled}
@@ -218,19 +218,19 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
 
                 <div>
                   <label
-                    htmlFor="studentLastname"
+                    htmlFor="lastname"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
                     {t('LASTNAME')}:
                   </label>
 
                   <input
-                    id="studentLastname"
-                    name="studentLastname"
+                    id="lastname"
+                    name="lastname"
                     type="text"
                     required
-                    value={studentLastname}
-                    onChange={(e) => setStudentLastName(e.target.value)}
+                    value={lastname}
+                    onChange={(e) => setLastname(e.target.value)}
                     onKeyDown={handleKeyAddStudent}
                     className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3 disabled:opacity-75"
                     disabled={isDisabled}
@@ -239,19 +239,19 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
 
                 <div>
                   <label
-                    htmlFor="studentNumber"
+                    htmlFor="number"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
-                    {t('STUDENT_NUMBER')}:
+                    {t('NUMBER')}:
                   </label>
 
                   <input
-                    id="studentNumber"
-                    name="studentNumber"
+                    id="number"
+                    name="number"
                     type="text"
                     required
-                    value={studentNumber}
-                    onChange={(e) => setStudentNumber(Number(e.target.value))}
+                    value={number}
+                    onChange={(e) => setNumber(Number(e.target.value))}
                     onKeyDown={handleKeyAddStudent}
                     className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3 disabled:opacity-75"
                     disabled={isDisabled}
@@ -290,7 +290,7 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
                     htmlFor="datePicker"
                     className="block text-lg font-medium text-gray-900"
                   >
-                    {t("BIRTHDATE")}:
+                    {t("BIRTHDAY")}:
                   </label>
 
                   <input
@@ -298,11 +298,11 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
                     required={true}
                     id="birthday"
                     name="birthday"
-                    value={birthdate ? birthdate.toISOString().split('T')[0] : ""}
+                    value={birthday ? birthday.toISOString().split('T')[0] : ""}
                     placeholder="Doğum Tarihi Seçiniz"
                     className="text-base disabled:opacity-75"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      setBirthdate(new Date(e.target.value));
+                      setBirthday(new Date(e.target.value));
                     }}
                     disabled={isDisabled}
                   />
@@ -335,4 +335,4 @@ function AddStudent({ open, setOpen, onAdd }: TAddProps) {
   );
 };
 
-export default AddStudent;
+export default AddDialog;

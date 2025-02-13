@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { TUserDataProps } from "../types";
 
-function UserInformaition({ userData }: TUserDataProps) {
+function MyProfile({ userData }: TUserDataProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -67,4 +67,4 @@ function UserInformaition({ userData }: TUserDataProps) {
   );
 };
 
-export default UserInformaition;
+export default MyProfile;

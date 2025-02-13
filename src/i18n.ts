@@ -28,8 +28,8 @@ const resources = {
       NO_STUDENT_FOUND: "No student found.",
       NO_STUDENTS_WITH_NAME_OR_LASTNAME_FOUND:
         "No student found with name or lastname.",
-      STUDENT_NUMBERS_CAN_CONSIST_OF_NUMERICAL_VALUES:
-        "Student numbers can consist of numerical values.",
+      NUMBERS_CAN_CONSIST_OF_NUMERICAL_VALUES:
+        "Numbers can consist of numerical values.",
       NO_STUDENT_FOUND_FOR_THIS_NUMBER: "No student found for this number.",
       GRADE_SUCCESSFULLY_ADDED: "Grade successfully added.",
       CLASS_NOT_FOUND: "Class not found.",
@@ -74,7 +74,7 @@ const resources = {
       CLASS_ARE_YOU_SURE_DELETE: "are you sure you want to delete your class?",
       DELETE: "Delete",
       ADD: "Add",
-      STUDENT_NUMBER: "Student Number",
+      NUMBER: "Student Number",
       GENDER: "Gender",
       FILTER: "Filter",
       NAME_AND_SURNAME: "Name and Surname",
@@ -83,7 +83,7 @@ const resources = {
       ALL_CLASSES: "All Classes",
       STUDENT_INFORMATION: "Student Information",
       TR_IDENTITY_NUMBER: "TR Identity Number",
-      BIRTHDATE: "Birthdate",
+      BIRTHDAY: "birthday",
       CLOSE: "Close",
       UPDATE_STUDENT_INFORMATION: "Update Student Information",
       SELECT_CLASS: "Select Class",
@@ -101,6 +101,9 @@ const resources = {
       CREATED_ATE: "Created At",
       LAST_UPDATED: "Last Updated",
       UPDATE_GRADE_TYPE: "Update Grade Type",
+      GRADE_TYPE_UPDATED: "Grade type updated.",
+      ARE_YOU_SURE_YOU_WANT_TO_DELETE_THE_NOTE_TYPE:
+        "are you sure you want to delete the note type?",
     },
   },
   TR: {
@@ -126,7 +129,7 @@ const resources = {
       NO_STUDENT_FOUND: "Öğrenci bulunamadı.",
       NO_STUDENTS_WITH_NAME_OR_LASTNAME_FOUND:
         "Adı veya soyadı içeren öğrenci bulunamadı.",
-      STUDENT_NUMBERS_CAN_CONSIST_OF_NUMERICAL_VALUES:
+      NUMBERS_CAN_CONSIST_OF_NUMERICAL_VALUES:
         "Öğrenci numaraları sayısal değerlerden oluşabilir.",
       NO_STUDENT_FOUND_FOR_THIS_NUMBER: "Bu numaraya ait öğrenci bulunamadı.",
       GRADE_SUCCESSFULLY_ADDED: "Notlar başarıyla eklendi.",
@@ -173,7 +176,7 @@ const resources = {
         "sınıfını silmek istediğinize emin misiniz?",
       DELETE: "Sil",
       ADD: "Ekle",
-      STUDENT_NUMBER: "Öğrenci Numarası",
+      NUMBER: "Öğrenci Numarası",
       GENDER: "Cinsiyet",
       FILTER: "Filtrele",
       NAME_AND_SURNAME: "Ad ve Soyad",
@@ -182,7 +185,7 @@ const resources = {
       ALL_CLASSES: "Tüm Sınıflar",
       STUDENT_INFORMATION: "Öğrenci Bilgileri",
       TR_IDENTITY_NUMBER: "TC Kimlik Numarası",
-      BIRTHDATE: "Doğum Tarihi",
+      BIRTHDAY: "Doğum Tarihi",
       CLOSE: "Kapat",
       UPDATE_STUDENT_INFORMATION: "Öğrenci Bilgilerini Güncelle",
       SELECT_CLASS: "Sınıf Seçiniz",
@@ -200,6 +203,9 @@ const resources = {
       CREATED_ATE: "Oluşturulma Tarihi",
       LAST_UPDATED: "Son Güncelleme",
       UPDATE_GRADE_TYPE: "Not Türünü Güncelle",
+      GRADE_TYPE_UPDATED: "Not türü güncellendi.",
+      ARE_YOU_SURE_YOU_WANT_TO_DELETE_THE_NOTE_TYPE:
+        "not türünü silmek istediğinize emin misiniz?",
     },
   },
 };

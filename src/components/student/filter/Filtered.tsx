@@ -13,7 +13,7 @@ import ClassNameMenu from "./ClassNameMenu";
 import API from "../../../api";
 import { TFilteredStudentsProps } from "../../../types";
 
-function FilteredStudents({
+function Filtered({
   setStudents,
 }: TFilteredStudentsProps) {
   const { t } = useTranslation();
@@ -22,7 +22,7 @@ function FilteredStudents({
 
   const [firstname, setFirstname] = useState<string>("");
   const [lastname, setLastname] = useState<string>("");
-  const [studentNumber, setStudentNumber] = useState<string>("");
+  const [number, setNumber] = useState<string>("");
   const [gender, setGender] = useState<string>("");
   const [classId, setClassId] = useState<string>("");
 
@@ -37,8 +37,8 @@ function FilteredStudents({
         case t('FIRSTNAME'):
           setFirstname("");
           break;
-        case t('STUDENT_NUMBER'):
-          setStudentNumber("");
+        case t('NUMBER'):
+          setNumber("");
           break;
         case t('GENDER'):
           setGender("");
@@ -71,8 +71,8 @@ function FilteredStudents({
         filter["lastname"] = lastname;
       }
 
-      if (studentNumber) {
-        filter["studentNumber"] = studentNumber;
+      if (number) {
+        filter["number"] = number;
       }
 
       if (gender) {
@@ -103,7 +103,7 @@ function FilteredStudents({
 
   useEffect(() => {
     fetchStudents();
-  }, [firstname, lastname, studentNumber, gender, classId]);
+  }, [firstname, lastname, number, gender, classId]);
 
   return (
     <div className="flex flex-col ">
@@ -126,13 +126,13 @@ function FilteredStudents({
             <div className="py-1">
               <MenuItem
                 as="button"
-                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${showAreaCheck("STUDENT_NUMBER")
+                className={`px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:text-gray-600 data-[focus]:outline-none w-full ${showAreaCheck("NUMBER")
                   ? "text-gray-300"
                   : "text-gray-900"
                   }`}
-                onClick={() => toggleShowArea("STUDENT_NUMBER")}
+                onClick={() => toggleShowArea("NUMBER")}
               >
-                {t('STUDENT_NUMBER')}
+                {t('NUMBER')}
               </MenuItem>
               <MenuItem
                 as="button"
@@ -189,9 +189,9 @@ function FilteredStudents({
             setValue={setFirstname} value={firstname} placeholder={t('NAME')}
           />
         ) : null}
-        {showAreaCheck("STUDENT_NUMBER") ? (
+        {showAreaCheck("NUMBER") ? (
           <Input
-            setValue={setStudentNumber} value={studentNumber} placeholder={t('STUDENT_NUMBER')}
+            setValue={setNumber} value={number} placeholder={t('NUMBER')}
           />
         ) : null}
         {showAreaCheck("GENDER") ? (
@@ -209,4 +209,4 @@ function FilteredStudents({
   );
 };
 
-export default FilteredStudents;
+export default Filtered;

@@ -98,6 +98,9 @@ function AddGrade() {
     <>
       <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 xl:px-0 md:px-24 px-12">
         <div className="overflow-x-auto xl:col-start-2 col-span-2 xl:p-0">
+          <div className="my-5 text-center font-semibold text-2xl">
+            {t("ADD_GRADE")}
+          </div>
           <table className="border-collapse border border-slate-400 w-full">
             <thead>
               <tr>
@@ -119,13 +122,13 @@ function AddGrade() {
               {students.map((student, index) => (
                 <tr key={index}>
                   <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
-                    {student.studentName}
+                    {student.firstname}
                   </td>
                   <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
-                    {student.studentLastname}
+                    {student.lastname}
                   </td>
                   <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
-                    {student.studentNumber}
+                    {student.number}
                   </td>
                   <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
                     <input

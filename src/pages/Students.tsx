@@ -124,7 +124,7 @@ function Students() {
           <thead>
             <tr>
               <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                {t('STUDENT_NUMBER')}
+                {t('NUMBER')}
               </th>
               <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
                 {t('NAME')} {t('LASTNAME')}
@@ -145,10 +145,10 @@ function Students() {
                 className={index % 2 === 0 ? "bg-gray-200" : "bg-gray-100"}
               >
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {student.studentNumber}
+                  {student.number}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {student.studentName} {student.studentLastname}
+                  {student.firstname} {student.lastname}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                   {student.gender === "Male" ? "Erkek" : "Kız"}
@@ -260,8 +260,8 @@ function Students() {
           open={deleteDialogOpen}
           setOpen={handleDeleteDialogClose}
           id={selectedDeleteStudent?.id ?? 0}
-          studentName={selectedDeleteStudent.studentName}
-          studentLastName={selectedDeleteStudent.studentLastname}
+          firstname={selectedDeleteStudent.firstname}
+          lastname={selectedDeleteStudent.lastname}
           onDelete={async () => await fetchStudents()}
         />
       )}

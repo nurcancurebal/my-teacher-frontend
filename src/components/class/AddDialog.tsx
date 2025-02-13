@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 import API from "../../api";
 import { TAddProps } from "../../types";
 
-function AddClass({ open, setOpen, onAdd }: TAddProps) {
+function AddDialog({ open, setOpen, onAdd }: TAddProps) {
   const { t } = useTranslation();
   const location = useLocation();
 
@@ -144,4 +144,4 @@ function AddClass({ open, setOpen, onAdd }: TAddProps) {
   );
 };
 
-export default AddClass;
+export default AddDialog;

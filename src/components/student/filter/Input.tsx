@@ -1,6 +1,6 @@
 import { TFilterStudentInputProps } from '../../../types'
 
-function FilterStudentInput({
+function Input({
   value, setValue, placeholder
 }: TFilterStudentInputProps) {
 
@@ -21,4 +21,4 @@ function FilterStudentInput({
   );
 };
 
-export default FilterStudentInput;
+export default Input;

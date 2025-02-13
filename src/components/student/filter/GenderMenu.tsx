@@ -6,7 +6,7 @@ import { t } from "i18next";
 
 import { TFilterStudentMenuProps } from '../../../types'
 
-function FilterStudentInput({
+function GenderMenu({
     setValue
 }: TFilterStudentMenuProps) {
 
@@ -59,4 +59,4 @@ function FilterStudentInput({
     );
 };
 
-export default FilterStudentInput;
+export default GenderMenu;
