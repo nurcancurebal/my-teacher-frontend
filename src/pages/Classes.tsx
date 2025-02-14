@@ -159,7 +159,7 @@ function Classes() {
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4">
                   <button
-                    className="flex m-auto"
+                    className="flex m-auto cursor-pointer"
                     onClick={() => handleUpdateClick(classItem)}
                   >
                     <svg
@@ -180,7 +180,7 @@ function Classes() {
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4">
                   <button
-                    className="flex m-auto"
+                    className="flex m-auto cursor-pointer"
                     onClick={() => handleDeleteClick(classItem)}
                   >
                     <svg

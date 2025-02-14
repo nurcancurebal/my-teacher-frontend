@@ -125,11 +125,11 @@ function Dashboard() {
                   {stat.name}
                   {stat.name === "Toplam Öğrencileriniz" ? (
                     <div>
-                      <span className="text-base text-gray-500">Erkek:</span>
+                      <span className="text-base text-gray-500">{t("MALE")}:</span>
                       <span className="mr-2 ml-1 text-lg text-gray-500">
                         {maleCount}
                       </span>
-                      <span className="text-base text-gray-500 mr-1">Kız:</span>
+                      <span className="text-base text-gray-500 mr-1">{t("FEMALE")}:</span>
                       <span className="text-lg text-gray-500">
                         {femaleCount}
                       </span>

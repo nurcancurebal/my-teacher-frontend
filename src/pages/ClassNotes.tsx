@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { isAxiosError } from "axios";
 
 import { useTranslation } from 'react-i18next';
-import { useEffect } from "react";
+import { toast } from 'react-toastify';
 
 import DetailDialog from "../components/student/DetailDialog";
+import UpdateGradeValueDialog from "../components/grade/UpdateGradeValueDialog";
+import DeleteOneDialog from "../components/grade/DeleteOneDialog";
 
 import API from "../api";
 import { TStudent, TGrade } from "../types";
@@ -18,53 +21,64 @@ function ClassNotes() {
     const [students, setStudents] = useState<TStudent[]>([]);
     const [grades, setGrades] = useState<TGrade[]>([]);
     const [detailDialogOpen, setDetailDialogOpen] = useState<boolean>(false);
+    const [updateDialogOpen, setUpdateDialogOpen] = useState<boolean>(false);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
     const [selectedDetailStudent, setSelectedDetailStudent] =
         useState<TStudent | null>(null);
+    const [selectedGrade, setSelectedGrade] = useState<TGrade | null>(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const grade = await API.grade.classIdGrade(classId, gradeType);
-                setGrades(grade.data.data);
+    const fetchData = async () => {
+        try {
+            const gradeResponse = await API.grade.classIdGrade(classId, gradeType);
+            setGrades(gradeResponse.data.data);
 
-                const students = await API.student.getListByClass(classId);
-                setStudents(students.data.data);
-            } catch (error) {
-                console.error(error);
+            const studentsResponse = await API.student.getListByClass(classId);
+            setStudents(studentsResponse.data.data);
+
+            setSelectedGrade(null);
+        } catch (error: unknown) {
+            console.error(error);
+            if (isAxiosError(error) && error.response) {
+                const errorMessage = error.response?.data?.message;
+                toast.error(errorMessage || t('UNKNOWN_ERROR'));
+
+            } else {
+                toast.error((error as Error).message || t('UNKNOWN_ERROR'));
             }
-        };
+        }
+    };
+    useEffect(() => {
         fetchData();
     }, []);
 
-    const getGradeValue = (studentId: number) => {
+    const getGrade = (studentId: number) => {
         const grade = grades.find(g => g.studentId === studentId);
         return grade ? grade.gradeValue : '-';
     };
 
-    const handleUpdateClick = (student: TStudent) => {
-        console.log("Update student", student);
+    const handleDelete = (student: TStudent) => {
+        setDeleteDialogOpen(true);
+        const grade = grades.find(g => g.studentId === student.id) || null;
+        setSelectedGrade(grade);
     };
 
-    const handleDeleteClick = (student: TStudent) => {
-        console.log("Delete student", student);
+    const handleUpdate = (studentId: number) => {
+        setUpdateDialogOpen(true);
+        const grade = grades.find(g => g.studentId === studentId) || null;
+        setSelectedGrade(grade);
     };
 
-    const handleDetailClick = (student: TStudent) => {
+    const handleDetail = (student: TStudent) => {
         setDetailDialogOpen(true);
         setSelectedDetailStudent(student);
     };
 
-    const handleDetailDialogClose = () => {
-        setDetailDialogOpen(false);
-    };
-
     return (
         <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 xl:px-0 md:px-24 px-12">
+            <div className="my-7 text-center font-semibold text-2xl">
+                {`${className} ${t("CLASS_NOTES1")} ${gradeType} ${t("CLASS_NOTES2")}`}
+            </div>
             <div className="overflow-x-auto xl:col-start-2 col-span-2 xl:p-0">
-                <div className="my-7 text-center font-semibold text-2xl">
-                    {className + t("CLASS_NOTES1") + " " + gradeType + t("CLASS_NOTES2")}
-                </div>
-
                 <table className="border-collapse border border-slate-300 w-full">
                     <thead>
                         <tr>
@@ -93,19 +107,19 @@ function ClassNotes() {
                                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                                     {student.number}
                                 </td>
-                                <td className="xl:text-lg md:text-base text-sm p-4 text-center cursor-pointer" onClick={() => handleDetailClick(student)}>
+                                <td className="xl:text-lg md:text-base text-sm p-4 text-center cursor-pointer" onClick={() => handleDetail(student)}>
                                     {student.firstname} {student.lastname}
                                 </td>
                                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                                     {student.gender === "Male" ? t("MALE") : t("FEMALE")}
                                 </td>
                                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                                    {getGradeValue(student.id!)}
+                                    {getGrade(student.id!)}
                                 </td>
                                 <td className="xl:text-lg md:text-base text-sm p-4">
                                     <button
-                                        className="flex m-auto"
-                                        onClick={() => handleUpdateClick(student)}
+                                        className="flex m-auto cursor-pointer"
+                                        onClick={() => handleUpdate(student.id!)}
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -125,8 +139,8 @@ function ClassNotes() {
                                 </td>
                                 <td className="xl:text-lg md:text-base text-sm p-4">
                                     <button
-                                        className="flex m-auto"
-                                        onClick={() => handleDeleteClick(student)}
+                                        className="flex m-auto cursor-pointer"
+                                        onClick={() => handleDelete(student)}
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -152,10 +166,20 @@ function ClassNotes() {
             {selectedDetailStudent && (
                 <DetailDialog
                     open={detailDialogOpen}
-                    setOpen={handleDetailDialogClose}
+                    setOpen={setDetailDialogOpen}
                     student={selectedDetailStudent}
                 />
             )}
+
+            {selectedGrade && (
+                <UpdateGradeValueDialog open={updateDialogOpen} setOpen={setUpdateDialogOpen} grade={selectedGrade} fetchData={fetchData} />
+            )}
+
+            {selectedGrade && (
+                <DeleteOneDialog open={deleteDialogOpen} setOpen={setDeleteDialogOpen} grade={selectedGrade} fetchData={fetchData} />
+            )
+            }
+
         </div>
     );
 };

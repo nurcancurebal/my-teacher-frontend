@@ -4,9 +4,9 @@ import { isAxiosError } from "axios";
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import UpdateDialog from "../components/grade/UpdateDialog";
+import UpdateDialog from "../components/grade/UpdateGradeTypeDialog";
 import AddDialog from "../components/grade/AddDialog";
-import DeleteDialog from "../components/grade/DeleteDialog";
+import DeleteGradeTypeDialog from "../components/grade/DeleteGradeTypeDialog";
 import GradeTypeDialog from "../components/grade/GradeTypeDialog";
 
 import API from "../api";
@@ -95,7 +95,7 @@ function Grades() {
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4">
                   <div className="flex justify-center mx-auto">
-                    <button className="mx-4" title="Güncelle" onClick={() => {
+                    <button className="mx-4 cursor-pointer" title="Güncelle" onClick={() => {
                       handleUpdate(item);
                     }}>
                       <svg
@@ -113,7 +113,7 @@ function Grades() {
                         />
                       </svg>
                     </button>
-                    <button className="mx-4" title="Sil" onClick={() => { handleDelete(item) }}>
+                    <button className="mx-4 cursor-pointer" title="Sil" onClick={() => { handleDelete(item) }}>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -155,7 +155,7 @@ function Grades() {
         fetchData={fetchData}
       />
       <AddDialog open={addOpen} setOpen={setAddOpen} />
-      <DeleteDialog open={deleteOpen} setOpen={setDeleteOpen} gradeType={selectedGrades?.gradeType || ''} fetchData={fetchData} />
+      <DeleteGradeTypeDialog open={deleteOpen} setOpen={setDeleteOpen} gradeType={selectedGrades?.gradeType || ''} fetchData={fetchData} />
       <GradeTypeDialog open={typeOpen} setOpen={setTypeOpen} gradeType={gradeType} />
     </div>
   );

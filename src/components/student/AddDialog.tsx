@@ -102,11 +102,9 @@ function AddDialog({ open, setOpen, onAdd }: TAddProps) {
   };
 
   useEffect(() => {
-    if (gender === "Erkek") {
+    if (gender === t("MALE")) {
       setGender("Male");
-    }
-
-    if (gender === "Kız") {
+    } else {
       setGender("Female");
     }
   }, [gender]);

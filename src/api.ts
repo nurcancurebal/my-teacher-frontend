@@ -180,5 +180,8 @@ export default {
     ): Promise<AxiosResponse<TGradeListResponse>> => {
       return await axios.post(`grade/grade-type/${classId}`, { gradeType });
     },
+    deleteOne: async (id: number): Promise<AxiosResponse<TNumberResponse>> => {
+      return await axios.delete(`grade/${id}`);
+    },
   },
 };

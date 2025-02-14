@@ -14,7 +14,7 @@ import { toast } from 'react-toastify';
 import API from "../../api";
 import { TGradeUpdateProps } from "../../types";
 
-function UpdateDialog({ open, setOpen, grade, fetchData }: TGradeUpdateProps) {
+function UpdateGradeTypeDialog({ open, setOpen, grade, fetchData }: TGradeUpdateProps) {
   const { t } = useTranslation();
 
   const [gradeType, setGradeType] = useState<string>("");
@@ -131,4 +131,4 @@ function UpdateDialog({ open, setOpen, grade, fetchData }: TGradeUpdateProps) {
   );
 };
 
-export default UpdateDialog;
+export default UpdateGradeTypeDialog;

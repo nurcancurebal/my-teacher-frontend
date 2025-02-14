@@ -214,3 +214,8 @@ export type TGradeDeleteValueProps = {
   gradeType: string;
   fetchData: () => void;
 } & TOpenProps;
+
+export type TClassNotesProps = {
+  grade: TGrade;
+  fetchData: () => void;
+} & TOpenProps;

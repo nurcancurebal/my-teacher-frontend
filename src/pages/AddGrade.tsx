@@ -142,7 +142,7 @@ function AddGrade() {
                       onChange={(e) =>
                         student.id !== undefined && handleGradeChange(student.id, e.target.value)
                       }
-                      className="block w-full rounded-md border-0 py-1.5 pl-7 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 xl:text-lg md:text-base text-sm mt-3"
+                      className="block mx-auto rounded-md border-0 py-1.5 pl-7 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 xl:text-lg md:text-base text-sm mt-3"
                       onKeyDown={keyDownAddGrade}
                     />
                   </td>

@@ -108,6 +108,10 @@ const resources = {
       SAVE: "Save",
       SAVING: "Saving...",
       NOTES: "Notes",
+      UPDATE_NOTE_VALUE: "Update Note Value",
+      GRADES_VALUE: "Grade Value",
+      ARE_YOU_SURE_YOU_WANT_TO_DELETE_THE_NOTE_VALUE:
+        "are you sure you want to delete the note value?",
     },
   },
   TR: {
@@ -214,6 +218,11 @@ const resources = {
       SAVE: "Kaydet",
       SAVING: "Kaydediliyor...",
       NOTES: "Notlar",
+      UPDATE_NOTE_VALUE: "Not Değerini Güncelle",
+      GRADES_VALUE: "Not Değeri",
+      ARE_YOU_SURE_YOU_WANT_TO_DELETE_THE_NOTE_VALUE:
+        "not değerini silmek istediğinize emin misiniz?",
+      CLASS_ARE_YOU_SURE_DELETE: "sınıfını silmek istediğinize emin misiniz?",
     },
   },
 };
