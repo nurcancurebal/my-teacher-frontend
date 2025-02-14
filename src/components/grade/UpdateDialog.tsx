@@ -5,21 +5,56 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import { isAxiosError } from "axios";
+
 
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
+import API from "../../api";
 import { TGradeUpdateProps } from "../../types";
 
-function UpdateDialog({ open, setOpen, grade, setNewGradeType }: TGradeUpdateProps) {
+function UpdateDialog({ open, setOpen, grade, fetchData }: TGradeUpdateProps) {
   const { t } = useTranslation();
 
   const [gradeType, setGradeType] = useState<string>("");
+  const [oldGradeType, setOldGradeType] = useState<string>("");
 
   useEffect(() => {
     if (grade) {
       setGradeType(grade.gradeType);
+      setOldGradeType(grade.gradeType);
     }
   }, [grade]);
+
+
+  const fetchGradeTypeData = async () => {
+    try {
+      const response = await API.grade.allGradeType(oldGradeType);
+
+      for (const grade of response.data.data) {
+        const { classId, studentId, id, gradeValue } = grade;
+        const bodyData = { gradeType: gradeType, gradeValue };
+        await API.grade.update({ classId, studentId, id, ...bodyData });
+      }
+
+      toast.success(t('GRADE_TYPE_UPDATED'));
+      setTimeout(() => {
+        setGradeType("");
+        fetchData();
+        setOpen(false);
+      }, 3000);
+
+    } catch (error: unknown) {
+      console.error(error);
+      if (isAxiosError(error) && error.response) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage || t('UNKNOWN_ERROR'));
+      } else {
+        toast.error((error as Error).message || t('UNKNOWN_ERROR'));
+      }
+    }
+  }
 
   return (
     <Dialog
@@ -57,7 +92,7 @@ function UpdateDialog({ open, setOpen, grade, setNewGradeType }: TGradeUpdatePro
                   htmlFor="firstname"
                   className="mt-5 block text-lg font-medium text-gray-900"
                 >
-                  {t('NAME')}:
+                  {t('FIRSTNAME')}
                 </label>
 
                 <input
@@ -66,8 +101,8 @@ function UpdateDialog({ open, setOpen, grade, setNewGradeType }: TGradeUpdatePro
                   type="text"
                   required
                   value={gradeType}
-                  onChange={(e) => setGradeType(e.target.value)}
                   className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3"
+                  onChange={(e) => setGradeType(e.target.value)}
                 />
               </div>
             </div>
@@ -76,7 +111,7 @@ function UpdateDialog({ open, setOpen, grade, setNewGradeType }: TGradeUpdatePro
               <button
                 type="button"
                 className="inline-flex w-full justify-center rounded-md bg-green-600 py-2 text-base font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-24"
-                onClick={() => setNewGradeType(gradeType)}
+                onClick={() => gradeType !== oldGradeType && fetchGradeTypeData()}
               >
                 {t("UPDATE")}
               </button>

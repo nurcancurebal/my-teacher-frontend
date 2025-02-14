@@ -142,7 +142,7 @@ function Filtered({
                   }`}
                 onClick={() => toggleShowArea("FIRSTNAME")}
               >
-                {t('NAME')}
+                {t('FIRSTNAME')}
               </MenuItem>
               <MenuItem
                 as="button"
@@ -186,7 +186,7 @@ function Filtered({
         ) : null}
         {showAreaCheck("FIRSTNAME") ? (
           <Input
-            setValue={setFirstname} value={firstname} placeholder={t('NAME')}
+            setValue={setFirstname} value={firstname} placeholder={t('FIRSTNAME')}
           />
         ) : null}
         {showAreaCheck("NUMBER") ? (

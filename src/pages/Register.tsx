@@ -68,7 +68,7 @@ function Register() {
                 htmlFor="firstname"
                 className="block text-lg font-medium text-gray-900"
               >
-                {t('NAME')}
+                {t('FIRSTNAME')}
               </label>
               <input
                 id="firstname"

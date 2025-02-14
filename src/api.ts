@@ -174,5 +174,11 @@ export default {
     ): Promise<AxiosResponse<TNumberResponse>> => {
       return await axios.delete(`grade/${gradeType}`);
     },
+    classIdGrade: async (
+      classId: number,
+      gradeType: string
+    ): Promise<AxiosResponse<TGradeListResponse>> => {
+      return await axios.post(`grade/grade-type/${classId}`, { gradeType });
+    },
   },
 };

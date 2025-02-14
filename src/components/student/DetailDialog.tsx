@@ -48,7 +48,7 @@ function DetailDialog({
               </div>
 
               <div className="sm:mx-0 mx-4 pb-5">
-                <span className="text-lg font-medium">{t("NAME") + " " + t("LASTNAME")} :</span>
+                <span className="text-lg font-medium">{t("FIRSTNAME") + " " + t("LASTNAME")} :</span>
                 <span className="text-base ml-3">
                   {student.firstname} {student.lastname}
                 </span>

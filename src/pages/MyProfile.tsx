@@ -16,7 +16,7 @@ function MyProfile({ userData }: TUserDataProps) {
         </div>
         <div className="my-5">
           <span className="text-xl font-medium text-gray-900">
-            {t("NAME")} {t("LASTNAME")}:
+            {t("FIRSTNAME")} {t("LASTNAME")}:
           </span>
           <span className="text-lg text-gray-600 ml-3">
             {userData?.firstname} {userData?.lastname}

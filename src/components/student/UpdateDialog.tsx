@@ -152,7 +152,7 @@ function UpdateDialog({
                     htmlFor="firstname"
                     className="mt-5 block text-lg font-medium text-gray-900"
                   >
-                    {t('NAME')}:
+                    {t('FIRSTNAME')}:
                   </label>
 
                   <input

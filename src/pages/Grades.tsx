@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import UpdateDialog from "../components/grade/UpdateDialog";
 import AddDialog from "../components/grade/AddDialog";
 import DeleteDialog from "../components/grade/DeleteDialog";
+import GradeTypeDialog from "../components/grade/GradeTypeDialog";
 
 import API from "../api";
 import { TGradeType } from "../types";
@@ -16,11 +17,11 @@ function Grades() {
 
   const [grades, setGrades] = useState<TGradeType[]>([]);
   const [selectedGrades, setSelectedGrades] = useState<TGradeType | null>(null);
-  const [newGradeType, setNewGradeType] = useState<string>("");
-  const [oldGradeType, setOldGradeType] = useState<string>("");
   const [addOpen, setAddOpen] = useState<boolean>(false);
   const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
   const [updateOpen, setUpdateOpen] = useState<boolean>(false);
+  const [typeOpen, setTypeOpen] = useState<boolean>(false);
+  const [gradeType, setGradeType] = useState<string>('');
 
   const fetchData = async () => {
     try {
@@ -42,42 +43,8 @@ function Grades() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const fetchGradeTypeData = async () => {
-      try {
-        const response = await API.grade.allGradeType(oldGradeType);
-
-        for (const grade of response.data.data) {
-          const { classId, studentId, id, gradeValue } = grade;
-          const bodyData = { gradeType: newGradeType, gradeValue };
-          await API.grade.update({ classId, studentId, id, ...bodyData });
-        }
-
-        toast.success(t('GRADE_TYPE_UPDATED'));
-        setTimeout(() => {
-          setSelectedGrades(null);
-          fetchData();
-        }, 3000);
-
-      } catch (error: unknown) {
-        console.error(error);
-        if (isAxiosError(error) && error.response) {
-          const errorMessage = error.response?.data?.message;
-          toast.error(errorMessage || t('UNKNOWN_ERROR'));
-        } else {
-          toast.error((error as Error).message || t('UNKNOWN_ERROR'));
-        }
-      }
-    }
-
-    if (newGradeType) {
-      fetchGradeTypeData();
-    }
-  }, [newGradeType]);
-
   const handleUpdate = (grade: TGradeType) => {
     setSelectedGrades(grade);
-    setOldGradeType(grade.gradeType);
     setUpdateOpen(true);
   };
 
@@ -85,6 +52,12 @@ function Grades() {
     setDeleteOpen(true);
     setSelectedGrades(grade);
   };
+
+  const handleGradeType = (gradeType: string) => {
+    setGradeType(gradeType);
+    setTypeOpen(true);
+  }
+
 
   return (
     <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 xl:px-0 md:px-24 px-12">
@@ -111,7 +84,7 @@ function Grades() {
                 key={index}
                 className={index % 2 === 0 ? "bg-gray-200" : "bg-gray-100"}
               >
-                <td className="xl:text-lg md:text-base text-sm p-4 text-center">
+                <td className="xl:text-lg md:text-base text-sm p-4 text-center cursor-pointer" onClick={() => handleGradeType(item.gradeType)}>
                   {item.gradeType}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
@@ -179,10 +152,11 @@ function Grades() {
         open={updateOpen}
         grade={selectedGrades}
         setOpen={setUpdateOpen}
-        setNewGradeType={setNewGradeType}
+        fetchData={fetchData}
       />
       <AddDialog open={addOpen} setOpen={setAddOpen} />
       <DeleteDialog open={deleteOpen} setOpen={setDeleteOpen} gradeType={selectedGrades?.gradeType || ''} fetchData={fetchData} />
+      <GradeTypeDialog open={typeOpen} setOpen={setTypeOpen} gradeType={gradeType} />
     </div>
   );
 };

@@ -146,6 +146,10 @@ export type TGradeTypeExists = {
   classId: number;
 };
 
+export type TGradeTypeDialogProps = {
+  gradeType: string;
+} & TOpenProps;
+
 export type TOpenProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -153,7 +157,7 @@ export type TOpenProps = {
 
 export type TGradeUpdateProps = {
   grade: TGradeType | null;
-  setNewGradeType: React.Dispatch<React.SetStateAction<string>>;
+  fetchData: () => void;
 } & TOpenProps;
 
 export type TViewDetailDialogProps = {

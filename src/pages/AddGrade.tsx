@@ -101,36 +101,38 @@ function AddGrade() {
           <div className="my-5 text-center font-semibold text-2xl">
             {t("ADD_GRADE")}
           </div>
-          <table className="border-collapse border border-slate-400 w-full">
+          <table className="border-collapse border border-slate-300 w-full">
             <thead>
               <tr>
-                <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
-                  Öğrenci Adı
+                <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
+                  {t("FIRSTNAME")}
                 </th>
-                <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
-                  Öğrenci Soyadı
+                <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
+                  {t("LASTNAME")}
                 </th>
-                <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
-                  Öğrenci Numarası
+                <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
+                  {t("NUMBER")}
                 </th>
-                <th className="border border-slate-300 xl:text-xl md:text-lg text-base p-5">
+                <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
                   {gradeName}
                 </th>
               </tr>
             </thead>
             <tbody>
               {students.map((student, index) => (
-                <tr key={index}>
-                  <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
+                <tr key={index}
+                  className={index % 2 === 0 ? "bg-gray-200" : "bg-gray-100"}
+                >
+                  <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                     {student.firstname}
                   </td>
-                  <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
+                  <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                     {student.lastname}
                   </td>
-                  <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
+                  <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                     {student.number}
                   </td>
-                  <td className="border border-slate-300 xl:text-lg md:text-base text-sm p-4">
+                  <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                     <input
                       type="text"
                       value={
@@ -153,10 +155,10 @@ function AddGrade() {
           <div className="flex justify-end ">
             <button
               type="button"
-              className="my-5 col-start-4 inline-flex w-44 justify-center rounded-md bg-green-600 px-3 py-2 xl:text-lg md:text-base text-sm font-semibold text-white shadow-sm hover:bg-green-500"
+              className="my-5 col-start-4 inline-flex justify-center rounded-md bg-green-600 px-6 py-2 xl:text-lg md:text-base text-sm font-semibold text-white shadow-sm hover:bg-green-500"
               onClick={addGrade}
             >
-              {loading === false ? "Kayıt Et" : "Kaydediliyor..."}
+              {loading === false ? t("SAVE") : t("SAVING")}
             </button>
           </div>
         </div>
