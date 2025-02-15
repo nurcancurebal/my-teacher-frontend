@@ -5,8 +5,8 @@ import { isAxiosError } from "axios";
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import API from "../api";
-import { TGrade, TStudent } from "../types";
+import API from "../../api";
+import { TGrade, TStudent } from "../../types";
 
 function UpdateGrade() {
   const { t } = useTranslation();

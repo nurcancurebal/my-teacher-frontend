@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useTranslation } from 'react-i18next';
 
-import { TUserDataProps } from "../types";
+import { TUserDataProps } from "../../types";
 
 function MyProfile({ userData }: TUserDataProps) {
   const { t } = useTranslation();
@@ -10,10 +10,10 @@ function MyProfile({ userData }: TUserDataProps) {
 
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 lg:px-8">
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
-        <div className="my-7 text-center font-semibold text-2xl">
-          {t('USER_INFORMATION')}
-        </div>
+      <div className="my-7 text-center font-semibold text-2xl mt-20">
+        {t('USER_INFORMATION')}
+      </div>
+      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <div className="my-5">
           <span className="text-xl font-medium text-gray-900">
             {t("FIRSTNAME")} {t("LASTNAME")}:

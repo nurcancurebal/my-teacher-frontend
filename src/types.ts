@@ -219,3 +219,8 @@ export type TClassNotesProps = {
   grade: TGrade;
   fetchData: () => void;
 } & TOpenProps;
+
+export type TClassGradeTypeDialogProps = {
+  classId: number;
+  className: string;
+} & TOpenProps;

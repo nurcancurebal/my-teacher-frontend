@@ -1,42 +1,43 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { isAxiosError } from "axios";
 
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import API from "../api";
-import { TQueryPasswordParams } from "../types";
+import API from "../../api";
 
-function ResetPassword() {
+function Register() {
   const { t } = useTranslation();
-  const location = useLocation();
   const navigate = useNavigate();
 
-  const { email } = location.state as TQueryPasswordParams;
-
   const [loading, setLoading] = useState<boolean>(false);
-
+  const [firstname, setFirstname] = useState<string>("");
+  const [lastname, setLastname] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [newPasswordRepeat, setnewPasswordRepeat] = useState<string>("");
-  const [otp, setOtp] = useState<string>("");
 
-  const handleResetPassword = async (event: React.FormEvent) => {
+  const handleRegister = async (event: React.FormEvent) => {
     event.preventDefault();
+
     setLoading(true);
 
-
-    if (password !== newPasswordRepeat) {
-      toast.error(t("PASSWORDS_DO_NOT_MATCH"));
-      setLoading(false);
-      return;
-    }
-
     try {
-      const response = await API.auth.resetPassword({ email, password, otp });
+      const response = await API.auth.register({
+        firstname,
+        lastname,
+        username,
+        email,
+        password,
+      });
       toast.success(response.data.message);
+
+      localStorage.setItem("accessToken", response.data.data.accessToken);
+      localStorage.setItem("refreshToken", response.data.data.refreshToken);
+
       setTimeout(() => {
-        navigate("/login");
+        navigate("/");
       }, 3000);
     } catch (error: unknown) {
       console.error(error);
@@ -56,26 +57,83 @@ function ResetPassword() {
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
-            {t("RESET_PASSWORD")}
+            {t('REGISTER_NOW')}
           </h2>
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form onSubmit={handleResetPassword} className="space-y-6">
+          <form onSubmit={handleRegister} className="space-y-6">
+            <div>
+              <label
+                htmlFor="firstname"
+                className="block text-lg font-medium text-gray-900"
+              >
+                {t('FIRSTNAME')}
+              </label>
+              <input
+                id="firstname"
+                name="firstname"
+                type="text"
+                required
+                autoComplete="firstname"
+                value={firstname}
+                onChange={(e) => setFirstname(e.target.value)}
+                className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-base p-3"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="lastname"
+                className="block text-lg font-medium text-gray-900"
+              >
+                {t('LASTNAME')}
+              </label>
+              <input
+                id="lastname"
+                name="lastname"
+                type="text"
+                required
+                autoComplete="lastname"
+                value={lastname}
+                onChange={(e) => setLastname(e.target.value)}
+                className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-base p-3"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-lg font-medium text-gray-900"
+              >
+                {t('USERNAME')}
+              </label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                required
+                autoComplete="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-base p-3"
+              />
+            </div>
+
             <div>
               <label
                 htmlFor="email"
                 className="block text-lg font-medium text-gray-900"
               >
-                {t("EMAIL")}
+                {t('EMAIL')}
               </label>
               <input
                 id="email"
                 name="email"
                 type="email"
                 required
+                autoComplete="email"
                 value={email}
-                readOnly
+                onChange={(e) => setEmail(e.target.value)}
                 className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-base p-3"
               />
             </div>
@@ -86,7 +144,7 @@ function ResetPassword() {
                   htmlFor="password"
                   className="block text-lg font-medium text-gray-900"
                 >
-                  {t("NEW_PASSWORD")}
+                  {t('PASSWORD')}
                 </label>
               </div>
               <input
@@ -101,68 +159,18 @@ function ResetPassword() {
             </div>
 
             <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="newPasswordRepeat"
-                  className="block text-lg font-medium text-gray-900"
-                >
-                  {t("NEW_PASSWORD_AGAIN")}
-                </label>
-              </div>
-              <input
-                id="newPasswordRepeat"
-                name="newPasswordRepeat"
-                type="password"
-                required
-                value={newPasswordRepeat}
-                onChange={(e) => setnewPasswordRepeat(e.target.value)}
-                className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-base p-3"
-              />
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="otp"
-                  className="block text-lg font-medium text-gray-900"
-                >
-                  {t("OTP_CODE")}
-                </label>
-              </div>
-              <input
-                id="otp"
-                name="otp"
-                type="text"
-                required
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-base p-3"
-              />
-            </div>
-
-            <div>
               <button
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 disabled={loading}
               >
-                {loading ? t("CHANGING_PASSWORD") : t("RESET_PASSWORD")}
+                {loading ? t("REGISTRATION_IN_PROGRESS") : t("REGISTER")}
               </button>
             </div>
-
           </form>
 
           <p className="mt-10 text-center text-base text-gray-500">
-            {t("NOT_A_MEMBER")}{" "}
-            <button
-              onClick={() => navigate("/register")}
-              className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
-            >
-              {t("REGISTER_NOW")}
-            </button>
-          </p>
-          <p className="mt-4 text-center text-base text-gray-500">
-            {t("ALREADY_HAVE_AN_ACCOUNT")} {" "}
+            {t("ALREADY_HAVE_AN_ACCOUNT")}{" "}
             <button
               onClick={() => navigate("/login")}
               className="font-semibold text-indigo-600 hover:text-indigo-500 text-base"
@@ -176,4 +184,4 @@ function ResetPassword() {
   );
 };
 
-export default ResetPassword;
+export default Register;

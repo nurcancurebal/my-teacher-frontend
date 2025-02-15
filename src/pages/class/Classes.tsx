@@ -1,15 +1,23 @@
 import { useEffect, useState, useCallback } from "react";
 import { isAxiosError } from "axios";
+import {
+  MenuItems,
+  MenuItem,
+  Menu,
+  MenuButton,
+} from "@headlessui/react";
+import { Link } from "react-router-dom";
 
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import UpdateDialog from "../components/class/UpdateDialog";
-import DeleteDialog from "../components/class/DeleteDialog";
-import AddDialog from "../components/class/AddDialog";
+import UpdateDialog from "../../components/class/UpdateDialog";
+import DeleteDialog from "../../components/class/DeleteDialog";
+import AddDialog from "../../components/class/AddDialog";
+import GradeTypeDialog from "../../components/grade/ClassGradeTypeDialog";
 
-import API from "../api";
-import { TClass } from "../types";
+import API from "../../api";
+import { TClass } from "../../types";
 
 function Classes() {
   const { t } = useTranslation();
@@ -26,7 +34,10 @@ function Classes() {
   const [selectedDeleteClass, setSelectedDeleteClass] = useState<TClass | null>(
     null
   );
+
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
+  const [gradeTypeOpen, setGradeTypeOpen] = useState(false);
+  const [selectedClass, setSelectedClass] = useState<TClass | null>(null);
 
   useEffect(() => {
     fetchClasses();
@@ -143,8 +154,44 @@ function Classes() {
                 className={index % 2 === 0 ? "bg-gray-200" : "bg-gray-100"}
               >
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                  {classItem.className}
+                  <Menu as="div" className="relative ml-3">
+                    <div className="flex items-center">
+                      <MenuButton className="relative flex max-w-xs items-center text-sm focus:outline-none p-1 cursor-pointer">
+                        <span className="absolute -inset-1.5" />
+                        <span className="sr-only">Open user menu</span>
+                        <div className="relative inline-block text-left">
+                          {classItem.className}
+                        </div>
+                      </MenuButton>
+                    </div>
+                    <MenuItems
+                      transition
+                      className="absolute left-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in rounded-md"
+                    >
+                      <MenuItem>
+                        <Link
+                          to={`/class-students/${classItem.id}/${classItem.className}`}
+                          className="block px-4 py-2 text-lg text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none"
+                        >
+                          {t("STUDENTS")}
+                        </Link>
+                      </MenuItem>
+                      <MenuItem>
+                        <button
+                          type="button"
+                          className="w-full block px-4 py-2 text-lg text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none"
+                          onClick={() => {
+                            setGradeTypeOpen(true);
+                            if (classItem.id !== undefined) setSelectedClass(classItem)
+                          }}
+                        >
+                          {t("GRADES")}
+                        </button>
+                      </MenuItem>
+                    </MenuItems>
+                  </Menu>
                 </td>
+
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                   {classItem.explanation}
                 </td>
@@ -217,33 +264,48 @@ function Classes() {
         </div>
       </div>
 
-      {selectedUpdateClass && selectedUpdateClass.id !== undefined && (
-        <UpdateDialog
-          open={updateDialogOpen}
-          setOpen={handleUpdateDialogClose}
-          id={selectedUpdateClass.id}
-          className={selectedUpdateClass.className}
-          explanation={selectedUpdateClass.explanation}
-          onUpdate={handleClassUpdate}
-        />
-      )}
+      {
+        selectedUpdateClass && selectedUpdateClass.id !== undefined && (
+          <UpdateDialog
+            open={updateDialogOpen}
+            setOpen={handleUpdateDialogClose}
+            id={selectedUpdateClass.id}
+            className={selectedUpdateClass.className}
+            explanation={selectedUpdateClass.explanation}
+            onUpdate={handleClassUpdate}
+          />
+        )
+      }
 
-      {selectedDeleteClass && selectedDeleteClass.id !== undefined && (
-        <DeleteDialog
-          open={deleteDialogOpen}
-          setOpen={handleDeleteDialogClose}
-          id={selectedDeleteClass.id}
-          className={selectedDeleteClass.className}
-          onDelete={handleClassUpdate}
-        />
-      )}
+      {
+        selectedDeleteClass && selectedDeleteClass.id !== undefined && (
+          <DeleteDialog
+            open={deleteDialogOpen}
+            setOpen={handleDeleteDialogClose}
+            id={selectedDeleteClass.id}
+            className={selectedDeleteClass.className}
+            onDelete={handleClassUpdate}
+          />
+        )
+      }
 
       <AddDialog
         open={isAddClassOpen}
         setOpen={setIsAddClassOpen}
         onAdd={handleClassUpdate}
       />
-    </div>
+
+      {
+        selectedClass && selectedClass.id !== undefined && (
+          <GradeTypeDialog
+            open={gradeTypeOpen}
+            setOpen={setGradeTypeOpen}
+            classId={selectedClass.id}
+            className={selectedClass.className}
+          />
+        )
+      }
+    </div >
   );
 };
 

@@ -140,6 +140,11 @@ export default {
     > => {
       return await axios.get("grade/grade-type/unique");
     },
+    allUniqueGradeTypeByClass: async (
+      classId: number
+    ): Promise<AxiosResponse<TGrareTypeAllResponse>> => {
+      return await axios.get(`grade/grade-type/unique/${classId}`);
+    },
     allGradeType: async (
       gradeType: string
     ): Promise<AxiosResponse<TGradeListResponse>> => {
@@ -148,10 +153,15 @@ export default {
     findLatestGrade: async (): Promise<AxiosResponse<TDateResponse>> => {
       return await axios.get("grade/last-added");
     },
+    studentFindAll: async (
+      studentId: number
+    ): Promise<AxiosResponse<TGradeListResponse>> => {
+      return await axios.get(`grade/student/${studentId}`);
+    },
     classFindAll: async (
       classId: number
     ): Promise<AxiosResponse<TGradeListResponse>> => {
-      return await axios.get(`grade/${classId}`);
+      return await axios.get(`grade/class/${classId}`);
     },
     gradeTypeExists: async (
       data: TGradeTypeExists

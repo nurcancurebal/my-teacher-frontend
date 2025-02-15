@@ -4,8 +4,8 @@ import { isAxiosError } from "axios";
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import API from "../api";
-import { TContentProps } from "../types";
+import API from "../../api";
+import { TContentProps } from "../../types";
 
 function UpdateProfile({
   userData,

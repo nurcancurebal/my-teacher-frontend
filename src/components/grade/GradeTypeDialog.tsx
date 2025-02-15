@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
     Dialog,
@@ -15,7 +15,6 @@ import { toast } from 'react-toastify';
 import API from "../../api";
 
 import { TGradeTypeDialogProps, TGrade, TClass } from "../../types";
-import { useEffect } from "react";
 
 function GradeTypeDialog({
     open, setOpen, gradeType

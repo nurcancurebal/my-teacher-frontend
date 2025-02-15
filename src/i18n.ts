@@ -67,7 +67,7 @@ const resources = {
       CLASS_NAME: "Class Name",
       DESCRIPTION: "Description",
       CREATED_AT: "Created At",
-      UPDATED_AT: "Updated At",
+      LASTUPDATED: "Last Updated",
       UPDATE_CLASS_INFORMATION: "Update Class Information",
       UPDATE: "Update",
       CANCEL: "Cancel",
@@ -112,6 +112,12 @@ const resources = {
       GRADES_VALUE: "Grade Value",
       ARE_YOU_SURE_YOU_WANT_TO_DELETE_THE_NOTE_VALUE:
         "are you sure you want to delete the note value?",
+      ITS_GRADES: "Grades",
+      GRADE_VALUE: "Grade Value",
+      CLASS_STUDENTS: "Class Students",
+      ID_NUMBER: "Identity Number",
+      SELECT_GRADE_TYPE: "Select Grade Type",
+      NO_GRADE_TYPE: "No Grade Type",
     },
   },
   TR: {
@@ -223,6 +229,12 @@ const resources = {
       ARE_YOU_SURE_YOU_WANT_TO_DELETE_THE_NOTE_VALUE:
         "not değerini silmek istediğinize emin misiniz?",
       CLASS_ARE_YOU_SURE_DELETE: "sınıfını silmek istediğinize emin misiniz?",
+      ITS_GRADES: "Notları",
+      GRADE_VALUE: "Not Değeri",
+      CLASS_STUDENTS: "Sınıf Öğrencileri",
+      ID_NUMBER: "TC Kimlik Numarası",
+      SELECT_GRADE_TYPE: "Not Türü Seçiniz",
+      NO_GRADE_TYPE: "Not Türü Bulunamadı",
     },
   },
 };

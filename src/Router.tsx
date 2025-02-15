@@ -1,17 +1,24 @@
 import { Route, Routes } from "react-router-dom";
 
-import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Classes from "./pages/Classes";
-import Students from "./pages/Students";
-import UpdateProfile from "./pages/UpdateProfile";
-import Grades from "./pages/Grades";
-import MyProfile from "./pages/MyProfile";
-import Register from "./pages/Register";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import AddGrade from "./pages/AddGrade";
-import ClassNotes from "./pages/ClassNotes";
+
+import Classes from "./pages/class/Classes";
+import ClassIdStudents from "./pages/class/ClassIdStudents";
+
+import Students from "./pages/student/Students";
+import StudenIdGrades from "./pages/student/StudenIdGrades";
+
+import UpdateProfile from "./pages/profile/UpdateProfile";
+import MyProfile from "./pages/profile/MyProfile";
+
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
+
+import AddGrade from "./pages/grade/AddGrade";
+import ClassNotes from "./pages/grade/ClassNotes";
+import Grades from "./pages/grade//Grades";
 
 import { TContentProps } from "./types";
 
@@ -42,6 +49,14 @@ function Router({ userData, onProfileUpdate }: TContentProps) {
         <Route
           path="/class-notes"
           element={<ClassNotes />} />
+        <Route
+          path="/student-grades"
+          element={<StudenIdGrades />} />
+        <Route
+          path="/class-students/:classId/:className"
+          element={<ClassIdStudents
+          />}
+        />
       </Routes>
     </>
   );

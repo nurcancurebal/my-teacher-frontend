@@ -5,12 +5,12 @@ import { isAxiosError } from "axios";
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import DetailDialog from "../components/student/DetailDialog";
-import UpdateGradeValueDialog from "../components/grade/UpdateGradeValueDialog";
-import DeleteOneDialog from "../components/grade/DeleteOneDialog";
+import DetailDialog from "../../components/student/DetailDialog";
+import UpdateGradeValueDialog from "../../components/grade/UpdateGradeValueDialog";
+import DeleteOneDialog from "../../components/grade/DeleteOneDialog";
 
-import API from "../api";
-import { TStudent, TGrade } from "../types";
+import API from "../../api";
+import { TStudent, TGrade } from "../../types";
 
 function ClassNotes() {
     const { t } = useTranslation();
@@ -75,7 +75,7 @@ function ClassNotes() {
 
     return (
         <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 xl:px-0 md:px-24 px-12">
-            <div className="my-7 text-center font-semibold text-2xl">
+            <div className="my-7 text-center font-semibold text-2xl xl:col-span-4 md:col-span-2">
                 {`${className} ${t("CLASS_NOTES1")} ${gradeType} ${t("CLASS_NOTES2")}`}
             </div>
             <div className="overflow-x-auto xl:col-start-2 col-span-2 xl:p-0">

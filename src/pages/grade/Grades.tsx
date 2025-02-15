@@ -4,13 +4,13 @@ import { isAxiosError } from "axios";
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import UpdateDialog from "../components/grade/UpdateGradeTypeDialog";
-import AddDialog from "../components/grade/AddDialog";
-import DeleteGradeTypeDialog from "../components/grade/DeleteGradeTypeDialog";
-import GradeTypeDialog from "../components/grade/GradeTypeDialog";
+import UpdateDialog from "../../components/grade/UpdateGradeTypeDialog";
+import AddDialog from "../../components/grade/AddDialog";
+import DeleteGradeTypeDialog from "../../components/grade/DeleteGradeTypeDialog";
+import GradeTypeDialog from "../../components/grade/GradeTypeDialog";
 
-import API from "../api";
-import { TGradeType } from "../types";
+import API from "../../api";
+import { TGradeType } from "../../types";
 
 function Grades() {
   const { t } = useTranslation();
