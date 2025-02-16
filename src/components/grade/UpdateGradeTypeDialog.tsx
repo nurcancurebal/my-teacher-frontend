@@ -89,15 +89,15 @@ function UpdateGradeTypeDialog({ open, setOpen, grade, fetchData }: TGradeUpdate
 
               <div>
                 <label
-                  htmlFor="firstname"
+                  htmlFor="gradeType"
                   className="mt-5 block text-lg font-medium text-gray-900"
                 >
-                  {t('FIRSTNAME')}
+                  {t('GRADE_TYPE')}:
                 </label>
 
                 <input
-                  id="firstname"
-                  name="firstname"
+                  id="gradeType"
+                  name="gradeType"
                   type="text"
                   required
                   value={gradeType}

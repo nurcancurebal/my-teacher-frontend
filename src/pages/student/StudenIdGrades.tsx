@@ -77,7 +77,7 @@ function StudentIdGrades() {
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                   {item.gradeType}
                 </td>
-                <td className="xl:text-lg md:text-base text-sm p-4 text-center cursor-pointer">
+                <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                   {item.gradeValue}
                 </td>
                 <td className="xl:text-lg md:text-base text-sm p-4 text-center">

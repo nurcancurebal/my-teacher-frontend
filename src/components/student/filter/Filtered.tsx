@@ -31,35 +31,26 @@ function Filtered({
       setShowArea(showArea.filter((item) => item !== area));
 
       switch (area) {
-        case t('LASTNAME'):
-          setLastname("");
-          break;
-        case t('FIRSTNAME'):
-          setFirstname("");
-          break;
-        case t('NUMBER'):
-          setNumber("");
-          break;
-        case t('GENDER'):
-          setGender("");
-          break;
-        case t('CLASS_ID'):
-          setClassId("");
-          break;
-        default:
-          break;
+        case "FIRSTNAME":
+          return setFirstname("");
+        case "LASTNAME":
+          return setLastname("");
+        case "NUMBER":
+          return setNumber("");
+        case "GENDER":
+          return setGender("");
+        case "CLASS_ID":
+          return setClassId("");
       }
-      fetchStudents();
-    } else {
+    } else
       setShowArea([...showArea, area]);
-    }
   };
 
   const showAreaCheck = (area: string) => {
     return showArea.includes(area);
   }
 
-  const fetchStudents = async () => {
+  const fetchStudents = async (): Promise<void> => {
     try {
       const filter: { [key: string]: string } = {};
 
@@ -77,8 +68,6 @@ function Filtered({
 
       if (gender) {
         filter["gender"] = gender;
-      } else {
-        filter["gender"] = "";
       }
 
       if (classId) {

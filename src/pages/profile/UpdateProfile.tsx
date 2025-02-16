@@ -18,6 +18,7 @@ function UpdateProfile({
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [language, setLanguage] = useState<string>("");
 
   useEffect(() => {
 
@@ -26,6 +27,7 @@ function UpdateProfile({
       setLastname(userData.lastname);
       setUsername(userData.username);
       setEmail(userData.email);
+      setLanguage(userData.language || "");
     }
   }, [userData]);
 
@@ -44,6 +46,7 @@ function UpdateProfile({
         username,
         email,
         password,
+        language,
       });
       toast.success(response.data.message);
       setTimeout(() => {
@@ -78,7 +81,7 @@ function UpdateProfile({
             htmlFor="firstname"
             className="mt-5 block text-lg font-medium text-gray-900"
           >
-            {t("FIRSTNAME")}
+            {t("FIRSTNAME")}:
           </label>
           <input
             id="firstname"
@@ -97,7 +100,7 @@ function UpdateProfile({
             htmlFor="lastname"
             className="mt-5 block text-lg font-medium text-gray-900"
           >
-            {t("LASTNAME")}
+            {t("LASTNAME")}:
           </label>
           <input
             id="lastname"
@@ -115,7 +118,7 @@ function UpdateProfile({
             htmlFor="username"
             className="mt-5 block text-lg font-medium text-gray-900"
           >
-            {t("USERNAME")}
+            {t("USERNAME")}:
           </label>
           <input
             id="username"
@@ -134,7 +137,7 @@ function UpdateProfile({
             htmlFor="email"
             className="mt-5 block text-lg font-medium text-gray-900"
           >
-            {t("EMAIL")}
+            {t("EMAIL")}:
           </label>
           <input
             id="email"
@@ -151,10 +154,37 @@ function UpdateProfile({
 
         <div>
           <label
+            htmlFor="email"
+            className="mt-5 block text-lg font-medium text-gray-900"
+          >
+            {t("LANGUAGE")}:
+          </label>
+          <div className="grid grid-cols-2">
+            <button
+              type="button"
+              className={`my-5 mx-auto inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 disabled:opacity-75 disabled:hover:bg-white ${language === "EN" ? "bg-slate-200" : "bg-white"
+                }`}
+              onClick={() => setLanguage("EN")}
+            >
+              English
+            </button>
+            <button
+              type="button"
+              className={`my-5 mx-auto inline-flex justify-center rounded-md py-2 text-base font-semibold shadow-sm w-24 ring-1 ring-inset ring-gray-300 transition-all text-gray-900 hover:bg-slate-50 focus:bg-slate-200  active:bg-slate-100 disabled:opacity-75 disabled:hover:bg-white ${language === "TR" ? "bg-slate-200" : "bg-white"
+                }`}
+              onClick={() => setLanguage(t("TR"))}
+            >
+              Türkçe
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label
             htmlFor="password"
             className="mt-5 block text-lg font-medium text-gray-900"
           >
-            {t("PASSWORD")}
+            {t("PASSWORD")}:
           </label>
           <input
             id="password"

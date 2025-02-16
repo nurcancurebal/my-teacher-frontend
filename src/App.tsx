@@ -49,7 +49,6 @@ function App() {
         setUser(null);
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-        localStorage.removeItem("userLanguage");
         i18n.changeLanguage("EN");
         setLoadFetchUser(true);
       } else {
