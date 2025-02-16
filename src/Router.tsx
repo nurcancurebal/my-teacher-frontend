@@ -16,8 +16,8 @@ import Register from "./pages/auth/Register";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 
-import AddGrade from "./pages/grade/AddGrade";
-import ClassNotes from "./pages/grade/ClassNotes";
+import Add from "./pages/grade/Add";
+import ClassGradeValue from "./pages/grade/ClassGradeValue";
 import Grades from "./pages/grade//Grades";
 
 import { TContentProps } from "./types";
@@ -44,11 +44,11 @@ function Router({ userData, onProfileUpdate }: TContentProps) {
         />
         <Route
           path="/add-grade"
-          element={<AddGrade />}
+          element={<Add />}
         />
         <Route
           path="/class-notes"
-          element={<ClassNotes />} />
+          element={<ClassGradeValue />} />
         <Route
           path="/student-grades"
           element={<StudenIdGrades />} />

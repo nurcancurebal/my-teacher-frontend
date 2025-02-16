@@ -69,10 +69,10 @@ function UpdateProfile({
 
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 lg:px-8">
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
-        <div className="my-5 text-center font-semibold text-2xl">
-          {t("UPDATE_PROFILE")}
-        </div>
+      <div className="my-7 text-center font-semibold text-2xl mt-20">
+        {t("UPDATE_PROFILE")}
+      </div>
+      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <div>
           <label
             htmlFor="firstname"

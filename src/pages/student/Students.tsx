@@ -121,6 +121,9 @@ function Students() {
 
   return (
     <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 xl:px-0 md:px-24 px-12">
+      <div className="my-7 text-center font-semibold text-2xl xl:col-span-4 md:col-span-2 block md:hidden">
+        {t('STUDENTS')}
+      </div>
       <div className="overflow-x-auto xl:col-start-2 col-span-2 xl:p-0">
         <Filtered setStudents={setStudents} />
 

@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import API from "../../api";
 import { TStudent, TGradeValue } from "../../types";
 
-function AddGrade() {
+function Add() {
   const { t } = useTranslation();
   const location = useLocation();
 
@@ -97,21 +97,21 @@ function AddGrade() {
   return (
     <>
       <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 mt-20 xl:px-0 md:px-24 px-12">
+        <div className="my-5 text-center font-semibold text-2xl">
+          {t("ADD_GRADE")}
+        </div>
         <div className="overflow-x-auto xl:col-start-2 col-span-2 xl:p-0">
-          <div className="my-5 text-center font-semibold text-2xl">
-            {t("ADD_GRADE")}
-          </div>
           <table className="border-collapse border border-slate-300 w-full">
             <thead>
               <tr>
                 <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                  {t("FIRSTNAME")}
-                </th>
-                <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
-                  {t("LASTNAME")}
-                </th>
-                <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
                   {t("NUMBER")}
+                </th>
+                <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
+                  {t("FIRSTNAME")} {t("LASTNAME")}
+                </th>
+                <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
+                  {t("GENDER")}
                 </th>
                 <th className="border-b border-slate-400 xl:text-xl md:text-lg text-base p-5">
                   {gradeName}
@@ -124,13 +124,13 @@ function AddGrade() {
                   className={index % 2 === 0 ? "bg-gray-200" : "bg-gray-100"}
                 >
                   <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                    {student.firstname}
-                  </td>
-                  <td className="xl:text-lg md:text-base text-sm p-4 text-center">
-                    {student.lastname}
-                  </td>
-                  <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                     {student.number}
+                  </td>
+                  <td className="xl:text-lg md:text-base text-sm p-4 text-center">
+                    {student.firstname}  {student.lastname}
+                  </td>
+                  <td className="xl:text-lg md:text-base text-sm p-4 text-center">
+                    {student.gender}
                   </td>
                   <td className="xl:text-lg md:text-base text-sm p-4 text-center">
                     <input
@@ -166,4 +166,4 @@ function AddGrade() {
     </>
   );
 };
-export default AddGrade;
+export default Add;
