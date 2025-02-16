@@ -12,7 +12,7 @@ import DeleteOneDialog from "../../components/grade/DeleteOneDialog";
 import API from "../../api";
 import { TStudent, TGrade } from "../../types";
 
-function ClassNotes() {
+function ClassGradeValue() {
     const { t } = useTranslation();
     const location = useLocation();
 
@@ -184,4 +184,4 @@ function ClassNotes() {
     );
 };
 
-export default ClassNotes;
+export default ClassGradeValue;

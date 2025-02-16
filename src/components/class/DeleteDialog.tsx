@@ -28,10 +28,8 @@ function DeleteDialog({
 
       toast.success(response.data.message);
 
-      setTimeout(() => {
-        setOpen(false);
-        onDelete();
-      }, 3000);
+      setOpen(false);
+      onDelete();
     } catch (error: unknown) {
       console.error(error);
       if (isAxiosError(error) && error.response) {

@@ -29,14 +29,13 @@ function AddDialog({ open, setOpen, onAdd }: TAddProps) {
 
       toast.success(response.data.message);
 
-      setTimeout(() => {
-        setClassName("");
-        setExplanation("");
-        onAdd();
-        if (location.pathname === "/classes") {
-          setOpen(false);
-        }
-      }, 3000);
+      setClassName("");
+      setExplanation("");
+      onAdd();
+      if (location.pathname === "/classes") {
+        setOpen(false);
+      }
+
     } catch (error: unknown) {
       console.error(error);
       if (isAxiosError(error) && error.response) {

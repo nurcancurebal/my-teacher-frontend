@@ -23,10 +23,8 @@ function DeleteDialog({
             if (grade.id !== undefined) {
                 const response = await API.grade.deleteOne(grade.id);
                 toast.success(response.data.message);
-                setTimeout(() => {
-                    setOpen(false);
-                    fetchData();
-                }, 3000);
+                setOpen(false);
+                fetchData();
             } else {
                 toast.error(t('GRADE_ID_UNDEFINED'));
             }

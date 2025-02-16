@@ -57,10 +57,8 @@ function UpdateDialog({
       const response = await API.student.update({ id: student.id, classId, idNumber, firstname, lastname, number: number, gender, birthday });
       toast.success(response.data.message);
 
-      setTimeout(() => {
-        setOpen(false);
-        onUpdate();
-      }, 3000);
+      setOpen(false);
+      onUpdate();
     } catch (error: unknown) {
       console.error(error);
       if (isAxiosError(error) && error.response) {

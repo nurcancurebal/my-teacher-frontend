@@ -96,12 +96,10 @@ function AddDialog({ open, setOpen }: TOpenProps) {
         return;
       }
 
-      setTimeout(() => {
-        navigate("/add-grade", {
-          state: { selectedClassId, formattedGradeName },
-        });
-        setGradeName("");
-      }, 3000);
+      navigate("/add-grade", {
+        state: { selectedClassId, formattedGradeName },
+      });
+      setGradeName("");
     } catch (error: unknown) {
       console.error(error);
       if (isAxiosError(error) && error.response) {

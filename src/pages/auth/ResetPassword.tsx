@@ -35,9 +35,7 @@ function ResetPassword() {
     try {
       const response = await API.auth.resetPassword({ email, password, otp });
       toast.success(response.data.message);
-      setTimeout(() => {
-        navigate("/login");
-      }, 3000);
+      navigate("/login");
     } catch (error: unknown) {
       console.error(error);
       if (isAxiosError(error) && error.response) {

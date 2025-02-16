@@ -22,10 +22,8 @@ function UpdateGradeValueDialog({ open, setOpen, grade, fetchData }: TClassNotes
     const handleUpdate = async () => {
         try {
             const response = await API.grade.update({ classId: grade.classId, studentId: grade.studentId, id: grade.id, gradeValue, gradeType: grade.gradeType });
-            setTimeout(() => {
-                setOpen(false);
-                fetchData();
-            }, 3000);
+            setOpen(false);
+            fetchData();
             toast.success(response.data.message);
         } catch (error: unknown) {
             console.error(error);

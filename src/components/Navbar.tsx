@@ -137,7 +137,7 @@ function Navbar({ userData }: TUserDataProps) {
                             <button
                               onClick={() => {
                                 toast.success(t("EXITING"));
-                                setTimeout(() => navigate(item.href), 3000);
+                                navigate(item.href);
                               }}
                               className="block w-full text-left px-4 py-2 text-lg text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none"
                             >
@@ -230,14 +230,13 @@ function Navbar({ userData }: TUserDataProps) {
                       <button
                         onClick={() => {
                           toast.success(t("REDIRECTING_TO_HOME_PAGE"));
-                          setTimeout(() => navigate(item.href), 3000);
+                          navigate(item.href)
                         }}
                         className="block w-full text-left px-4 py-2 text-lg text-white data-[focus]:bg-gray-100 data-[focus]:outline-none cursor-pointer"
                       >
                         {item.name}
                       </button>
                     ) : (
-
                       <DisclosureButton
                         key={item.name}
                         onClick={() => navigate(item.href)}

@@ -39,11 +39,9 @@ function UpdateGradeTypeDialog({ open, setOpen, grade, fetchData }: TGradeUpdate
       }
 
       toast.success(t('GRADE_TYPE_UPDATED'));
-      setTimeout(() => {
-        setGradeType("");
-        fetchData();
-        setOpen(false);
-      }, 3000);
+      setGradeType("");
+      fetchData();
+      setOpen(false);
 
     } catch (error: unknown) {
       console.error(error);

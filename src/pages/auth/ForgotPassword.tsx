@@ -21,9 +21,7 @@ function ForgotPassword() {
     try {
       const response = await API.auth.forgotPassword({ email });
       toast.success(response.data.message);
-      setTimeout(() => {
-        navigate("/reset-password", { state: { email } });
-      }, 3000);
+      navigate("/reset-password", { state: { email } });
     } catch (error: unknown) {
       console.error(error);
       if (isAxiosError(error) && error.response) {

@@ -23,10 +23,8 @@ function DeleteDialog({
         try {
             const response = await API.grade.deleteAllGradeType(gradeType);
             toast.success(response.data.message);
-            setTimeout(() => {
-                setOpen(false);
-                fetchData();
-            }, 3000);
+            setOpen(false);
+            fetchData();
 
         } catch (error: unknown) {
             console.error(error);

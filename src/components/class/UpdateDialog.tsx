@@ -33,10 +33,8 @@ function UpdateDialog({
 
       toast.success(response.data.message);
 
-      setTimeout(() => {
-        setOpen(false);
-        onUpdate();
-      }, 3000);
+      setOpen(false);
+      onUpdate();
     } catch (error: unknown) {
       console.error(error);
       if (isAxiosError(error) && error.response) {

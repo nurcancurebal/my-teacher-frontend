@@ -49,10 +49,8 @@ function UpdateProfile({
         language,
       });
       toast.success(response.data.message);
-      setTimeout(() => {
-        setPassword("");
-        onProfileUpdate();
-      }, 3000);
+      setPassword("");
+      onProfileUpdate();
     } catch (error: unknown) {
       console.error(error);
       if (isAxiosError(error) && error.response) {

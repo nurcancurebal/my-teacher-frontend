@@ -21,7 +21,7 @@ function AddDialog({ open, setOpen, onAdd }: TAddProps) {
   const [classes, setClasses] = useState<TClass[]>([]);
   const [firstname, setFirstname] = useState<string>("");
   const [lastname, setLastname] = useState<string>("");
-  const [number, setNumber] = useState<number>();
+  const [number, setNumber] = useState<number | null>(null);
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
   const [idNumber, setIdNumber] = useState<string>();
   const [birthday, setBirthday] = useState<Date>();
@@ -60,7 +60,7 @@ function AddDialog({ open, setOpen, onAdd }: TAddProps) {
     setIdNumber(undefined);
     setFirstname("");
     setLastname("");
-    setNumber(undefined);
+    setNumber(null);
     setGender("");
     setBirthday(undefined);
     setSelectedClassId(null);
@@ -83,13 +83,11 @@ function AddDialog({ open, setOpen, onAdd }: TAddProps) {
         birthday: birthday ?? null,
       });
       toast.success(response.data.message);
-      setTimeout(() => {
-        resetForm();
-        onAdd();
-        if (location.pathname.includes('student')) {
-          setOpen(false);
-        }
-      }, 3000);
+      resetForm();
+      onAdd();
+      if (location.pathname.includes('student')) {
+        setOpen(false);
+      }
     } catch (error: unknown) {
       console.error(error);
       if (isAxiosError(error) && error.response) {
@@ -248,7 +246,7 @@ function AddDialog({ open, setOpen, onAdd }: TAddProps) {
                     name="number"
                     type="text"
                     required
-                    value={number}
+                    value={number ?? ""}
                     onChange={(e) => setNumber(Number(e.target.value))}
                     onKeyDown={handleKeyAddStudent}
                     className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 text-base p-3 disabled:opacity-75"
