@@ -23,5 +23,3 @@ React tabanlı bir projedir. Vite ile geliştirilmiş olup TypeScript ile yazıl
 - Build Alma: npm run build
 - Lint Kontrolü: npm run lint
 - Önizleme: npm run preview
-
-Demo frontend adres: https://my-teacher.trial.town
